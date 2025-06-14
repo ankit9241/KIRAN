@@ -145,6 +145,60 @@
   padding: 1.5rem;
 }
 
+/* No Resources Message */
+.no-resources-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 15px;
+  box-shadow: var(--shadow-lg);
+  margin: 0;
+  width: auto;
+}
+
+.no-resources-message .empty-state-content {
+  text-align: center;
+  max-width: 500px;
+}
+
+.no-resources-message .empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.no-resources-message .folder-icon {
+  color: var(--primary-color);
+}
+
+.no-resources-message .empty-state-content h2 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.no-resources-message .empty-state-text {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.no-resources-message .empty-state-hint {
+  background: #f3f4f6;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-top: 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.no-resources-message .empty-state-hint span {
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-right: 0.5rem;
+}
+
 /* Folder List Container */
 .folder-list {
   background: white;

@@ -192,12 +192,28 @@ const StudyMaterial = () => {
               </div>
             )}
           </div>
-          {activeSubject && currentSubject && (
+          {activeSubject && currentSubject ? (
             <div className="resources-section">
               <ResourceList
                 resources={currentSubject.resources}
                 subjectName={currentSubject.name}
               />
+            </div>
+          ) : (
+            <div className="no-resources-message">
+              <div className="empty-state-content">
+                <div className="empty-state-icon">
+                  <FaFolder className="folder-icon" />
+                </div>
+                <h2>Welcome to Study Materials</h2>
+                <p className="empty-state-text">
+                  Select a subject from the list on the left to view its resources
+                </p>
+                <div className="empty-state-hint">
+                  <span>Tip:</span>
+                  <p>Start with Scratch Series for basic concepts or NCERT Booster for detailed study materials</p>
+                </div>
+              </div>
             </div>
           )}
         </div>
