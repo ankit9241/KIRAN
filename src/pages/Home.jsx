@@ -22,6 +22,60 @@ const Home = () => {
         </div>
       </div>
 
+      {/* What is KIRAN Section */}
+      <section className="what-is-kiran-section">
+        <div className="container">
+          <div className="section-header">
+            <h2><span>What is</span> <span className="brand-text">KIRAN</span>?</h2>
+            <p className="description">
+              KIRAN is a personalized mentorship program designed to guide students of Classes 11, 12, and droppers through their academic journey as well as emotional and mental stress. More than just doubt solving, it's a 24x7 companion for motivation, emotional guidance, and academic clarity.
+            </p>
+          </div>
+
+          <div className="features-grid">
+            <div className="feature-card">
+              <div className="feature-icon blue">
+                <span className="text-3xl">📚</span>
+              </div>
+              <h3 className="feature-title">Academic Mentorship</h3>
+              <p className="feature-description">Personalized guidance for academic excellence</p>
+            </div>
+
+            <div className="feature-card">
+              <div className="feature-icon green">
+                <span className="text-3xl">❤️</span>
+              </div>
+              <h3 className="feature-title">Emotional & Mental Support</h3>
+              <p className="feature-description">24x7 support for emotional well-being</p>
+            </div>
+
+            <div className="feature-card">
+              <div className="feature-icon purple">
+                <span className="text-3xl">⚡</span>
+              </div>
+              <h3 className="feature-title">24x7 Doubt Assistance</h3>
+              <p className="feature-description">Instant help whenever you need it</p>
+            </div>
+
+            <div className="feature-card">
+              <div className="feature-icon yellow">
+                <span className="text-3xl">🎯</span>
+              </div>
+              <h3 className="feature-title">Personalized Study Planning</h3>
+              <p className="feature-description">Customized study schedules for success</p>
+            </div>
+
+            <div className="feature-card">
+              <div className="feature-icon red">
+                <span className="text-3xl">💼</span>
+              </div>
+              <h3 className="feature-title">Career & Future Guidance</h3>
+              <p className="feature-description">Pathway to your dream career</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <div className="features-section">
         <div className="features-container">

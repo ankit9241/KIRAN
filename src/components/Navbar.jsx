@@ -10,7 +10,7 @@ const Navbar = () => {
     { name: 'Student Dashboard', href: '/student' },
     { name: 'Mentor Dashboard', href: '/mentor' },
     { name: 'Admin Dashboard', href: '/admin' },
-    { name: 'Resources', href: '/resources' },
+    { name: 'Study Material', href: '/study-material' },
     { name: 'Contact', href: '/contact' },
   ]
 

@@ -17,8 +17,7 @@ const AdminDashboard = () => {
         class: '12th',
         stream: 'Science',
         targetExam: 'JEE',
-        mentor: 'Mr. Smith',
-        progress: 75
+        mentor: 'Mr. Smith'
       },
       {
         id: 2,
@@ -26,8 +25,7 @@ const AdminDashboard = () => {
         class: '11th',
         stream: 'Commerce',
         targetExam: 'NEET',
-        mentor: 'Ms. Johnson',
-        progress: 85
+        mentor: 'Ms. Johnson'
       }
     ],
     mentors: [
@@ -43,6 +41,12 @@ const AdminDashboard = () => {
       { id: 2, subject: 'Chemistry', type: 'Practice Papers' }
     ]
   });
+
+  const [activeDropdown, setActiveDropdown] = useState(null);
+
+  const toggleDropdown = (id) => {
+    setActiveDropdown(activeDropdown === id ? null : id);
+  };
 
   // Helper functions to update specific parts of data
   const updateData = (updates) => {
@@ -175,14 +179,6 @@ const AdminDashboard = () => {
             <div className="admin-card">
               <div className="section-header">
                 <h2 className="section-title">Students Management</h2>
-                <div className="action-buttons">
-                  <button className="btn-primary" onClick={() => setData({ ...data, selectedStudent: 'new' })}>
-                    <i className="fas fa-plus mr-2"></i>Add Student
-                  </button>
-                  <button className="btn-secondary" onClick={() => setData({ ...data, selectedStudent: 'assign' })}>
-                    <i className="fas fa-user-plus mr-2"></i>Assign Mentor
-                  </button>
-                </div>
               </div>
               <div className="table-container">
                 <table className="table">
@@ -193,7 +189,6 @@ const AdminDashboard = () => {
                       <th>Stream</th>
                       <th>Target Exam</th>
                       <th>Mentor</th>
-                      <th>Progress</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -205,24 +200,108 @@ const AdminDashboard = () => {
                         <td>{student.stream}</td>
                         <td>{student.targetExam}</td>
                         <td>{student.mentor}</td>
+
                         <td>
-                          <div className="progress-container">
-                            <div className="progress-bar">
-                              <div className="progress-fill" style={{ width: `${student.progress}%` }}></div>
-                              <span className="progress-label">{student.progress}%</span>
+                          <div className="action-group">
+                            <Link to={`/profile/${student.id}`} className="action-btn view-profile-btn">
+                              <i className="fas fa-user"></i>
+                              View Profile
+                            </Link>
+                            <button 
+                              className="action-btn three-dots-btn" 
+                              onClick={(e) => {
+                                e.preventDefault();
+                                toggleDropdown(student.id);
+                              }}
+                            >
+                              <i className="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div 
+                              className={`action-dropdown ${activeDropdown === student.id ? 'active' : ''}`}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <button 
+                                className="action-dropdown-item" 
+                                onClick={() => handleStudentAction('edit', student.id)}
+                              >
+                                <i className="fas fa-edit"></i>
+                                Edit
+                              </button>
+                              <button 
+                                className="action-dropdown-item" 
+                                onClick={() => handleStudentAction('delete', student.id)}
+                              >
+                                <i className="fas fa-trash"></i>
+                                Delete
+                              </button>
                             </div>
                           </div>
                         </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Mentors Management */}
+          <div className="admin-section">
+            <div className="section-header">
+              <h3>Mentors Management</h3>
+              <p>Manage mentor profiles and assignments</p>
+            </div>
+            <div className="admin-card">
+              <div className="section-header">
+                <h2 className="section-title">Mentors Management</h2>
+              </div>
+              <div className="table-container">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Subject</th>
+                      <th>Students</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.mentors.map(mentor => (
+                      <tr key={mentor.id}>
+                        <td>{mentor.name}</td>
+                        <td>{mentor.subject}</td>
+                        <td>{mentor.students}</td>
                         <td>
                           <div className="action-group">
-                            <button className="action-btn edit-btn" onClick={() => handleStudentAction('edit', student.id)}>
-                              <i className="fas fa-edit"></i>
-                              <span>Edit</span>
+                            <Link to={`/profile/${mentor.id}`} className="action-btn view-profile-btn">
+                              <i className="fas fa-user"></i>
+                              View Profile
+                            </Link>
+                            <button className="action-btn three-dots-btn" onClick={(e) => {
+                              e.preventDefault();
+                              toggleDropdown(mentor.id);
+                            }}>
+                              <i className="fas fa-ellipsis-v"></i>
                             </button>
-                            <button className="action-btn delete-btn" onClick={() => handleStudentAction('delete', student.id)}>
-                              <i className="fas fa-trash"></i>
-                              <span>Delete</span>
-                            </button>
+                            <div 
+                              className={`action-dropdown ${activeDropdown === mentor.id ? 'active' : ''}`}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <button 
+                                className="action-dropdown-item" 
+                                onClick={() => handleMentorAction('edit', mentor.id)}
+                              >
+                                <i className="fas fa-edit"></i>
+                                Edit
+                              </button>
+                              <button 
+                                className="action-dropdown-item" 
+                                onClick={() => handleMentorAction('delete', mentor.id)}
+                              >
+                                <i className="fas fa-trash"></i>
+                                Delete
+                              </button>
+                            </div>
                           </div>
                         </td>
                       </tr>
@@ -302,10 +381,31 @@ const AdminDashboard = () => {
                           <td>{doubt.timestamp}</td>
                           <td>
                             <div className="action-group">
-                              <button className="action-btn resolve-btn" onClick={() => handleDoubtStatus(doubt.id, 'Resolved')}>
+                              <button 
+                                className="action-btn resolve-btn" 
+                                onClick={() => handleDoubtStatus(doubt.id, 'Resolved')}
+                              >
                                 <i className="fas fa-check"></i>
-                                <span>Mark Resolved</span>
+                                Mark Resolved
                               </button>
+                              <button 
+                                className="action-btn three-dots-btn" 
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  toggleDropdown(doubt.id);
+                                }}
+                              >
+                                <i className="fas fa-ellipsis-v"></i>
+                              </button>
+                              <div 
+                                className={`action-dropdown ${activeDropdown === doubt.id ? 'active' : ''}`}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Link to={`/profile/${doubt.studentName}`} className="action-dropdown-item">
+                                  <i className="fas fa-user"></i>
+                                  View Student Profile
+                                </Link>
+                              </div>
                             </div>
                           </td>
                         </tr>
@@ -338,11 +438,11 @@ const AdminDashboard = () => {
             <div className="admin-card">
               <div className="notification-form">
                 <textarea
-                  className="form-control"
+                  className="announcement-textarea"
+                  placeholder="Write your announcement here..."
                   value={data.announcement}
                   onChange={(e) => setData({ ...data, announcement: e.target.value })}
-                  placeholder="Write your announcement here..."
-                />
+                ></textarea>
                 <button className="btn-primary" onClick={handleAnnouncement}>
                   <i className="fas fa-bullhorn mr-2"></i>Broadcast
                 </button>

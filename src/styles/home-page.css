@@ -1,6 +1,3 @@
-/* Home Page Premium Styling */
-
-/* Hero Section */
 .hero-section {
   position: relative;
   min-height: calc(100vh - 60px); /* Adjust for navbar height */
@@ -83,6 +80,132 @@
 .features-section {
   padding: 6rem 0;
   background: linear-gradient(135deg, #f3f4f6 0%, #ffffff 100%);
+}
+
+/* WhatIsKiran Section */
+.what-is-kiran-section {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+}
+
+.what-is-kiran-section .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.what-is-kiran-section .section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+
+.what-is-kiran-section h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.what-is-kiran-section h2 .brand-text {
+  background: linear-gradient(135deg, #4F46E5 0%, #10B981 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.what-is-kiran-section h2 .brand-text:hover {
+  transform: translateY(-2px);
+}
+.what-is-kiran-section .description {
+  font-size: 1.25rem;
+  color: #4b5563;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.what-is-kiran-section .features-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+  .what-is-kiran-section .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .what-is-kiran-section .features-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.what-is-kiran-section .feature-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.what-is-kiran-section .feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+}
+
+.what-is-kiran-section .feature-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.what-is-kiran-section .feature-icon.blue {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.what-is-kiran-section .feature-icon.green {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.what-is-kiran-section .feature-icon.purple {
+  background: rgba(168, 85, 247, 0.1);
+  color: #a855f7;
+}
+
+.what-is-kiran-section .feature-icon.yellow {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.what-is-kiran-section .feature-icon.red {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.what-is-kiran-section .feature-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
+}
+
+.what-is-kiran-section .feature-description {
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.5;
 }
 
 .features-container {

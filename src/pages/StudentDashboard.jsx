@@ -129,22 +129,43 @@ const StudentDashboard = () => {
       </div>
 
       <div className="profile-section">
-        <div className="profile-photo">
-          <i className="fas fa-user-circle"></i>
+        <div className="profile-header">
+          <h1>Student Profile</h1>
+          <p>Welcome to your personalized mentorship dashboard</p>
         </div>
         <div className="profile-info">
-          <h2>{studentInfo.name}</h2>
-          <p>{studentInfo.class} - {studentInfo.stream}</p>
-          <p>Target Exam: {studentInfo.targetExam}</p>
+          <div className="profile-item">
+            <div className="icon">📚</div>
+            <div className="content">
+              <h3>Class</h3>
+              <p>{studentInfo.class}</p>
+            </div>
+          </div>
+          <div className="profile-item">
+            <div className="icon">🔬</div>
+            <div className="content">
+              <h3>Stream</h3>
+              <p>{studentInfo.stream}</p>
+            </div>
+          </div>
+          <div className="profile-item">
+            <div className="icon">🎯</div>
+            <div className="content">
+              <h3>Target Exam</h3>
+              <p>{studentInfo.targetExam}</p>
+            </div>
+          </div>
+          <div className="profile-item">
+            <div className="icon">📊</div>
+            <div className="content">
+              <h3>Progress</h3>
+              <p>{studentInfo.progress}%</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="progress-section">
-        <div className="progress-label">Progress: {studentInfo.progress}%</div>
-        <div className="progress-bar-container">
-          <div className="progress-bar" style={{ width: `${studentInfo.progress}%` }}></div>
-        </div>
-      </div>
+
 
       <div className="mentor-section">
         <h2>Assigned Mentors</h2>
