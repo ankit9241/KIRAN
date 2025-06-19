@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Design Test - KIRAN</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .test-header h1 {
+            color: #4F46E5;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .test-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .test-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-card h3 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        
+        .test-card p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        
+        .responsive-info {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .responsive-info h2 {
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+        
+        .responsive-info p {
+            color: #1e40af;
+            margin: 0.5rem 0;
+        }
+        
+        .breakpoint-test {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .breakpoint-test h3 {
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+        
+        .breakpoint-test p {
+            color: #92400e;
+            margin: 0.25rem 0;
+        }
+        
+        @media (max-width: 767px) {
+            .test-container {
+                padding: 1rem;
+            }
+            
+            .test-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .test-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .test-card {
+                padding: 1rem;
+            }
+            
+            .responsive-info,
+            .breakpoint-test {
+                padding: 0.875rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .test-container {
+                padding: 0.75rem;
+            }
+            
+            .test-header h1 {
+                font-size: 1.25rem;
+            }
+            
+            .test-card {
+                padding: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🎯 Responsive Design Test</h1>
+            <p>Test the mobile responsiveness of your KIRAN application</p>
+        </div>
+        
+        <div class="responsive-info">
+            <h2>📱 Mobile Responsiveness Checklist</h2>
+            <p>✅ Navbar collapses to hamburger menu on mobile</p>
+            <p>✅ Multi-column layouts stack vertically on mobile</p>
+            <p>✅ Touch-friendly buttons (44px minimum)</p>
+            <p>✅ Readable font sizes (16px minimum)</p>
+            <p>✅ Proper spacing and padding for mobile</p>
+            <p>✅ Forms stack vertically on mobile</p>
+            <p>✅ Cards and grids adapt to single column</p>
+        </div>
+        
+        <div class="breakpoint-test">
+            <h3>📏 Breakpoint Testing</h3>
+            <p><strong>Desktop (1024px+):</strong> Full layout with multiple columns</p>
+            <p><strong>Tablet (768px-1023px):</strong> Reduced columns, adjusted spacing</p>
+            <p><strong>Mobile (360px-767px):</strong> Single column, stacked layout</p>
+            <p><strong>Small Mobile (360px-480px):</strong> Compact layout, minimal padding</p>
+        </div>
+        
+        <div class="test-grid">
+            <div class="test-card">
+                <h3>🎨 Design Preservation</h3>
+                <p>The responsive design maintains the premium visual quality with the same color scheme, typography, shadows, and rounded corners across all screen sizes.</p>
+            </div>
+            
+            <div class="test-card">
+                <h3>📱 Mobile Optimization</h3>
+                <p>All components are optimized for mobile with touch-friendly interactions, proper spacing, and readable text sizes that prevent zoom on iOS devices.</p>
+            </div>
+            
+            <div class="test-card">
+                <h3>♿ Accessibility</h3>
+                <p>Enhanced focus indicators, sufficient color contrast, and proper semantic structure ensure the application is accessible on all devices and screen readers.</p>
+            </div>
+            
+            <div class="test-card">
+                <h3>⚡ Performance</h3>
+                <p>Optimized animations and reduced shadow complexity on mobile devices for better performance and battery life.</p>
+            </div>
+        </div>
+        
+        <div class="responsive-info">
+            <h2>🧪 Testing Instructions</h2>
+            <p>1. Open your KIRAN application in a browser</p>
+            <p>2. Open Developer Tools (F12)</p>
+            <p>3. Click the device toggle button (📱 icon)</p>
+            <p>4. Test different screen sizes: 360px, 414px, 768px, 1024px</p>
+            <p>5. Verify all components adapt properly</p>
+            <p>6. Test touch interactions on mobile devices</p>
+        </div>
+    </div>
+</body>
+</html> 

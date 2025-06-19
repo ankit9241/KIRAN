@@ -1,0 +1,1044 @@
+/* ========================================
+   RESPONSIVE DESIGN SYSTEM
+   ======================================== */
+
+/* Breakpoints:
+   - Mobile: 360px - 767px
+   - Tablet: 768px - 1023px  
+   - Desktop: 1024px+
+*/
+
+/* ========================================
+   GLOBAL RESPONSIVE UTILITIES
+   ======================================== */
+
+/* Hide elements on mobile */
+@media (max-width: 767px) {
+  .hide-mobile {
+    display: none !important;
+  }
+  
+  .show-mobile {
+    display: block !important;
+  }
+}
+
+/* Hide elements on desktop */
+@media (min-width: 768px) {
+  .hide-desktop {
+    display: none !important;
+  }
+  
+  .show-desktop {
+    display: block !important;
+  }
+}
+
+/* ========================================
+   NAVBAR RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 767px) {
+  .navbar {
+    padding: 0.75rem 1rem;
+    position: relative;
+  }
+  
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+  
+  .nav-links {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: white;
+    flex-direction: column;
+    padding: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 999;
+  }
+  
+  .nav-links.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .nav-link {
+    padding: 1rem 0;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1rem;
+  }
+  
+  .nav-link:last-child {
+    border-bottom: none;
+  }
+  
+  .nav-actions {
+    display: none;
+  }
+  
+  .mobile-menu-button {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+  }
+  
+  .mobile-menu-button:hover {
+    background: var(--bg-secondary);
+    color: var(--primary);
+  }
+  
+  .menu-icon {
+    transition: transform 0.3s ease;
+  }
+  
+  .mobile-menu-button.active .menu-icon {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .navbar-brand {
+    font-size: 1.125rem;
+  }
+}
+
+/* ========================================
+   HERO SECTION RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+  .hero-section {
+    min-height: calc(100vh - 60px);
+    padding: 2rem 0;
+    margin-top: 0;
+  }
+  
+  .hero-content {
+    padding: 0 1rem;
+  }
+  
+  .hero-heading {
+    font-size: 2.5rem;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  
+  .hero-heading span {
+    display: inline;
+  }
+  
+  .hero-text {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    padding: 0 0.5rem;
+  }
+  
+  .hero-button {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+    margin: 0.25rem;
+    width: calc(50% - 0.5rem);
+    min-width: 140px;
+  }
+  
+  .flex.justify-center.gap-4 {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .flex.justify-center.gap-4 .hero-button {
+    width: 100%;
+    max-width: 280px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-heading {
+    font-size: 2rem;
+  }
+  
+  .hero-text {
+    font-size: 0.9rem;
+  }
+  
+  .hero-button {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* ========================================
+   FEATURES SECTION RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+  .features-section,
+  .what-is-kiran-section {
+    padding: 3rem 0;
+  }
+  
+  .features-container,
+  .what-is-kiran-section .container {
+    padding: 0 1rem;
+  }
+  
+  .features-header h2,
+  .what-is-kiran-section h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .features-header p,
+  .what-is-kiran-section .description {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .features-grid,
+  .what-is-kiran-section .features-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .feature-card {
+    padding: 1.5rem;
+  }
+  
+  .feature-card h3 {
+    font-size: 1.125rem;
+  }
+  
+  .feature-card p {
+    font-size: 0.9rem;
+  }
+  
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .features-header h2,
+  .what-is-kiran-section h2 {
+    font-size: 1.75rem;
+  }
+  
+  .feature-card {
+    padding: 1.25rem;
+  }
+}
+
+/* ========================================
+   STUDENT DASHBOARD RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+  .student-dashboard {
+    margin-top: 60px;
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+  
+  .profile-section {
+    padding: 1.5rem;
+  }
+  
+  .profile-header h1 {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .profile-header p {
+    font-size: 0.9rem;
+  }
+  
+  .profile-info {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .profile-item {
+    padding: 1rem;
+  }
+  
+  .profile-item h3 {
+    font-size: 1rem;
+  }
+  
+  .profile-item p {
+    font-size: 0.875rem;
+  }
+  
+  /* Form responsive */
+  .edit-form {
+    padding: 1.5rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Doubts section */
+  .doubts-section {
+    padding: 1.5rem;
+  }
+  
+  .doubt-card {
+    padding: 1rem;
+  }
+  
+  .doubt-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .doubt-actions {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .doubt-filter {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .filter-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Mentors section */
+  .mentors-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .mentor-card {
+    padding: 1.5rem;
+  }
+  
+  .mentor-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .mentor-avatar {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .contact-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Resources section */
+  .resources-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .resource-card {
+    padding: 1rem;
+  }
+  
+  .resource-card h3 {
+    font-size: 1rem;
+  }
+  
+  .resource-card p {
+    font-size: 0.875rem;
+  }
+  
+  .download-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Feedback section */
+  .feedback-list {
+    gap: 1rem;
+  }
+  
+  .feedback-card {
+    padding: 1rem;
+  }
+  
+  .feedback-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  /* Meeting section */
+  .meeting-card {
+    padding: 1rem;
+  }
+  
+  .meeting-info {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .student-dashboard {
+    padding: 0.75rem;
+  }
+  
+  .profile-section,
+  .doubts-section,
+  .edit-form {
+    padding: 1rem;
+  }
+  
+  .profile-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .mentor-card,
+  .resource-card,
+  .feedback-card,
+  .meeting-card {
+    padding: 0.875rem;
+  }
+  
+  .contact-btn {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* ========================================
+   ADMIN DASHBOARD RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+  .admin-dashboard {
+    padding: 1rem;
+    margin-top: 60px;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .stat-card {
+    padding: 1.5rem;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+  }
+  
+  .stat-label {
+    font-size: 0.875rem;
+  }
+  
+  .actions-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .action-card {
+    padding: 1.5rem;
+  }
+  
+  .action-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+  
+  .action-label {
+    font-size: 1rem;
+  }
+  
+  .action-description {
+    font-size: 0.875rem;
+  }
+}
+
+/* ========================================
+   MENTOR DASHBOARD RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+  .mentor-dashboard {
+    padding: 1rem;
+    margin-top: 60px;
+  }
+  
+  .mentor-dashboard h1 {
+    font-size: 1.75rem;
+  }
+  
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .stat-item {
+    padding: 1.5rem;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+  }
+  
+  .stat-label {
+    font-size: 0.875rem;
+  }
+}
+
+/* ========================================
+   STUDY MATERIAL PAGE RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+  .study-material-page {
+    padding: 1rem;
+    margin-top: 60px;
+  }
+  
+  .study-material-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .material-filters {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .filter-group {
+    width: 100%;
+  }
+  
+  .filter-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+  }
+  
+  .materials-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .material-card {
+    padding: 1rem;
+  }
+  
+  .material-card h3 {
+    font-size: 1rem;
+  }
+  
+  .material-card p {
+    font-size: 0.875rem;
+  }
+  
+  .material-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .material-btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* ========================================
+   LOGIN/ENROLL PAGES RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+  .login-container,
+  .enroll-container {
+    padding: 1rem;
+    margin-top: 60px;
+  }
+  
+  .login-form,
+  .enroll-form {
+    padding: 1.5rem;
+    margin: 1rem 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .form-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .form-header p {
+    font-size: 0.9rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    font-size: 0.9rem;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+  }
+  
+  .form-button,
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .form-footer {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .form-footer a {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    min-height: 44px;
+  }
+}
+
+/* ========================================
+   CONTACT PAGE RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+  .contact-page {
+    padding: 1rem;
+    margin-top: 60px;
+  }
+  
+  .contact-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .contact-header p {
+    font-size: 0.9rem;
+  }
+  
+  .contact-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .contact-info {
+    padding: 1.5rem;
+  }
+  
+  .contact-form {
+    padding: 1.5rem;
+  }
+  
+  .contact-form h2 {
+    font-size: 1.5rem;
+  }
+  
+  .contact-form .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .contact-form input,
+  .contact-form textarea {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+  }
+  
+  .contact-form button {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+    width: 100%;
+  }
+}
+
+/* ========================================
+   COMPONENTS RESPONSIVE
+   ======================================== */
+
+/* Announcements */
+@media (max-width: 767px) {
+  .announcements-container {
+    padding: 1rem;
+  }
+  
+  .announcement-card {
+    padding: 1rem;
+  }
+  
+  .announcement-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .announcement-title {
+    font-size: 1rem;
+  }
+  
+  .announcement-date {
+    font-size: 0.8rem;
+  }
+  
+  .announcement-content {
+    font-size: 0.9rem;
+  }
+}
+
+/* Notifications */
+@media (max-width: 767px) {
+  .notification-container {
+    position: relative;
+  }
+  
+  .notification-dropdown {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 60vh;
+    border-radius: 0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .notification-item {
+    padding: 1rem;
+  }
+  
+  .notification-title {
+    font-size: 0.9rem;
+  }
+  
+  .notification-time {
+    font-size: 0.8rem;
+  }
+}
+
+/* Student Details Modal */
+@media (max-width: 767px) {
+  .student-details-modal {
+    margin: 1rem;
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100vh - 2rem);
+  }
+  
+  .modal-header {
+    padding: 1rem;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .modal-body {
+    padding: 1rem;
+  }
+  
+  .student-info {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .info-item {
+    padding: 0.75rem;
+  }
+  
+  .info-label {
+    font-size: 0.875rem;
+  }
+  
+  .info-value {
+    font-size: 0.9rem;
+  }
+}
+
+/* Meeting Manager */
+@media (max-width: 767px) {
+  .meeting-manager {
+    padding: 1rem;
+  }
+  
+  .meeting-form {
+    padding: 1.5rem;
+  }
+  
+  .meeting-form h2 {
+    font-size: 1.5rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .meeting-form button {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+  }
+  
+  .meetings-list {
+    gap: 1rem;
+  }
+  
+  .meeting-card {
+    padding: 1rem;
+  }
+  
+  .meeting-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .meeting-actions {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+/* ========================================
+   UTILITY CLASSES FOR RESPONSIVE
+   ======================================== */
+
+/* Text sizing */
+@media (max-width: 767px) {
+  .text-sm-mobile {
+    font-size: 0.875rem !important;
+  }
+  
+  .text-base-mobile {
+    font-size: 1rem !important;
+  }
+  
+  .text-lg-mobile {
+    font-size: 1.125rem !important;
+  }
+  
+  .text-xl-mobile {
+    font-size: 1.25rem !important;
+  }
+  
+  .text-2xl-mobile {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* Spacing */
+@media (max-width: 767px) {
+  .p-mobile-1 { padding: 0.25rem !important; }
+  .p-mobile-2 { padding: 0.5rem !important; }
+  .p-mobile-3 { padding: 0.75rem !important; }
+  .p-mobile-4 { padding: 1rem !important; }
+  .p-mobile-5 { padding: 1.25rem !important; }
+  .p-mobile-6 { padding: 1.5rem !important; }
+  
+  .m-mobile-1 { margin: 0.25rem !important; }
+  .m-mobile-2 { margin: 0.5rem !important; }
+  .m-mobile-3 { margin: 0.75rem !important; }
+  .m-mobile-4 { margin: 1rem !important; }
+  .m-mobile-5 { margin: 1.25rem !important; }
+  .m-mobile-6 { margin: 1.5rem !important; }
+}
+
+/* Grid layouts */
+@media (max-width: 767px) {
+  .grid-mobile-1 { grid-template-columns: 1fr !important; }
+  .grid-mobile-2 { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-mobile-3 { grid-template-columns: repeat(3, 1fr) !important; }
+}
+
+/* Flex layouts */
+@media (max-width: 767px) {
+  .flex-mobile-col { flex-direction: column !important; }
+  .flex-mobile-row { flex-direction: row !important; }
+  .flex-mobile-wrap { flex-wrap: wrap !important; }
+  .flex-mobile-nowrap { flex-wrap: nowrap !important; }
+}
+
+/* ========================================
+   TOUCH-FRIENDLY INTERACTIONS
+   ======================================== */
+
+@media (max-width: 767px) {
+  /* Ensure buttons are touch-friendly */
+  button,
+  .btn,
+  .action-button,
+  .nav-link {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Increase touch targets for small elements */
+  .notification-icon,
+  .menu-icon,
+  .close-btn {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Improve form input touch targets */
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  /* Ensure links are touch-friendly */
+  a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+@media (max-width: 767px) {
+  /* Reduce animations on mobile for better performance */
+  .premium-card,
+  .feature-card,
+  .mentor-card,
+  .resource-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  /* Optimize shadows for mobile */
+  .premium-card,
+  .feature-card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .premium-card:hover,
+  .feature-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY IMPROVEMENTS
+   ======================================== */
+
+@media (max-width: 767px) {
+  /* Ensure sufficient color contrast */
+  .text-muted {
+    color: #6b7280 !important;
+  }
+  
+  /* Improve focus indicators */
+  button:focus,
+  input:focus,
+  select:focus,
+  textarea:focus,
+  a:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+  
+  /* Ensure readable font sizes */
+  body {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  /* Improve button contrast */
+  .btn-secondary {
+    border: 2px solid var(--primary);
+    color: var(--primary);
+  }
+  
+  .btn-secondary:hover {
+    background: var(--primary);
+    color: white;
+  }
+} 

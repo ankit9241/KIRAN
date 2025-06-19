@@ -1,0 +1,5 @@
+{
+  "jwtSecret": "dev-super-secret-jwt-key",
+  "mongoURI": "mongodb+srv://ankitkumar2020:ankit-1109@kiran.puwby5a.mongodb.net/?retryWrites=true&w=majority&appName=Kiran",
+  "port": 5000
+} 

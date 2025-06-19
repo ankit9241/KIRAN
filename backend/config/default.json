@@ -1,0 +1,5 @@
+{
+  "jwtSecret": "your-super-secret-jwt-key",
+  "mongoURI": "mongodb+srv://ankit:ankit123@cluster0.mongodb.net/mentor?retryWrites=true&w=majority",
+  "port": 5000
+} 

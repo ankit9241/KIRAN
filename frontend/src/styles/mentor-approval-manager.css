@@ -1,0 +1,467 @@
+.mentor-approval-manager {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.manager-header {
+  margin-bottom: 2rem;
+}
+
+.manager-header h2 {
+  color: #1f2937;
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.tab-navigation {
+  display: flex;
+  gap: 1rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.tab-button {
+  padding: 0.75rem 1.5rem;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+  color: #4f46e5;
+}
+
+.tab-button.active {
+  color: #4f46e5;
+  border-bottom-color: #4f46e5;
+}
+
+.mentors-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.mentor-card {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.mentor-card.pending {
+  border-left-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.02);
+}
+
+.mentor-card.approved {
+  border-left-color: #10b981;
+  background: rgba(16, 185, 129, 0.02);
+}
+
+.mentor-card.rejected {
+  border-left-color: #ef4444;
+  background: rgba(239, 68, 68, 0.02);
+}
+
+.mentor-info {
+  margin-bottom: 1rem;
+}
+
+.mentor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.mentor-header h3 {
+  color: #1f2937;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.pending {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.status-badge.approved {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+}
+
+.status-badge.rejected {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+.mentor-info p {
+  margin: 0.25rem 0;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.mentor-info .email {
+  color: #4f46e5;
+  font-weight: 500;
+}
+
+.mentor-info .specialization,
+.mentor-info .experience,
+.mentor-info .qualifications {
+  font-weight: 500;
+  color: #374151;
+}
+
+.mentor-info .registration-date,
+.mentor-info .approval-date {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.mentor-info .rejection-reason {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.mentor-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.approve-button,
+.reject-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.approve-button {
+  background: #10b981;
+  color: white;
+}
+
+.approve-button:hover {
+  background: #059669;
+}
+
+.reject-button {
+  background: #ef4444;
+  color: white;
+}
+
+.reject-button:hover {
+  background: #dc2626;
+}
+
+.no-mentors {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+.error {
+  color: #ef4444;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.reject-modal {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.reject-modal h3 {
+  color: #1f2937;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.reject-modal p {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  color: #374151;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-group textarea:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.cancel-button,
+.confirm-reject-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-button {
+  background: #6b7280;
+  color: white;
+}
+
+.cancel-button:hover {
+  background: #4b5563;
+}
+
+.confirm-reject-button {
+  background: #ef4444;
+  color: white;
+}
+
+.confirm-reject-button:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+.confirm-reject-button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mentor-approval-manager {
+    padding: 1rem;
+  }
+
+  .manager-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .tab-navigation {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .tab-button {
+    text-align: center;
+    border-bottom: none;
+    border-left: 2px solid transparent;
+  }
+
+  .tab-button.active {
+    border-bottom-color: transparent;
+    border-left-color: #4f46e5;
+  }
+
+  .mentor-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .mentor-actions {
+    flex-direction: column;
+  }
+
+  .reject-modal {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+}
+
+/* Contact Information Styles */
+.contact-info {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: rgba(79, 70, 229, 0.05);
+  border-radius: 0.5rem;
+  border-left: 3px solid #4f46e5;
+}
+
+.contact-info h4 {
+  color: #1f2937;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contact-info h4::before {
+  content: '📞';
+  font-size: 1.1rem;
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 0.375rem;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.contact-item:hover {
+  border-color: #4f46e5;
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.1);
+}
+
+.contact-item i {
+  width: 20px;
+  color: #4f46e5;
+  font-size: 0.875rem;
+}
+
+.contact-item span {
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Additional Information Styles */
+.additional-info {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: rgba(16, 185, 129, 0.05);
+  border-radius: 0.5rem;
+  border-left: 3px solid #10b981;
+}
+
+.additional-info h4 {
+  color: #1f2937;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.additional-info h4::before {
+  content: 'ℹ️';
+  font-size: 1.1rem;
+}
+
+.bio-text {
+  color: #374151;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 0.375rem;
+  border: 1px solid #e5e7eb;
+}
+
+.achievements-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.achievements-list li {
+  color: #374151;
+  font-size: 0.875rem;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 0.375rem;
+  border: 1px solid #e5e7eb;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.achievements-list li::before {
+  content: '🏆';
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+} 

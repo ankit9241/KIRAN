@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Test - KIRAN</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .test-header h1 {
+            color: #4F46E5;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-section {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .test-section h2 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+        
+        .test-section h3 {
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .test-section p {
+            color: #6b7280;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .test-section pre {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.875rem;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .status-success {
+            background: #10b981;
+        }
+        
+        .status-error {
+            background: #ef4444;
+        }
+        
+        .status-warning {
+            background: #f59e0b;
+        }
+        
+        .test-button {
+            background: #4F46E5;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+        
+        .test-button:hover {
+            background: #4338CA;
+        }
+        
+        .test-button.secondary {
+            background: #6b7280;
+        }
+        
+        .test-button.secondary:hover {
+            background: #4b5563;
+        }
+        
+        @media (max-width: 768px) {
+            .test-container {
+                padding: 1rem;
+            }
+            
+            .test-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .test-section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🔍 User Profile Test</h1>
+            <p>Test and debug user profile functionality in KIRAN</p>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 Current Status</h2>
+            <div id="status-display">
+                <p><span class="status-indicator status-warning"></span>Loading status...</p>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 Test Actions</h2>
+            <button class="test-button" onclick="checkAuthStatus()">Check Auth Status</button>
+            <button class="test-button" onclick="showLocalStorage()">Show localStorage</button>
+            <button class="test-button secondary" onclick="clearLocalStorage()">Clear localStorage</button>
+            <button class="test-button secondary" onclick="simulateLogin()">Simulate Login</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>📝 Debug Information</h2>
+            <div id="debug-info">
+                <p>Click "Check Auth Status" to see debug information</p>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📱 Mobile Testing</h2>
+            <p>1. Open your KIRAN application</p>
+            <p>2. Login with valid credentials</p>
+            <p>3. Check if user name and role appear in navbar</p>
+            <p>4. On mobile, open hamburger menu to see user info</p>
+            <p>5. Test logout functionality</p>
+        </div>
+        
+        <div class="test-section">
+            <h2>🐛 Common Issues</h2>
+            <h3>User profile not showing:</h3>
+            <p>• Check if user data is properly stored in localStorage</p>
+            <p>• Verify API response includes user object</p>
+            <p>• Check browser console for errors</p>
+            
+            <h3>Mobile menu issues:</h3>
+            <p>• Ensure hamburger menu is clickable</p>
+            <p>• Check if mobile user info appears in menu</p>
+            <p>• Verify logout works from mobile menu</p>
+        </div>
+    </div>
+
+    <script>
+        function checkAuthStatus() {
+            const token = localStorage.getItem('token');
+            const userData = localStorage.getItem('user');
+            
+            let statusHtml = '';
+            let debugHtml = '';
+            
+            if (token) {
+                statusHtml += '<p><span class="status-indicator status-success"></span>Token found in localStorage</p>';
+            } else {
+                statusHtml += '<p><span class="status-indicator status-error"></span>No token found</p>';
+            }
+            
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    statusHtml += '<p><span class="status-indicator status-success"></span>User data found</p>';
+                    debugHtml += '<h3>User Data:</h3><pre>' + JSON.stringify(user, null, 2) + '</pre>';
+                } catch (error) {
+                    statusHtml += '<p><span class="status-indicator status-error"></span>Invalid user data format</p>';
+                    debugHtml += '<p>Error parsing user data: ' + error.message + '</p>';
+                }
+            } else {
+                statusHtml += '<p><span class="status-indicator status-error"></span>No user data found</p>';
+            }
+            
+            if (token && userData) {
+                statusHtml += '<p><span class="status-indicator status-success"></span>User should be logged in</p>';
+            } else {
+                statusHtml += '<p><span class="status-indicator status-warning"></span>User not properly authenticated</p>';
+            }
+            
+            document.getElementById('status-display').innerHTML = statusHtml;
+            document.getElementById('debug-info').innerHTML = debugHtml;
+        }
+        
+        function showLocalStorage() {
+            const allData = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                allData[key] = localStorage.getItem(key);
+            }
+            
+            document.getElementById('debug-info').innerHTML = 
+                '<h3>All localStorage Data:</h3><pre>' + JSON.stringify(allData, null, 2) + '</pre>';
+        }
+        
+        function clearLocalStorage() {
+            localStorage.clear();
+            document.getElementById('status-display').innerHTML = 
+                '<p><span class="status-indicator status-warning"></span>localStorage cleared</p>';
+            document.getElementById('debug-info').innerHTML = '<p>localStorage has been cleared</p>';
+        }
+        
+        function simulateLogin() {
+            const mockUser = {
+                id: 'test-user-id',
+                name: 'Test User',
+                email: 'test@example.com',
+                role: 'student'
+            };
+            
+            localStorage.setItem('token', 'mock-token-123');
+            localStorage.setItem('user', JSON.stringify(mockUser));
+            
+            document.getElementById('status-display').innerHTML = 
+                '<p><span class="status-indicator status-success"></span>Mock login data added</p>';
+            document.getElementById('debug-info').innerHTML = 
+                '<h3>Mock User Data:</h3><pre>' + JSON.stringify(mockUser, null, 2) + '</pre>';
+        }
+        
+        // Auto-check status on page load
+        window.onload = function() {
+            checkAuthStatus();
+        };
+    </script>
+</body>
+</html> 
