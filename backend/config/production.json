@@ -1,0 +1,5 @@
+{
+  "jwtSecret": "production-jwt-secret-placeholder",
+  "mongoURI": "mongodb://localhost:27017/kiran",
+  "port": 5000
+} 

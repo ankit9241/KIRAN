@@ -23,12 +23,14 @@ const mongooseOptions = {
 };
 
 // Connect to MongoDB
-mongoose.connect(config.get('mongoURI'), mongooseOptions)
+const mongoURI = process.env.MONGODB_URI || config.get('mongoURI');
+mongoose.connect(mongoURI, mongooseOptions)
     .then(() => {
         // Initialize admin notification scheduler
         SchedulerService.init();
     })
     .catch(err => {
+        console.error('MongoDB connection error:', err);
         process.exit(1); // Exit if connection fails
     });
 
@@ -141,5 +143,7 @@ app.use((err, req, res, next) => {
     });
 });
 
-const PORT = config.get('port') || 5000;
-app.listen(PORT, () => {});
+const PORT = process.env.PORT || config.get('port') || 5000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
