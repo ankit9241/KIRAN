@@ -41,22 +41,16 @@ This guide explains how to deploy both the frontend (Netlify) and backend (Cloud
 Your frontend is already deployed on Netlify, but it's trying to connect to `localhost:5000` which won't work.
 
 ### Steps to Fix:
-1. **Deploy your backend first** (using one of the options above)
-2. **Get your backend URL** (e.g., `https://kiran-backend.onrender.com`)
-3. **Update the environment configuration:**
-
-Edit `frontend/src/config/environment.js`:
-```javascript
-const getApiUrl = () => {
-  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    return 'https://your-backend-domain.com'; // Replace with your actual backend URL
-  }
-  return 'http://localhost:5000';
-};
-```
-
-4. **Commit and push changes**
-5. **Netlify will automatically redeploy**
+1. **Deploy your backend first** (using one of the options above).
+2. **Get your backend URL** (e.g., `https://kiran-backend.onrender.com`).
+3. **Set Environment Variable in Netlify:**
+   - Go to your Netlify site dashboard.
+   - Go to **Site settings** > **Build & deploy** > **Environment**.
+   - Click **Edit variables**.
+   - Add a new variable:
+     - **Key**: `VITE_API_URL`
+     - **Value**: Your actual deployed backend URL (e.g., `https://kiran-backend.onrender.com`).
+4. **Trigger a new deploy** in Netlify from the "Deploys" tab to use the new variable.
 
 ## Environment Variables Needed
 
@@ -71,10 +65,9 @@ EMAIL_USER=your_email
 EMAIL_PASS=your_email_password
 ```
 
-### Frontend (Netlify Environment Variables)
-```
-VITE_API_URL=https://your-backend-domain.com
-```
+### Frontend (Set this in Netlify Site Settings)
+- **Key**: `VITE_API_URL`
+- **Value**: `https://your-backend-domain.com`
 
 ## CORS Configuration
 
