@@ -151,7 +151,7 @@ const StudentProfile = () => {
         <div className="error-container">
           <h2>Error</h2>
           <p>{error || 'Student not found'}</p>
-          <Link to="/mentor-dashboard" className="btn-primary">Back to Dashboard</Link>
+          <Link to="/mentor" className="btn-primary">Back to Dashboard</Link>
         </div>
       </div>
     );
@@ -163,7 +163,7 @@ const StudentProfile = () => {
     <div className="student-profile-container">
       {/* Back Button - Moved to top */}
       <div className="top-back-button">
-        <Link to="/mentor-dashboard" className="back-link">
+        <Link to="/mentor" className="back-link">
           <i className="fas fa-arrow-left"></i>
           Back to Dashboard
         </Link>
