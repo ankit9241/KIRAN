@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import '../styles/contact.css';
 import axios from 'axios';
+import { FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
+import API_ENDPOINTS from '../config/api';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -23,7 +25,7 @@ const Contact = () => {
     e.preventDefault();
     setSubmitStatus(null);
     try {
-      const res = await axios.post('http://localhost:5000/api/users/contact', formData);
+      const res = await axios.post(API_ENDPOINTS.CONTACT, formData);
       setSubmitStatus({ success: true, message: res.data.message || 'Message sent successfully!' });
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (err) {

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/login.css';
+import axios from 'axios';
+import API_ENDPOINTS from '../config/api';
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1); // 1: Email, 2: OTP, 3: New Password
@@ -14,14 +16,27 @@ const ForgotPassword = () => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  const API_URL = 'http://localhost:5000/api/auth';
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await axios.post(API_ENDPOINTS.FORGOT_PASSWORD, { email: formData.email });
+      setMessage('Password reset link sent to your email.');
+      setError('');
+    } catch (err) {
+      setError(err.response?.data?.message || 'An error occurred.');
+      setMessage('');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSendOTP = async (e) => {

@@ -3,9 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MentorApprovalManager from '../components/MentorApprovalManager';
 import MeetingManager from '../components/MeetingManager';
+import API_ENDPOINTS from '../config/api';
 import '../styles/admin-dashboard.css';
-
-const API_BASE_URL = 'http://localhost:5000/api';
 
 const AdminDashboard = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -55,15 +54,12 @@ const AdminDashboard = () => {
   // Fetch all data from backend
   const fetchAllData = async () => {
     try {
-      setLoading(true);
-      setError(null);
       const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No token found');
+      }
       const headers = { Authorization: `Bearer ${token}` };
 
-      // Configure axios defaults
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-      // Fetch all data in parallel
       const [
         studentsResponse,
         mentorsResponse,
@@ -72,34 +68,27 @@ const AdminDashboard = () => {
         resourcesResponse,
         announcementsResponse
       ] = await Promise.all([
-        axios.get(`${API_BASE_URL}/users/students`),
-        axios.get(`${API_BASE_URL}/users/mentors`),
-        axios.get(`${API_BASE_URL}/doubts/all`),
-        axios.get(`${API_BASE_URL}/meetings/all`),
-        axios.get(`${API_BASE_URL}/study-material/all`),
-        axios.get(`${API_BASE_URL}/announcements/all`)
+        axios.get(API_ENDPOINTS.USERS, { headers }),
+        axios.get(API_ENDPOINTS.MENTORS, { headers }),
+        axios.get(API_ENDPOINTS.ALL_DOUBTS, { headers }),
+        axios.get(API_ENDPOINTS.ALL_MEETINGS, { headers }),
+        axios.get(API_ENDPOINTS.ALL_RESOURCES, { headers }),
+        axios.get(API_ENDPOINTS.ALL_ANNOUNCEMENTS, { headers })
       ]);
 
       setData(prev => ({
         ...prev,
-        students: studentsResponse.data,
-        mentors: mentorsResponse.data,
+        students: studentsResponse.data.filter(user => user.role === 'student'),
+        mentors: mentorsResponse.data.filter(user => user.role === 'mentor'),
         doubts: doubtsResponse.data,
         meetings: meetingsResponse.data,
         resources: resourcesResponse.data,
-        announcements: announcementsResponse.data
+        announcements: announcementsResponse.data,
+        loading: false
       }));
-
-      setLoading(false);
     } catch (error) {
-      if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        navigate('/login');
-      } else {
-        setError('Failed to load dashboard data. Please try again.');
-      }
-      setLoading(false);
+      console.error('Error fetching data:', error);
+      setData(prev => ({ ...prev, loading: false }));
     }
   };
 
@@ -113,45 +102,43 @@ const AdminDashboard = () => {
   };
 
   // Real handlers with API calls
-  const handleStudentAction = async (action, studentId) => {
+  const handleStudentAction = async (studentId, action) => {
+    const token = localStorage.getItem('token');
+    const headers = { Authorization: `Bearer ${token}` };
     try {
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-
-      if (action === 'edit') {
-        // Navigate to edit page or open modal
+      if (action === 'view') {
+        // Implement view logic, e.g., navigate to a student profile page
+        console.log('Viewing student:', studentId);
       } else if (action === 'delete') {
         if (window.confirm('Are you sure you want to delete this student?')) {
-          await axios.delete(`${API_BASE_URL}/users/${studentId}`, { headers });
+          await axios.delete(API_ENDPOINTS.USER_PROFILE(studentId), { headers });
           await fetchAllData(); // Refresh data
         }
-      } else if (action === 'assign') {
-        // Open mentor assignment modal
       }
     } catch (error) {
-      setError('Failed to perform student action');
+      console.error(`Error performing action ${action} on student:`, error);
     }
   };
 
-  const handleMentorAction = async (action, mentorId) => {
+  const handleMentorAction = async (mentorId, action) => {
+    const token = localStorage.getItem('token');
+    const headers = { Authorization: `Bearer ${token}` };
     try {
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-
-      if (action === 'edit') {
-        // Navigate to edit page or open modal
+      if (action === 'view') {
+        // Implement view logic
+        console.log('Viewing mentor:', mentorId);
       } else if (action === 'delete') {
         if (window.confirm('Are you sure you want to delete this mentor?')) {
-          await axios.delete(`${API_BASE_URL}/users/${mentorId}`, { headers });
+          await axios.delete(API_ENDPOINTS.USER_PROFILE(mentorId), { headers });
           await fetchAllData(); // Refresh data
         }
       }
     } catch (error) {
-      setError('Failed to perform mentor action');
+      console.error(`Error performing action ${action} on mentor:`, error);
     }
   };
 
-  const handleResourceUpload = async () => {
+  const handleResourceUpload = async (e) => {
     if (!selectedStudent || !resourceFile || !resourceTitle) {
       alert('Please select a student, provide a title, and choose a file');
       return;
@@ -163,11 +150,11 @@ const AdminDashboard = () => {
     formData.append('description', resourceDescription);
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API_BASE_URL}/study-material/upload-student`, formData, {
+      await axios.post(API_ENDPOINTS.UPLOAD_STUDENT_RESOURCE, formData, {
         headers: {
+          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
+        },
       });
       alert('Resource uploaded successfully!');
       setResourceFile(null);
@@ -176,64 +163,61 @@ const AdminDashboard = () => {
       setSelectedStudent('');
       fetchAllData();
     } catch (error) {
-      setError('Failed to upload resource');
+      console.error('Error uploading resource:', error);
     }
   };
 
-  const handleDoubtStatus = async (doubtId, status) => {
+  const handleDoubtStatusChange = async (doubtId, status) => {
     try {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
 
-      await axios.put(`${API_BASE_URL}/doubts/${doubtId}/status`, { status }, { headers });
+      await axios.put(API_ENDPOINTS.DOUBT_STATUS(doubtId), { status }, { headers });
       await fetchAllData(); // Refresh data
     } catch (error) {
-      setError('Failed to update doubt status');
+      console.error('Error updating doubt status:', error);
     }
   };
 
-  const handleAnnouncement = async () => {
-    if (!data.announcement.trim()) {
-      alert('Please enter an announcement');
+  const handleCreateAnnouncement = async () => {
+    if (!data.announcement) {
+      alert('Please enter an announcement message.');
       return;
     }
-
     try {
-      await axios.post(`${API_BASE_URL}/announcements`, {
+      await axios.post(API_ENDPOINTS.ANNOUNCEMENTS, {
         message: data.announcement
       });
-
+      alert('Announcement created successfully!');
       setData(prev => ({ ...prev, announcement: '' }));
-      alert('Announcement sent successfully!');
-      
-      // Refresh announcements list
       fetchAllData();
     } catch (error) {
-      setError('Failed to send announcement');
+      console.error('Error creating announcement:', error);
+      alert('Failed to create announcement.');
     }
   };
 
   const handleToggleAnnouncement = async (announcementId) => {
     try {
-      await axios.patch(`${API_BASE_URL}/announcements/${announcementId}/toggle`);
+      await axios.patch(API_ENDPOINTS.TOGGLE_ANNOUNCEMENT(announcementId));
       alert('Announcement status updated successfully!');
       fetchAllData();
     } catch (error) {
-      alert('Failed to update announcement status');
+      console.error('Error updating announcement status:', error);
+      alert('Failed to update announcement status.');
     }
   };
 
   const handleDeleteAnnouncement = async (announcementId) => {
-    if (!window.confirm('Are you sure you want to delete this announcement?')) {
-      return;
-    }
-
-    try {
-      await axios.delete(`${API_BASE_URL}/announcements/${announcementId}`);
-      alert('Announcement deleted successfully!');
-      fetchAllData();
-    } catch (error) {
-      alert('Failed to delete announcement');
+    if (window.confirm('Are you sure you want to delete this announcement?')) {
+      try {
+        await axios.delete(API_ENDPOINTS.ANNOUNCEMENTS + `/${announcementId}`);
+        alert('Announcement deleted successfully!');
+        fetchAllData();
+      } catch (error) {
+        console.error('Error deleting announcement:', error);
+        alert('Failed to delete announcement.');
+      }
     }
   };
 
@@ -371,14 +355,14 @@ const AdminDashboard = () => {
                             >
                               <button 
                                 className="action-dropdown-item" 
-                                onClick={() => handleStudentAction('edit', student._id)}
+                                onClick={() => handleStudentAction(student._id, 'edit')}
                               >
                                 <i className="fas fa-edit"></i>
                                 Edit Student
                               </button>
                               <button 
                                 className="action-dropdown-item" 
-                                onClick={() => handleStudentAction('delete', student._id)}
+                                onClick={() => handleStudentAction(student._id, 'delete')}
                               >
                                 <i className="fas fa-trash"></i>
                                 Delete Student
@@ -478,14 +462,14 @@ const AdminDashboard = () => {
                             >
                               <button 
                                 className="action-dropdown-item" 
-                                onClick={() => handleMentorAction('edit', mentor._id)}
+                                onClick={() => handleMentorAction(mentor._id, 'edit')}
                               >
                                 <i className="fas fa-edit"></i>
                                 Edit Mentor
                               </button>
                               <button 
                                 className="action-dropdown-item" 
-                                onClick={() => handleMentorAction('delete', mentor._id)}
+                                onClick={() => handleMentorAction(mentor._id, 'delete')}
                               >
                                 <i className="fas fa-trash"></i>
                                 Delete Mentor
@@ -650,7 +634,7 @@ const AdminDashboard = () => {
                             <div className="action-group">
                               <button 
                                 className="action-btn resolve-btn" 
-                                onClick={() => handleDoubtStatus(doubt._id, 'Resolved')}
+                                onClick={() => handleDoubtStatusChange(doubt._id, 'Resolved')}
                                 disabled={doubt.status === 'Resolved'}
                               >
                                 <i className="fas fa-check"></i>
@@ -771,7 +755,7 @@ const AdminDashboard = () => {
                 value={data.announcement}
                 onChange={(e) => setData({ ...data, announcement: e.target.value })}
               ></textarea>
-              <button className="btn-primary" onClick={handleAnnouncement}>
+              <button className="btn-primary" onClick={handleCreateAnnouncement}>
                 <i className="fas fa-bullhorn"></i>
                 Broadcast Announcement
               </button>

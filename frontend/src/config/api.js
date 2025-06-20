@@ -26,21 +26,26 @@ export const API_ENDPOINTS = {
   // Doubts endpoints
   DOUBTS: `${API_BASE_URL}/api/doubts`,
   DOUBT_BY_ID: (doubtId) => `${API_BASE_URL}/api/doubts/${doubtId}`,
+  ALL_DOUBTS: `${API_BASE_URL}/api/doubts/all`,
   STUDENT_DOUBTS: `${API_BASE_URL}/api/doubts/student`,
   STUDENT_DOUBTS_BY_ID: (studentId) => `${API_BASE_URL}/api/doubts/student/${studentId}`,
+  DOUBT_STATUS: (doubtId) => `${API_BASE_URL}/api/doubts/${doubtId}/status`,
 
   // Feedback endpoints
   FEEDBACK: `${API_BASE_URL}/api/feedback`,
   STUDENT_FEEDBACK: (studentId) => `${API_BASE_URL}/api/feedback/student/${studentId}`,
 
-  // Study Material endpoints
-  STUDY_MATERIAL: `${API_BASE_URL}/api/study-material`,
+  // Study Material / Resources endpoints
+  RESOURCES: `${API_BASE_URL}/api/study-material`,
+  ALL_RESOURCES: `${API_BASE_URL}/api/study-material/all`,
   PUBLIC_MATERIALS: `${API_BASE_URL}/api/study-material/public/all`,
   STUDENT_MATERIALS: (studentId) => `${API_BASE_URL}/api/study-material/student/${studentId}`,
   DOWNLOAD_MATERIAL: (materialId) => `${API_BASE_URL}/api/study-material/download/${materialId}`,
+  UPLOAD_STUDENT_RESOURCE: `${API_BASE_URL}/api/study-material/upload-student`,
 
   // Meeting endpoints
   MEETINGS: `${API_BASE_URL}/api/meetings`,
+  ALL_MEETINGS: `${API_BASE_URL}/api/meetings/all`,
   MEETING_BY_ID: (meetingId) => `${API_BASE_URL}/api/meetings/${meetingId}`,
   STUDENT_MEETINGS: `${API_BASE_URL}/api/meetings/student`,
   MENTOR_MEETINGS: `${API_BASE_URL}/api/meetings/mentor`,
@@ -54,6 +59,8 @@ export const API_ENDPOINTS = {
 
   // Announcement endpoints
   ANNOUNCEMENTS: `${API_BASE_URL}/api/announcements`,
+  ALL_ANNOUNCEMENTS: `${API_BASE_URL}/api/announcements/all`,
+  TOGGLE_ANNOUNCEMENT: (announcementId) => `${API_BASE_URL}/api/announcements/${announcementId}/toggle`,
 
   // File paths
   FILE_PATH: (filePath) => `${API_BASE_URL}${filePath}`,

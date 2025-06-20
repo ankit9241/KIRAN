@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_ENDPOINTS from '../config/api';
 import '../styles/announcements.css';
 
-const Announcements = () => {
+const Announcements = ({ userRole }) => {
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,9 +13,8 @@ const Announcements = () => {
   useEffect(() => {
     const fetchAnnouncements = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/api/announcements', {
-          headers: { Authorization: `Bearer ${token}` }
+        const response = await axios.get(API_ENDPOINTS.ANNOUNCEMENTS, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setAnnouncements(response.data);
         setLoading(false);

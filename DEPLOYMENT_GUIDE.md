@@ -63,6 +63,14 @@ GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 EMAIL_USER=your_email
 EMAIL_PASS=your_email_password
+
+# Firebase Admin SDK (for production)
+FIREBASE_PROJECT_ID=your_firebase_project_id
+FIREBASE_PRIVATE_KEY_ID=your_firebase_private_key_id
+FIREBASE_PRIVATE_KEY=your_firebase_private_key
+FIREBASE_CLIENT_EMAIL=your_firebase_client_email
+FIREBASE_CLIENT_ID=your_firebase_client_id
+FIREBASE_CLIENT_CERT_URL=your_firebase_client_cert_url
 ```
 
 ### Frontend (Set this in Netlify Site Settings)

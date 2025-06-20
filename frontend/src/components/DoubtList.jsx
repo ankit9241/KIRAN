@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_ENDPOINTS from '../config/api';
 
 const DoubtList = ({ doubts = [], onDoubtAdded }) => {
   const [selectedDoubtType, setSelectedDoubtType] = useState('All');
@@ -48,9 +49,8 @@ const DoubtList = ({ doubts = [], onDoubtAdded }) => {
   const handleDeleteDoubt = async (doubtId) => {
     if (window.confirm('Are you sure you want to delete this doubt? This action cannot be undone.')) {
       try {
-        const token = localStorage.getItem('token');
-        await axios.delete(`http://localhost:5000/api/doubts/${doubtId}`, {
-          headers: { Authorization: `Bearer ${token}` }
+        await axios.delete(API_ENDPOINTS.DOUBT_BY_ID(doubtId), {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         
         // Remove from local state
@@ -74,9 +74,8 @@ const DoubtList = ({ doubts = [], onDoubtAdded }) => {
     }
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.patch(`http://localhost:5000/api/doubts/${editingDoubt._id}`, editForm, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await axios.patch(API_ENDPOINTS.DOUBT_BY_ID(editingDoubt._id), editForm, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
 
       // Update local state
@@ -104,13 +103,12 @@ const DoubtList = ({ doubts = [], onDoubtAdded }) => {
     setSuccess('');
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:5000/api/doubts', {
+      const response = await axios.post(API_ENDPOINTS.DOUBTS, {
         title: doubtTitle,
         description: newDoubt,
         subject: doubtSubject
       }, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
 
       setSuccess('Doubt submitted successfully!');
@@ -273,7 +271,7 @@ const DoubtList = ({ doubts = [], onDoubtAdded }) => {
                                   {doubt.uploadedDocuments.map((doc, index) => (
                                     <a 
                                       key={index}
-                                      href={`http://localhost:5000${doc.filePath}`}
+                                      href={API_ENDPOINTS.FILE_PATH(doc.filePath)}
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       className="document-link"

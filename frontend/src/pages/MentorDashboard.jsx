@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_ENDPOINTS from '../config/api';
 import '../styles/mentor-dashboard.css';
 import '../styles/student-profile.css';
 import StudentDetailsModal from '../components/StudentDetailsModal';
 import MeetingManager from '../components/MeetingManager';
 import Announcements from '../components/Announcements';
 import StudentMeetings from '../components/StudentMeetings';
-
-const API_URL = 'http://localhost:5000/api';
 
 const MentorDashboard = () => {
   const [mentorInfo, setMentorInfo] = useState(null);
@@ -32,7 +31,7 @@ const MentorDashboard = () => {
   const [editProfileError, setEditProfileError] = useState(null);
 
   useEffect(() => {
-    const fetchMentorData = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         const token = localStorage.getItem('token');
@@ -42,11 +41,22 @@ const MentorDashboard = () => {
           return;
         }
 
+        const [meetingsRes, studentsRes] = await Promise.all([
+          axios.get(API_ENDPOINTS.MEETINGS, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          }),
+          axios.get(API_ENDPOINTS.USERS, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          }),
+        ]);
+        setMeetings(meetingsRes.data);
+        setStudents(studentsRes.data.filter(user => user.role === 'student'));
+
         const [mentorResponse, approvalResponse] = await Promise.all([
-          axios.get(`${API_URL}/users/me`, {
+          axios.get(`${API_ENDPOINTS.USERS}/me`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          axios.get(`${API_URL}/users/mentor/approval-status`, {
+          axios.get(`${API_ENDPOINTS.USERS}/mentor/approval-status`, {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);
@@ -64,21 +74,17 @@ const MentorDashboard = () => {
           setShowApprovalMessage(true);
         }
 
-        // Fetch students and doubts only if approved
+        // Fetch doubts only if approved
         if (approvalResponse.data.mentorApprovalStatus === 'approved') {
-          const [studentsResponse, assignedDoubtsResponse, pendingDoubtsResponse] = await Promise.all([
-            axios.get(`${API_URL}/users/students`, {
+          const [assignedDoubtsResponse, pendingDoubtsResponse] = await Promise.all([
+            axios.get(`${API_ENDPOINTS.DOUBTS}/mentor`, {
               headers: { Authorization: `Bearer ${token}` }
             }),
-            axios.get(`${API_URL}/doubts/mentor`, {
-              headers: { Authorization: `Bearer ${token}` }
-            }),
-            axios.get(`${API_URL}/doubts/pending`, {
+            axios.get(`${API_ENDPOINTS.DOUBTS}/pending`, {
               headers: { Authorization: `Bearer ${token}` }
             })
           ]);
 
-          setStudents(studentsResponse.data);
           setDoubts(assignedDoubtsResponse.data);
           setPendingDoubts(pendingDoubtsResponse.data);
         }
@@ -91,7 +97,7 @@ const MentorDashboard = () => {
       }
     };
 
-    fetchMentorData();
+    fetchData();
   }, [navigate]);
 
   const [selectedStudent, setSelectedStudent] = useState('');
@@ -114,7 +120,7 @@ const MentorDashboard = () => {
     }
 
     try {
-      const response = await axios.post(`${API_URL}/feedback`, {
+      const response = await axios.post(`${API_ENDPOINTS.FEEDBACK}`, {
         studentId: selectedStudent,
         text: feedback,
         rating: feedbackRating
@@ -146,7 +152,7 @@ const MentorDashboard = () => {
 
     try {
       // Use the correct endpoint for personal resource upload
-      const response = await axios.post(`${API_URL}/study-material/upload-student`, formData, {
+      const response = await axios.post(`${API_ENDPOINTS.STUDY_MATERIAL}/upload-student`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'multipart/form-data'
@@ -206,7 +212,7 @@ const MentorDashboard = () => {
       });
 
       const response = await axios.patch(
-        `${API_URL}/doubts/${selectedDoubtForResponse._id}/respond`,
+        `${API_ENDPOINTS.DOUBTS}/${selectedDoubtForResponse._id}/respond`,
         formData,
         {
           headers: {
@@ -230,9 +236,9 @@ const MentorDashboard = () => {
   const handlePickUpDoubt = async (doubtId) => {
     try {
       console.log('Attempting to pick up doubt:', doubtId);
-      console.log('API URL:', `${API_URL}/doubts/${doubtId}/assign`);
+      console.log('API URL:', `${API_ENDPOINTS.DOUBTS}/${doubtId}/assign`);
       
-      const response = await axios.patch(`${API_URL}/doubts/${doubtId}/assign`);
+      const response = await axios.patch(`${API_ENDPOINTS.DOUBTS}/${doubtId}/assign`);
       
       console.log('Pick up doubt response:', response.data);
       
@@ -250,7 +256,7 @@ const MentorDashboard = () => {
 
   const handleResolveDoubt = async (doubtId) => {
     try {
-      const response = await axios.patch(`${API_URL}/doubts/${doubtId}/resolve`);
+      const response = await axios.patch(`${API_ENDPOINTS.DOUBTS}/${doubtId}/resolve`);
       
       // Update the doubts list
       setDoubts(prev => prev.map(d => d._id === doubtId ? response.data : d));
@@ -327,7 +333,7 @@ const MentorDashboard = () => {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.patch(
-        `${API_URL}/users/me`,
+        `${API_ENDPOINTS.USERS}/me`,
         dataToSend,
         { headers: { Authorization: `Bearer ${token}` } }
       );

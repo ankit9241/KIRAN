@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_ENDPOINTS from '../config/api';
 import '../styles/mentor-profile.css';
 
 const MentorProfile = () => {
@@ -21,7 +22,7 @@ const MentorProfile = () => {
           return;
         }
 
-        const response = await axios.get(`http://localhost:5000/api/users/${mentorId}`, {
+        const response = await axios.get(API_ENDPOINTS.USER_PROFILE(mentorId), {
           headers: { Authorization: `Bearer ${token}` }
         });
 

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import '../styles/enroll.css';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { auth, googleProvider } from '../firebase';
 import { signInWithPopup } from 'firebase/auth';
+import axios from 'axios';
+import API_ENDPOINTS from '../config/api';
 
 const Enroll = () => {
   const { type } = useParams();
@@ -46,6 +48,9 @@ const Enroll = () => {
   const [submissionStatus, setSubmissionStatus] = useState(null);
   const [googleUser, setGoogleUser] = useState(null);
   const [googleIdToken, setGoogleIdToken] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -96,34 +101,23 @@ const Enroll = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!googleIdToken && formData.password !== formData.confirmPassword) {
-      setSubmissionStatus({ type: 'error', message: 'Passwords do not match' });
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
-    const requestBody = {
-      ...formData,
-      role: type === 'mentor' ? 'mentor' : type === 'admin' ? 'admin' : 'student',
-      subjectsTaught: type === 'mentor' ? [formData.specialization] : undefined,
-      googleIdToken: googleIdToken || undefined
-    };
+    setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/register/${type === 'mentor' ? 'mentor' : type === 'admin' ? 'admin' : 'student'}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
+      const registerUrl = `${API_ENDPOINTS.REGISTER}/${type}`;
+      await axios.post(registerUrl, {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
       });
-      const data = await response.json();
-      if (response.ok) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        window.location.href = type === 'mentor' ? '/mentor' : type === 'admin' ? '/admin' : '/student';
-      } else {
-        setSubmissionStatus({ type: 'error', message: data.message });
-      }
-    } catch (error) {
-      setSubmissionStatus({ type: 'error', message: 'Failed to create account. Please try again.' });
+      navigate('/login');
+    } catch (err) {
+      setError(err.response?.data?.message || 'An error occurred during enrollment');
+    } finally {
+      setLoading(false);
     }
   };
 

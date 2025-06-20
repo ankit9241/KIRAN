@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_ENDPOINTS from '../config/api';
 import '../styles/mentor-approval-manager.css';
 
 const MentorApprovalManager = () => {
@@ -22,10 +23,10 @@ const MentorApprovalManager = () => {
       const token = localStorage.getItem('token');
       
       const [pendingResponse, allResponse] = await Promise.all([
-        axios.get('http://localhost:5000/api/users/mentors/pending', {
+        axios.get(API_ENDPOINTS.PENDING_MENTORS, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get('http://localhost:5000/api/users/mentors/all', {
+        axios.get(API_ENDPOINTS.ALL_MENTORS, {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
@@ -42,10 +43,13 @@ const MentorApprovalManager = () => {
 
   const handleApprove = async (mentorId) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.patch(`http://localhost:5000/api/users/mentors/${mentorId}/approve`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.patch(
+        API_ENDPOINTS.APPROVE_MENTOR(mentorId),
+        {},
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }
+      );
 
       // Refresh the mentors list
       await fetchMentors();
@@ -63,12 +67,15 @@ const MentorApprovalManager = () => {
     }
 
     try {
-      const token = localStorage.getItem('token');
-      await axios.patch(`http://localhost:5000/api/users/mentors/${mentorId}/reject`, {
-        rejectionReason: rejectionReason.trim()
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.patch(
+        API_ENDPOINTS.REJECT_MENTOR(mentorId),
+        {
+          rejectionReason: rejectionReason.trim()
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }
+      );
 
       // Refresh the mentors list
       await fetchMentors();

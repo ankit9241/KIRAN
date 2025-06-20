@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { FaCalendar, FaClock, FaUser, FaVideo, FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+import axios from 'axios';
+import API_ENDPOINTS from '../config/api';
 import '../styles/MeetingManager.css';
 
-const MeetingManager = () => {
+const MeetingManager = ({ userRole }) => {
     const [meetings, setMeetings] = useState([]);
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -23,20 +25,15 @@ const MeetingManager = () => {
     useEffect(() => {
         fetchMeetings();
         fetchStudents();
-    }, []);
+    }, [userRole]);
 
     const fetchMeetings = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/meetings/mentor', {
-                headers: {
-                    'x-auth-token': token
-                }
+            const endpoint = userRole === 'mentor' ? API_ENDPOINTS.MENTOR_MEETINGS : API_ENDPOINTS.STUDENT_MEETINGS;
+            const response = await axios.get(endpoint, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
-            if (response.ok) {
-                const data = await response.json();
-                setMeetings(data);
-            }
+            setMeetings(response.data);
         } catch (error) {
             console.error('Error fetching meetings:', error);
         } finally {
@@ -80,22 +77,20 @@ const MeetingManager = () => {
             };
 
             const url = editingMeeting 
-                ? `http://localhost:5000/api/meetings/${editingMeeting._id}`
-                : 'http://localhost:5000/api/meetings';
+                ? API_ENDPOINTS.MEETING_BY_ID(editingMeeting._id)
+                : API_ENDPOINTS.MEETINGS;
             
-            const method = editingMeeting ? 'PUT' : 'POST';
+            const method = editingMeeting ? 'put' : 'post';
 
-            const response = await fetch(url, {
-                method,
+            const response = await axios[method](url, meetingData, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-auth-token': token
+                    Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify(meetingData)
             });
 
             if (response.ok) {
-                const data = await response.json();
+                const data = response.data;
                 if (editingMeeting) {
                     setMeetings(meetings.map(m => m._id === editingMeeting._id ? data : m));
                     setSuccess('Meeting updated successfully!');
@@ -121,20 +116,11 @@ const MeetingManager = () => {
         }
 
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/meetings/${meetingId}`, {
-                method: 'DELETE',
-                headers: {
-                    'x-auth-token': token
-                }
+            await axios.delete(API_ENDPOINTS.MEETING_BY_ID(meetingId), {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
-
-            if (response.ok) {
-                setMeetings(meetings.filter(m => m._id !== meetingId));
-                setSuccess('Meeting deleted successfully!');
-            } else {
-                setError('Failed to delete meeting');
-            }
+            setMeetings(meetings.filter(m => m._id !== meetingId));
+            setSuccess('Meeting deleted successfully!');
         } catch (error) {
             console.error('Error deleting meeting:', error);
             setError('Failed to delete meeting');

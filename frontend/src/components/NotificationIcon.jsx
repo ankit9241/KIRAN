@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { FaBell } from 'react-icons/fa';
+import API_ENDPOINTS from '../config/api';
 import '../styles/notification-icon.css';
 
 const NotificationIcon = () => {
@@ -23,7 +25,7 @@ const NotificationIcon = () => {
         return;
       }
       
-      const response = await axios.get('http://localhost:5000/api/notifications', {
+      const response = await axios.get(API_ENDPOINTS.NOTIFICATIONS, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -43,7 +45,7 @@ const NotificationIcon = () => {
         return;
       }
       
-      const response = await axios.get('http://localhost:5000/api/notifications/unread-count', {
+      const response = await axios.get(API_ENDPOINTS.UNREAD_NOTIFICATIONS, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -106,7 +108,7 @@ const NotificationIcon = () => {
       const markAllRead = async () => {
         try {
           const token = localStorage.getItem('token');
-          await axios.patch('http://localhost:5000/api/notifications/mark-all-read', {}, {
+          await axios.patch(API_ENDPOINTS.MARK_ALL_READ, {}, {
             headers: { Authorization: `Bearer ${token}` }
           });
           setUnreadCount(0);
@@ -121,7 +123,7 @@ const NotificationIcon = () => {
     e.stopPropagation(); // Prevent dropdown from closing
     try {
       const token = localStorage.getItem('token');
-      await axios.patch(`http://localhost:5000/api/notifications/${notificationId}/read`, {}, {
+      await axios.patch(API_ENDPOINTS.MARK_READ(notificationId), {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -142,7 +144,7 @@ const NotificationIcon = () => {
     e.stopPropagation(); // Prevent dropdown from closing
     try {
       const token = localStorage.getItem('token');
-      await axios.patch('http://localhost:5000/api/notifications/mark-all-read', {}, {
+      await axios.patch(API_ENDPOINTS.MARK_ALL_READ, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUnreadCount(0);

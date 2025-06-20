@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import '../styles/login.css';
 import { auth, googleProvider } from '../firebase';
 import { signInWithPopup } from 'firebase/auth';
+import axios from 'axios';
+import API_ENDPOINTS from '../config/api';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,8 +15,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const API_URL = 'http://localhost:5000/api/auth/login';
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -23,49 +23,28 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
-
-    if (!formData.email || !formData.password) {
-      setError('Please fill in all fields');
-      setLoading(false);
-      return;
-    }
+    setError(null);
 
     try {
-      // Make API call to authenticate
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
+      const response = await axios.post(API_ENDPOINTS.LOGIN, {
+        email: formData.email,
+        password: formData.password,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
-      }
-      
-      // Store token and user data
-      localStorage.setItem('token', data.token);
-      
-      // Ensure user data is properly stored
-      if (data.user) {
-        localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('token', response.data.token);
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
       } else {
         throw new Error('Invalid response: No user data received');
       }
-      
-      // Set a flag in localStorage to remember the initial login redirect
+
       localStorage.setItem('initialLoginRedirect', 'true');
       
-      // Redirect to appropriate dashboard based on role
       setTimeout(() => {
-        switch (data.user.role) {
+        switch (response.data.user.role) {
           case 'student':
             navigate('/student');
             break;
@@ -77,40 +56,36 @@ const Login = () => {
             break;
           default:
             navigate('/');
+            break;
         }
-      }, 1000);
+      }, 100);
 
     } catch (err) {
-      setError(err.message || 'Invalid credentials. Please try again.');
+      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
-    setError('');
     setLoading(true);
+    setError(null);
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       const token = await user.getIdToken();
-      // Call backend to login or register if needed
-      const response = await fetch('http://localhost:5000/api/auth/login/google', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ googleIdToken: token })
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || 'Google login failed');
+
+      const response = await axios.post(API_ENDPOINTS.GOOGLE_LOGIN, { googleIdToken: token });
+
+      localStorage.setItem('token', response.data.token);
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
       }
-      localStorage.setItem('token', data.token);
-      if (data.user) {
-        localStorage.setItem('user', JSON.stringify(data.user));
-      }
+      
       localStorage.setItem('initialLoginRedirect', 'true');
+
       setTimeout(() => {
-        switch (data.user.role) {
+        switch (response.data.user.role) {
           case 'student':
             navigate('/student');
             break;
@@ -122,10 +97,12 @@ const Login = () => {
             break;
           default:
             navigate('/');
+            break;
         }
-      }, 1000);
+      }, 100);
+
     } catch (err) {
-      setError(err.message || 'Google login failed.');
+      setError(err.response?.data?.message || 'Google login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -151,7 +128,7 @@ const Login = () => {
             Sign in with Google
           </button>
 
-          <form onSubmit={handleSubmit} className="login-form">
+          <form onSubmit={handleLogin} className="login-form">
             <div className="form-group">
               <label htmlFor="email">Email</label>
               <input
