@@ -51,6 +51,10 @@
   position: relative;
   overflow: hidden;
   background: linear-gradient(135deg, var(--background) 0%, #E5E7EB 100%);
+  max-width: 540px !important;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100% !important;
 }
 
 .doubts-section::before {
@@ -234,6 +238,9 @@
   border: 1px solid #e5e7eb;
   transition: all 0.3s ease;
   overflow: hidden;
+  margin-left: auto;
+  margin-right: auto;
+  width: 85% !important;
 }
 
 .doubt-card.collapsed {
@@ -3174,5 +3181,64 @@
   .form-group textarea:focus {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+}
+
+.dashboard-row-cards {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+.dashboard-row-cards .section-card {
+  flex: 1 1 0;
+  min-width: 270px;
+  max-width: 48%;
+}
+@media (max-width: 900px) {
+  .dashboard-row-cards {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .dashboard-row-cards .section-card {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .student-dashboard .doubts-section {
+    max-width: 98vw;
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+  }
+}
+
+.profile-info-row {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+.profile-info-row .profile-item {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: none;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(80, 112, 255, 0.08);
+  padding: 1.2rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+@media (max-width: 800px) {
+  .profile-info-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .profile-info-row .profile-item {
+    max-width: 100%;
   }
 }

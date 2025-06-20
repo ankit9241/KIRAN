@@ -137,18 +137,7 @@ const StudentMeetings = ({ role }) => {
 
     return (
         <div className="student-meetings">
-            <div className="meetings-header">
-                <div className="header-content">
-                    <h2><FaCalendar /> My Meetings</h2>
-                    <p>Stay organized with your mentoring sessions</p>
-                </div>
-                {upcomingMeetings.length > 0 && (
-                    <div className="upcoming-count">
-                        <FaBell />
-                        <span>{upcomingMeetings.length} upcoming</span>
-                    </div>
-                )}
-            </div>
+            
 
             {meetings.length === 0 ? (
                 <div className="empty-state">

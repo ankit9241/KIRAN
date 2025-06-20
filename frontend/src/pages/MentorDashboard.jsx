@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/mentor-dashboard.css';
+import '../styles/student-profile.css';
 import StudentDetailsModal from '../components/StudentDetailsModal';
 import MeetingManager from '../components/MeetingManager';
 import Announcements from '../components/Announcements';
@@ -25,6 +26,10 @@ const MentorDashboard = () => {
   const [approvalStatus, setApprovalStatus] = useState(null);
   const [showApprovalMessage, setShowApprovalMessage] = useState(true);
   const navigate = useNavigate();
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [editProfileData, setEditProfileData] = useState(null);
+  const [editProfileLoading, setEditProfileLoading] = useState(false);
+  const [editProfileError, setEditProfileError] = useState(null);
 
   useEffect(() => {
     const fetchMentorData = async () => {
@@ -140,14 +145,15 @@ const MentorDashboard = () => {
     formData.append('description', resourceDescription);
 
     try {
-      const response = await axios.post(`${API_URL}/resources/upload`, formData, {
+      // Use the correct endpoint for personal resource upload
+      const response = await axios.post(`${API_URL}/study-material/upload-student`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'multipart/form-data'
         }
       });
 
-      alert('Resource uploaded successfully!');
+      alert('Personal resource uploaded successfully!');
       setResourceFile(null);
       setResourceTitle('');
       setResourceDescription('');
@@ -261,16 +267,121 @@ const MentorDashboard = () => {
     localStorage.setItem('mentorApprovalMessageDismissed', approvalStatus.mentorApprovalStatus);
   };
 
+  const openEditProfile = () => {
+    setEditProfileData({ ...(mentorInfo || {}) });
+    setIsEditProfileOpen(true);
+  };
+
+  const closeEditProfile = () => {
+    setIsEditProfileOpen(false);
+    setEditProfileError(null);
+  };
+
+  const handleEditProfileChange = (e) => {
+    const { name, value } = e.target;
+    setEditProfileData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditProfileArrayChange = (e) => {
+    const { name, value } = e.target;
+    setEditProfileData((prev) => ({ ...prev, [name]: value.split(',').map(s => s.trim()) }));
+  };
+
+  // Helper to ensure required mentor fields are always present
+  const getCompleteEditProfileData = (data) => {
+    return {
+      name: data.name || '',
+      email: data.email || '',
+      phone: data.phone || '',
+      address: data.address || '',
+      telegramId: data.telegramId || '',
+      whatsapp: data.whatsapp || '',
+      linkedin: data.linkedin || '',
+      website: data.website || '',
+      specialization: data.specialization || '',
+      experience: data.experience || '',
+      subjectsTaught: Array.isArray(data.subjectsTaught)
+        ? data.subjectsTaught.filter(s => s)
+        : (data.subjectsTaught ? data.subjectsTaught.split(',').map(s => s.trim()).filter(s => s) : []),
+      teachingStyle: data.teachingStyle || '',
+      qualifications: data.qualifications || '',
+      bio: data.bio || '',
+      achievements: Array.isArray(data.achievements)
+        ? data.achievements.filter(a => a)
+        : (data.achievements ? data.achievements.split(',').map(a => a.trim()).filter(a => a) : []),
+      profilePicture: data.profilePicture || '',
+    };
+  };
+
+  const handleEditProfileSave = async (e) => {
+    e.preventDefault();
+    setEditProfileLoading(true);
+    setEditProfileError(null);
+    // Validate required mentor fields
+    const dataToSend = getCompleteEditProfileData(editProfileData);
+    if (!dataToSend.specialization || !dataToSend.experience || !dataToSend.teachingStyle || !dataToSend.qualifications || dataToSend.subjectsTaught.length === 0) {
+      setEditProfileError('All mentor fields (Specialization, Experience, Subjects Taught, Teaching Style, Qualifications) are required.');
+      setEditProfileLoading(false);
+      return;
+    }
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.patch(
+        `${API_URL}/users/me`,
+        dataToSend,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setMentorInfo(res.data);
+      setIsEditProfileOpen(false);
+    } catch (err) {
+      setEditProfileError('Failed to update profile. Please try again.');
+    } finally {
+      setEditProfileLoading(false);
+    }
+  };
+
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
   if (!mentorInfo) return <div className="error">Failed to load profile</div>;
 
   return (
     <div className="mentor-dashboard">
+      {/* Edit Profile Modal */}
+      {isEditProfileOpen && (
+        <div className="modal-overlay" onClick={closeEditProfile}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{maxWidth: 600}}>
+            <div className="modal-header">
+              <h2>Edit Profile</h2>
+              <button className="close-btn" onClick={closeEditProfile}>×</button>
+            </div>
+            <form className="edit-profile-form" onSubmit={handleEditProfileSave}>
+              <div className="form-group"><label>Name</label><input name="name" value={editProfileData?.name || ''} onChange={handleEditProfileChange} required /></div>
+              <div className="form-group"><label>Email</label><input name="email" value={editProfileData?.email || ''} onChange={handleEditProfileChange} required disabled /></div>
+              <div className="form-group"><label>Phone</label><input name="phone" value={editProfileData?.phone || ''} onChange={handleEditProfileChange} /></div>
+              <div className="form-group"><label>Address</label><input name="address" value={editProfileData?.address || ''} onChange={handleEditProfileChange} /></div>
+              <div className="form-group"><label>Telegram ID</label><input name="telegramId" value={editProfileData?.telegramId || ''} onChange={handleEditProfileChange} /></div>
+              <div className="form-group"><label>WhatsApp</label><input name="whatsapp" value={editProfileData?.whatsapp || ''} onChange={handleEditProfileChange} /></div>
+              <div className="form-group"><label>LinkedIn</label><input name="linkedin" value={editProfileData?.linkedin || ''} onChange={handleEditProfileChange} /></div>
+              <div className="form-group"><label>Website</label><input name="website" value={editProfileData?.website || ''} onChange={handleEditProfileChange} /></div>
+              <div className="form-group"><label>Specialization</label><input name="specialization" value={editProfileData?.specialization || ''} onChange={handleEditProfileChange} required /></div>
+              <div className="form-group"><label>Experience</label><input name="experience" value={editProfileData?.experience || ''} onChange={handleEditProfileChange} required /></div>
+              <div className="form-group"><label>Subjects Taught (comma separated)</label><input name="subjectsTaught" value={editProfileData?.subjectsTaught?.join(', ') || ''} onChange={handleEditProfileArrayChange} required /></div>
+              <div className="form-group"><label>Teaching Style</label><input name="teachingStyle" value={editProfileData?.teachingStyle || ''} onChange={handleEditProfileChange} required /></div>
+              <div className="form-group"><label>Qualifications</label><input name="qualifications" value={editProfileData?.qualifications || ''} onChange={handleEditProfileChange} required /></div>
+              <div className="form-group"><label>Bio</label><textarea name="bio" value={editProfileData?.bio || ''} onChange={handleEditProfileChange} rows={2} /></div>
+              <div className="form-group"><label>Achievements (comma separated)</label><input name="achievements" value={editProfileData?.achievements?.join(', ') || ''} onChange={handleEditProfileArrayChange} /></div>
+              {/* Profile picture upload can be added here if needed */}
+              {editProfileError && <div className="error-message">{editProfileError}</div>}
+              <button className="btn-primary" type="submit" disabled={editProfileLoading}>{editProfileLoading ? 'Saving...' : 'Save Changes'}</button>
+            </form>
+          </div>
+        </div>
+      )}
       <Announcements />
       <div className="dashboard-header">
         <h1>Mentor Dashboard</h1>
         <p>Welcome, {mentorInfo.name}</p>
+        <button className="btn-primary" style={{float:'right',marginTop:-40}} onClick={openEditProfile}>Edit Profile</button>
       </div>
 
       {/* Approval Status Display - Only show if not dismissed */}
@@ -481,7 +592,6 @@ const MentorDashboard = () => {
                   <p className="no-doubts">No pending doubts available</p>
                 ) : (
                   pendingDoubts.map(doubt => {
-                    console.log('Rendering doubt:', doubt);
                     return (
                       <div key={doubt._id} className="doubt-item pending">
                         <div className="doubt-content">
@@ -501,7 +611,6 @@ const MentorDashboard = () => {
                               position: 'relative'
                             }}
                             onClick={() => {
-                              console.log('Button clicked! Doubt ID:', doubt._id);
                               alert('Pickup button clicked!');
                               handlePickUpDoubt(doubt._id);
                             }}

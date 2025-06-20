@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import '../styles/enroll.css';
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+import { auth, googleProvider } from '../firebase';
+import { signInWithPopup } from 'firebase/auth';
 
 const Enroll = () => {
   const { type } = useParams();
@@ -21,7 +24,8 @@ const Enroll = () => {
     achievements: '',
     subjectsTaught: [],
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    profilePicture: ''
   } : type === 'admin' ? {
     name: '',
     email: '',
@@ -36,9 +40,12 @@ const Enroll = () => {
     preferredSubjects: [],
     learningGoals: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    profilePicture: ''
   });
   const [submissionStatus, setSubmissionStatus] = useState(null);
+  const [googleUser, setGoogleUser] = useState(null);
+  const [googleIdToken, setGoogleIdToken] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,19 +72,40 @@ const Enroll = () => {
     }));
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      const token = await user.getIdToken();
+      setGoogleUser({
+        name: user.displayName,
+        email: user.email,
+        picture: user.photoURL
+      });
+      setGoogleIdToken(token);
+      setFormData(prev => ({
+        ...prev,
+        name: user.displayName || '',
+        email: user.email || '',
+        profilePicture: user.photoURL || ''
+      }));
+    } catch (error) {
+      setSubmissionStatus({ type: 'error', message: 'Google login failed. Please try again or use email sign up.' });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
+    if (!googleIdToken && formData.password !== formData.confirmPassword) {
       setSubmissionStatus({ type: 'error', message: 'Passwords do not match' });
       return;
     }
-
     const requestBody = {
       ...formData,
       role: type === 'mentor' ? 'mentor' : type === 'admin' ? 'admin' : 'student',
-      subjectsTaught: type === 'mentor' ? [formData.specialization] : undefined
+      subjectsTaught: type === 'mentor' ? [formData.specialization] : undefined,
+      googleIdToken: googleIdToken || undefined
     };
-
     try {
       const response = await fetch(`http://localhost:5000/api/auth/register/${type === 'mentor' ? 'mentor' : type === 'admin' ? 'admin' : 'student'}`, {
         method: 'POST',
@@ -86,15 +114,10 @@ const Enroll = () => {
         },
         body: JSON.stringify(requestBody)
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        // Save token to localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        
-        // Redirect to appropriate dashboard
         window.location.href = type === 'mentor' ? '/mentor' : type === 'admin' ? '/admin' : '/student';
       } else {
         setSubmissionStatus({ type: 'error', message: data.message });
@@ -112,8 +135,18 @@ const Enroll = () => {
       </div>
       
       <div className="enroll-container">
+        <button className="enroll-google-btn" style={{marginBottom:'1.2rem', width: '100%'}} onClick={handleGoogleSignIn}>
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{width:24,marginRight:8}} />
+          Sign up with Google
+        </button>
         <form onSubmit={handleSubmit} className="enroll-form">
             <h3>Personal Information</h3>
+            {googleUser && (
+              <div className="google-profile-row">
+                <img src={googleUser.picture} alt="Profile" className="google-profile-pic" />
+                <span className="google-profile-name">{googleUser.name}</span>
+              </div>
+            )}
             <div className="form-group">
               <label htmlFor="name" className="form-label">Full Name</label>
               <input
@@ -125,6 +158,7 @@ const Enroll = () => {
                 className="form-input"
                 required
                 placeholder="Enter your full name"
+                disabled={!!googleUser}
               />
             </div>
 
@@ -139,36 +173,41 @@ const Enroll = () => {
                 className="form-input"
                 required
                 placeholder="yourname@example.com"
+                disabled={!!googleUser}
               />
           </div>
 
-            <div className="form-group">
-              <label htmlFor="password" className="form-label">Create Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="form-input"
-                required
-                placeholder="Enter a strong password"
-              />
-            </div>
+            {!googleUser && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="password" className="form-label">Create Password</label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="form-input"
+                    required
+                    placeholder="Enter a strong password"
+                  />
+                </div>
 
-            <div className="form-group">
-              <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="form-input"
-                required
-                placeholder="Confirm your password"
-              />
-          </div>
+                <div className="form-group">
+                  <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className="form-input"
+                    required
+                    placeholder="Confirm your password"
+                  />
+                </div>
+              </>
+            )}
 
             {type === 'mentor' ? (
               <>

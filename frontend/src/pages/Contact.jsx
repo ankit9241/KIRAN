@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/contact.css';
+import axios from 'axios';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +10,7 @@ const Contact = () => {
     message: '',
   });
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
 
   const handleChange = (e) => {
     setFormData({
@@ -18,11 +19,16 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real application, this would submit the form data
-    console.log('Form submitted:', formData);
-    setIsSubmitted(true);
+    setSubmitStatus(null);
+    try {
+      const res = await axios.post('http://localhost:5000/api/users/contact', formData);
+      setSubmitStatus({ success: true, message: res.data.message || 'Message sent successfully!' });
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (err) {
+      setSubmitStatus({ success: false, message: err.response?.data?.message || 'Failed to send message.' });
+    }
   };
 
   return (
@@ -41,15 +47,13 @@ const Contact = () => {
               <strong>Email:</strong> adityasinghofficial296@gmail.com
             </p>
             <p>
-              <strong>Phone:</strong> +1 (555) 123-4567
+              <strong>Telegram:</strong> <a href="https://t.me/Aditya22906" target="_blank" rel="noopener noreferrer">@Aditya22906</a>
             </p>
           </div>
 
           <div className="info-card">
             <h3>Address</h3>
-            <p>123 Education Street</p>
-            <p>School District, City</p>
-            <p>Country, Postal Code</p>
+            <p>Jamshedpur, Jharkhand, India</p>
           </div>
 
           <div className="info-card">
@@ -137,9 +141,9 @@ const Contact = () => {
                 Send Message
               </button>
 
-              {isSubmitted && (
-                <div className="mt-4 p-4 bg-green-50 text-green-700 rounded-md">
-                  Thank you for your message! We will get back to you soon.
+              {submitStatus && (
+                <div className={`mt-4 p-4 rounded-md ${submitStatus.success ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                  {submitStatus.message}
                 </div>
               )}
             </form>

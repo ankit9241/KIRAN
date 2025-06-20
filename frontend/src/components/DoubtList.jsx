@@ -199,18 +199,23 @@ const DoubtList = ({ doubts = [], onDoubtAdded }) => {
                       <div className="doubt-menu">
                         <button 
                           className="menu-btn"
-                          onClick={(e) => toggleMenu(doubt._id, e)}
-                          onBlur={() => setTimeout(closeMenu, 150)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleMenu(doubt._id, e);
+                          }}
                         >
                           <i className="fas fa-ellipsis-v"></i>
                         </button>
                         
                         {activeMenu === doubt._id && (
-                          <div className="menu-dropdown">
+                          <div 
+                            className="menu-dropdown"
+                            onClick={e => e.stopPropagation()}
+                          >
                             {doubt.status === 'pending' && (
                               <button 
                                 className="menu-item edit"
-                                onClick={() => handleEditDoubt(doubt)}
+                                onMouseDown={e => { e.stopPropagation(); handleEditDoubt(doubt); }}
                               >
                                 <i className="fas fa-edit"></i>
                                 Edit Doubt
@@ -219,7 +224,7 @@ const DoubtList = ({ doubts = [], onDoubtAdded }) => {
                             {doubt.status === 'pending' && (
                               <button 
                                 className="menu-item delete"
-                                onClick={() => handleDeleteDoubt(doubt._id)}
+                                onMouseDown={e => { e.stopPropagation(); handleDeleteDoubt(doubt._id); }}
                               >
                                 <i className="fas fa-trash"></i>
                                 Delete Doubt
@@ -366,7 +371,7 @@ const DoubtList = ({ doubts = [], onDoubtAdded }) => {
       {/* Edit Doubt Modal */}
       {editingDoubt && (
         <div className="modal-overlay">
-          <div className="modal-content edit-modal">
+          <div className="modal-content edit-modal" style={{ marginTop: '120px', maxHeight: '60vh', overflowY: 'auto' }}>
             <div className="modal-header">
               <h3>Edit Doubt</h3>
               <button className="close-btn" onClick={() => setEditingDoubt(null)}>×</button>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/student-dashboard.css';
 import axios from 'axios';
-import UserProfile from '../components/UserProfile';
 import MentorList from '../components/MentorList';
 import DoubtList from '../components/DoubtList';
 import MeetingCard from '../components/MeetingCard';
@@ -24,6 +23,7 @@ const StudentDashboard = () => {
   const [mentors, setMentors] = useState([]);
   const [feedback, setFeedback] = useState([]);
   const [studyMaterials, setStudyMaterials] = useState([]);
+  const [personalResources, setPersonalResources] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -72,6 +72,11 @@ const StudentDashboard = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         setStudyMaterials(materialsResponse.data);
+        // Fetch personal resources for the student
+        const personalRes = await axios.get(`http://localhost:5000/api/study-material/student/${response.data._id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setPersonalResources(personalRes.data);
         
         setLoading(false);
       } catch (error) {
@@ -196,7 +201,7 @@ const StudentDashboard = () => {
         </div>
         
         {/* Profile Information Display */}
-        <div className="profile-info">
+        <div className="profile-info-row">
           <div className="profile-item">
             <div className="icon">📚</div>
             <div className="content">
@@ -428,42 +433,81 @@ const StudentDashboard = () => {
         </div>
       </div>
 
-      <div className="section-card">
-        <div className="section-header">
-          <h2>Study Materials</h2>
-          <Link to="/study-material" className="view-all-btn">
-            View All Materials
-          </Link>
-        </div>
-        <div className="section-content">
-          {studyMaterials && studyMaterials.materials && studyMaterials.materials.length > 0 ? (
-            <div className="materials-preview">
-              {studyMaterials.materials.slice(0, 3).map((material) => (
-                <div key={material._id} className="material-preview-card">
-                  <div className="material-info">
-                    <h4>{material.title}</h4>
-                    <p>{material.description}</p>
-                    <small>Subject: {material.subject}</small>
+      <div className="dashboard-row-cards">
+        <div className="section-card">
+          <div className="section-header">
+            <h2>Study Materials</h2>
+            <Link to="/study-material" className="view-all-btn">
+              View All Materials
+            </Link>
+          </div>
+          <div className="section-content">
+            {studyMaterials && studyMaterials.materials && studyMaterials.materials.length > 0 ? (
+              <div className="materials-preview">
+                {studyMaterials.materials.slice(0, 3).map((material) => (
+                  <div key={material._id} className="material-preview-card">
+                    <div className="material-info">
+                      <h4>{material.title}</h4>
+                      <p>{material.description}</p>
+                      <small>Subject: {material.subject}</small>
+                    </div>
+                    {material.filePath && (
+                      <button
+                        className="download-btn-small"
+                        onClick={() => handleDownload(material._id, material.originalName)}
+                      >
+                        Download
+                      </button>
+                    )}
                   </div>
-                  {material.filePath && (
-                    <button
-                      className="download-btn-small"
-                      onClick={() => handleDownload(material._id, material.originalName)}
-                    >
-                      Download
-                    </button>
-                  )}
-                </div>
-              ))}
-              {studyMaterials.materials.length > 3 && (
-                <div className="more-materials">
-                  <p>And {studyMaterials.materials.length - 3} more materials...</p>
-                </div>
-              )}
-            </div>
-          ) : (
-            <p>No study materials available yet.</p>
-          )}
+                ))}
+                {studyMaterials.materials.length > 3 && (
+                  <div className="more-materials">
+                    <p>And {studyMaterials.materials.length - 3} more materials...</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p>No study materials available yet.</p>
+            )}
+          </div>
+        </div>
+
+        {/* Personal Resources Section */}
+        <div className="section-card">
+          <div className="section-header">
+            <h2>Personal Resources</h2>
+          </div>
+          <div className="section-content">
+            {personalResources && personalResources.length > 0 ? (
+              <div className="materials-preview">
+                {personalResources.slice(0, 3).map((material) => (
+                  <div key={material._id} className="material-preview-card">
+                    <div className="material-info">
+                      <h4>{material.title}</h4>
+                      <p>{material.description}</p>
+                      <small>From: {material.uploadedBy?.name || 'Mentor/Admin'}</small>
+                    </div>
+                    {material.filePath && (
+                      <button
+                        className="download-btn-small"
+                        onClick={() => handleDownload(material._id, material.originalName)}
+                      >
+                        Download
+                      </button>
+                    )}
+                  </div>
+                ))}
+                {personalResources.length > 3 && (
+                  <div className="more-materials">
+                    <p>And {personalResources.length - 3} more personal resources...</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p>No personal resources yet.</p>
+            )}
+          </div>
         </div>
       </div>
 

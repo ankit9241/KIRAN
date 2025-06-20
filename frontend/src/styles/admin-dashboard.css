@@ -946,12 +946,31 @@
 }
 
 .contact-badge.none {
-  background: var(--text-muted);
-  width: auto;
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
+  background: linear-gradient(90deg, #f3f4f6 0%, #e0e7ef 100%);
+  color: #64748b;
+  border: 1.5px dashed #bfc9d9;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.35rem 1.1rem 0.35rem 1.9rem;
+  border-radius: 1.5rem;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(60,60,60,0.04);
+  display: inline-flex;
+  align-items: center;
+  min-width: 160px;
+  justify-content: flex-start;
+}
+
+.contact-badge.none::before {
+  content: '\f05a'; /* FontAwesome info-circle */
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  color: #a0aec0;
+  font-size: 1.1rem;
+  position: absolute;
+  left: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .contact-badge::before {

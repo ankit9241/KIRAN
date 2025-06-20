@@ -17,10 +17,11 @@
 
 .enroll-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--background) 0%, #F3F4F6 100%);
-  padding: 2rem;
-  position: relative;
-  overflow: hidden;
+  background: linear-gradient(120deg, #f7faff 0%, #e3e9f7 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 2rem;
 }
 
 .enroll-page::before {
@@ -35,57 +36,31 @@
 }
 
 .enroll-header {
-  margin-bottom: 3rem;
-  margin-top: 80px;
+  margin-top: 2.5rem;
   text-align: center;
-  padding: 2.5rem;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(15px);
-  border-radius: 1.5rem;
-  box-shadow: var(--shadow-lg);
-  position: relative;
-  overflow: hidden;
-}
-
-.enroll-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, transparent 0%, rgba(79, 70, 229, 0.1) 100%);
-  pointer-events: none;
 }
 
 .enroll-header h1 {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 1rem;
-  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #2d72d9;
+  margin-bottom: 0.3rem;
 }
 
 .enroll-header p {
-  color: var(--text-secondary);
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  opacity: 0.9;
+  color: #444;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
 }
 
 .enroll-container {
-  max-width: 600px;
-  margin: 0 auto;
-  position: relative;
-  padding: 0;
-  background: none;
-  box-shadow: none;
-  backdrop-filter: none;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+  margin-top: 1.5rem;
+  padding: 2.2rem 2.5rem 2rem 2.5rem;
+  max-width: 480px;
+  width: 98vw;
 }
 
 .enroll-container::before {
@@ -127,77 +102,103 @@
 }
 
 .enroll-form {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 1.5rem;
-  padding: 2rem;
-  box-shadow: var(--shadow-lg);
-  backdrop-filter: blur(15px);
-  position: relative;
-  overflow: hidden;
-  transition: var(--transition);
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-.enroll-form::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, transparent 0%, rgba(79, 70, 229, 0.1) 100%);
-  pointer-events: none;
-}
-
-.enroll-form:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
-  max-width: 400px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 
 .form-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: var(--text-primary);
   font-weight: 500;
-  text-align: left;
+  color: #2d72d9;
+  margin-bottom: 0.1rem;
 }
 
-.form-input,
-.form-textarea,
-.form-select {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  font-size: 0.95rem;
-  color: var(--text-primary);
-  background: white;
-  transition: var(--transition);
-  max-width: 400px;
-  text-align: left;
-  margin: 0 auto;
-}
-
-.form-input:focus,
-.form-textarea:focus,
-.form-select:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+.form-input, .form-select, .form-textarea {
+  border: 1.5px solid #e0e0e0;
+  border-radius: 7px;
+  padding: 0.6rem 0.9rem;
+  font-size: 1rem;
+  background: #f8fafd;
+  color: #222;
   outline: none;
+  transition: border 0.2s;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border: 1.5px solid #2d72d9;
+}
+
+.form-select {
+  min-height: 2.2rem;
 }
 
 .form-textarea {
-  min-height: 100px;
+  min-height: 3.2rem;
   resize: vertical;
+}
+
+.submit-button {
+  background: #2d72d9;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.13rem;
+  font-weight: 600;
+  padding: 0.8rem 1.2rem;
+  margin-top: 0.7rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.submit-button:hover {
+  background: #1a4e96;
+}
+
+.submission-status {
+  margin: 0.5rem 0 0.2rem 0;
+  padding: 0.7rem 1rem;
+  border-radius: 7px;
+  font-size: 1.01rem;
+  font-weight: 500;
+}
+
+.submission-status.error {
+  background: #ffeaea;
+  color: #c00;
+  border: 1.5px solid #ffb3b3;
+}
+
+.submission-status.success {
+  background: #eaffea;
+  color: #1a7a1a;
+  border: 1.5px solid #b3ffb3;
+}
+
+.google-profile-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.7rem;
+}
+
+.google-profile-pic {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #2d72d9;
+}
+
+.google-profile-name {
+  font-size: 1.13rem;
+  font-weight: 600;
+  color: #2d72d9;
 }
 
 /* Section Headers */
@@ -333,90 +334,66 @@
   opacity: 0.4;
 }
 
-.submit-btn {
-  display: block;
-  width: 100%;
-  max-width: 400px;
-  margin: 2rem auto 0;
-  padding: 0.75rem 1.5rem;
-  background: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
+/* Modern, premium, responsive styles for Enroll page */
+.enroll-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.enroll-modal {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 2.5rem 2rem 2rem 2rem;
+  max-width: 350px;
+  width: 95vw;
   text-align: center;
+  animation: fadeIn 0.3s;
 }
-
-.submit-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
-}
-
-.submit-btn:active {
-  transform: translateY(1px);
-  box-shadow: 0 5px 10px rgba(79, 70, 229, 0.1);
-}
-
-.success-message {
-  background: #DCFFE4;
-  color: #059669;
-  padding: 1.25rem;
-  border-radius: 1rem;
-  margin-top: 1rem;
-  border: 1px solid #BBF7D0;
-  box-shadow: var(--shadow-md);
-  position: relative;
-  overflow: hidden;
-  transition: var(--transition);
-}
-
-.success-message::before {
-  content: '✓';
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  width: 20px;
-  height: 20px;
-  background: #059669;
-  border-radius: 50%;
-  color: white;
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.98);} to { opacity: 1; transform: scale(1);} }
+.enroll-google-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.875rem;
-  font-weight: 700;
+  background: #fff;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1.08rem;
+  font-weight: 500;
+  color: #222;
+  padding: 0.7rem 1.2rem;
+  margin: 0.5rem 0 1rem 0;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(60,60,60,0.04);
 }
-
-.error-message {
-  background: #FEE2E2;
-  color: #DC2626;
-  padding: 1.25rem;
-  border-radius: 1rem;
-  margin-top: 1rem;
-  border: 1px solid #FECACA;
-  box-shadow: var(--shadow-md);
+.enroll-google-btn:hover {
+  box-shadow: 0 4px 16px rgba(60,60,60,0.10);
+}
+.enroll-divider {
+  margin: 1.2rem 0 0.7rem 0;
+  color: #aaa;
+  font-size: 0.95rem;
   position: relative;
-  overflow: hidden;
-  transition: var(--transition);
 }
-
-.error-message::before {
-  content: '⚠️';
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  width: 20px;
-  height: 20px;
-  background: #DC2626;
-  border-radius: 50%;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.875rem;
-  font-weight: 700;
+.enroll-email-btn {
+  background: #2d72d9;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.08rem;
+  font-weight: 500;
+  padding: 0.7rem 1.2rem;
+  cursor: pointer;
+  margin-bottom: 0.2rem;
+  transition: background 0.2s;
+}
+.enroll-email-btn:hover {
+  background: #1a4e96;
 }
 
 /* Responsive Design */
@@ -689,5 +666,22 @@
   
   .role-option:hover {
     border-color: var(--primary);
+  }
+}
+
+@media (max-width: 600px) {
+  .enroll-modal {
+    max-width: 98vw;
+    padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+  }
+  .enroll-header {
+    margin-top: 1.2rem;
+  }
+  .enroll-container {
+    padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+    max-width: 99vw;
+  }
+  .enroll-header h1 {
+    font-size: 1.4rem;
   }
 }

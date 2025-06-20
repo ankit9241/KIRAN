@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/login.css';
+import { auth, googleProvider } from '../firebase';
+import { signInWithPopup } from 'firebase/auth';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -85,6 +87,50 @@ const Login = () => {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      const token = await user.getIdToken();
+      // Call backend to login or register if needed
+      const response = await fetch('http://localhost:5000/api/auth/login/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ googleIdToken: token })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Google login failed');
+      }
+      localStorage.setItem('token', data.token);
+      if (data.user) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+      }
+      localStorage.setItem('initialLoginRedirect', 'true');
+      setTimeout(() => {
+        switch (data.user.role) {
+          case 'student':
+            navigate('/student');
+            break;
+          case 'mentor':
+            navigate('/mentor');
+            break;
+          case 'admin':
+            navigate('/admin');
+            break;
+          default:
+            navigate('/');
+        }
+      }, 1000);
+    } catch (err) {
+      setError(err.message || 'Google login failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="login-page">
       <div className="login-container">
@@ -99,6 +145,11 @@ const Login = () => {
               {error}
             </div>
           )}
+
+          <button className="enroll-google-btn" style={{marginBottom:'1.2rem', width: '100%'}} onClick={handleGoogleLogin} disabled={loading}>
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{width:24,marginRight:8}} />
+            Sign in with Google
+          </button>
 
           <form onSubmit={handleSubmit} className="login-form">
             <div className="form-group">

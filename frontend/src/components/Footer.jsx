@@ -15,6 +15,8 @@ const Footer = () => {
           <h4>Quick Links</h4>
           <ul>
             <li><a href="/about">About Us</a></li>
+            <li><a href="/faq">FAQ</a></li>
+            <li><a href="/support">Support Center</a></li>
             <li><a href="/contact">Contact</a></li>
             <li><a href="/privacy">Privacy Policy</a></li>
             <li><a href="/terms">Terms of Service</a></li>
@@ -24,8 +26,8 @@ const Footer = () => {
         <div className="footer-section">
           <h4>Contact Us</h4>
           <p>Email: adityasinghofficial296@gmail.com</p>
-          <p>Phone: +91 1234567890</p>
-          <p>Address: 123 Education Street, Knowledge City</p>
+          <p>Telegram: <a href="https://t.me/Aditya22906" target="_blank" rel="noopener noreferrer">@Aditya22906</a></p>
+          <p>Address: Jamshedpur, Jharkhand, India</p>
         </div>
 
         <div className="footer-section">

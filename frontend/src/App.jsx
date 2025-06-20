@@ -20,6 +20,11 @@ import Enroll from './pages/Enroll';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import Footer from './components/Footer';
+import FAQ from './pages/FAQ';
+import AboutUs from './pages/About';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import Support from './pages/Support';
 
 
 function App() {
@@ -39,6 +44,11 @@ function App() {
             <Route path="/user-profile/:userId" element={<UserProfile />} />
             <Route path="/study-material" element={<StudyMaterial />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/support" element={<Support />} />
             <Route path="/enroll/:type" element={<Enroll />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

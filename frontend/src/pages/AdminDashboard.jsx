@@ -28,6 +28,11 @@ const AdminDashboard = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const navigate = useNavigate();
 
+  const [selectedStudent, setSelectedStudent] = useState('');
+  const [resourceFile, setResourceFile] = useState(null);
+  const [resourceTitle, setResourceTitle] = useState('');
+  const [resourceDescription, setResourceDescription] = useState('');
+
   // Check authentication on component mount
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -146,27 +151,32 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleResourceUpload = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      try {
-        const token = localStorage.getItem('token');
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('subject', data.selectedResource);
-
-        await axios.post(`${API_BASE_URL}/study-material/upload`, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-
-        await fetchAllData(); // Refresh data
-        alert('Resource uploaded successfully!');
-      } catch (error) {
-        setError('Failed to upload resource');
-      }
+  const handleResourceUpload = async () => {
+    if (!selectedStudent || !resourceFile || !resourceTitle) {
+      alert('Please select a student, provide a title, and choose a file');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('file', resourceFile);
+    formData.append('studentId', selectedStudent);
+    formData.append('title', resourceTitle);
+    formData.append('description', resourceDescription);
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API_BASE_URL}/study-material/upload-student`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      alert('Resource uploaded successfully!');
+      setResourceFile(null);
+      setResourceTitle('');
+      setResourceDescription('');
+      setSelectedStudent('');
+      fetchAllData();
+    } catch (error) {
+      setError('Failed to upload resource');
     }
   };
 
@@ -515,20 +525,63 @@ const AdminDashboard = () => {
           </div>
           <div className="admin-card">
             <div className="resource-form">
-              <select 
-                value={data.selectedResource} 
-                onChange={(e) => setData({ ...data, selectedResource: e.target.value })}
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="resource-student">Select Student:</label>
+                  <select 
+                    id="resource-student"
+                    value={selectedStudent} 
+                    onChange={(e) => setSelectedStudent(e.target.value)}
+                  >
+                    <option value="">Choose a student...</option>
+                    {data.students.map(student => (
+                      <option key={student._id} value={student._id}>
+                        {student.name} - {student.class}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="resource-title">Resource Title:</label>
+                  <input
+                    id="resource-title"
+                    type="text"
+                    placeholder="Enter resource title..."
+                    value={resourceTitle || ''}
+                    onChange={(e) => setResourceTitle(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label htmlFor="resource-description">Description:</label>
+                <textarea
+                  id="resource-description"
+                  placeholder="Describe the resource..."
+                  value={resourceDescription || ''}
+                  onChange={(e) => setResourceDescription(e.target.value)}
+                  rows="3"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="resource-file">Upload File:</label>
+                <input
+                  id="resource-file"
+                  type="file"
+                  onChange={(e) => setResourceFile(e.target.files[0])}
+                  accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.mp4,.mp3"
+                />
+                <small>Supported formats: PDF, DOC, DOCX, TXT, JPG, PNG, MP4, MP3</small>
+              </div>
+              {resourceFile && (
+                <div className="selected-file">
+                  <p><strong>Selected:</strong> {resourceFile.name}</p>
+                </div>
+              )}
+              <button 
+                className="upload-btn"
+                onClick={handleResourceUpload}
+                disabled={!selectedStudent || !resourceFile || !resourceTitle}
               >
-                <option value="">Select Subject</option>
-                <option value="Physics">Physics</option>
-                <option value="Chemistry">Chemistry</option>
-                <option value="Mathematics">Mathematics</option>
-                <option value="Biology">Biology</option>
-                <option value="English">English</option>
-              </select>
-              <input type="file" onChange={handleResourceUpload} />
-              <button className="btn-primary" onClick={handleResourceUpload}>
-                <i className="fas fa-upload"></i>
                 Upload Resource
               </button>
             </div>

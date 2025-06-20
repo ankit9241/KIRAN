@@ -5,6 +5,39 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const auth = require('../middleware/auth');
 const AdminNotificationService = require('../services/adminNotificationService');
+const nodemailer = require('nodemailer');
+
+// Contact form endpoint (no auth required)
+router.post('/contact', async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({ message: 'All fields are required.' });
+    }
+
+    // Configure transporter for Gmail
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER || 'adityasinghofficial296@gmail.com',
+        pass: process.env.EMAIL_PASS || 'YOUR_APP_PASSWORD_HERE'
+      }
+    });
+
+    const mailOptions = {
+      from: email,
+      to: 'adityasinghofficial296@gmail.com',
+      subject: `[Contact Form] ${subject}`,
+      text: `Name: ${name}\nEmail: ${email}\n\n${message}`
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.json({ message: 'Message sent successfully!' });
+  } catch (error) {
+    console.error('Error sending contact form email:', error);
+    res.status(500).json({ message: 'Failed to send message.' });
+  }
+});
 
 // Middleware to protect routes
 router.use(auth);
@@ -224,7 +257,8 @@ router.patch('/me', async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['name', 'email', 'phone', 'address', 'bio', 'achievements',
         'class', 'stream', 'targetExam', 'preferredSubjects', 'learningGoals',
-        'specialization', 'experience', 'subjectsTaught', 'telegramId', 'whatsapp', 'linkedin', 'website'];
+        'specialization', 'experience', 'subjectsTaught', 'telegramId', 'whatsapp', 'linkedin', 'website',
+        'teachingStyle', 'qualifications', 'profilePicture'];
     const isValidOperation = updates.every(update => allowedUpdates.includes(update));
 
     if (!isValidOperation) {

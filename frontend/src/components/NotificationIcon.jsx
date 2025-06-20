@@ -68,47 +68,54 @@ const NotificationIcon = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Check if click is outside both the icon and dropdown
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target) && 
-          iconRef.current && !iconRef.current.contains(event.target)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        iconRef.current &&
+        !iconRef.current.contains(event.target)
+      ) {
         setIsOpen(false);
       }
     };
 
-    // Add event listener only when dropdown is open
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          setIsOpen(false);
-        }
-      });
+      document.addEventListener('keydown', handleKeyDown);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen]);
 
-  const toggleDropdown = async (e) => {
-    e.stopPropagation(); // Prevent event bubbling
-    setIsOpen(!isOpen);
-    
-    if (!isOpen && unreadCount > 0) {
-      // Mark all notifications as read when opening
-      try {
-        const token = localStorage.getItem('token');
-        await axios.patch('http://localhost:5000/api/notifications/mark-all-read', {}, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setUnreadCount(0);
-        // Update notifications to show as read
-        setNotifications(prev => prev.map(notif => ({ ...notif, isRead: true })));
-      } catch (error) {
-      }
-    }
+  const toggleDropdown = (e) => {
+    e.stopPropagation();
+    setIsOpen(prev => !prev);
   };
+
+  useEffect(() => {
+    if (isOpen && unreadCount > 0) {
+      // Mark all notifications as read when opening
+      const markAllRead = async () => {
+        try {
+          const token = localStorage.getItem('token');
+          await axios.patch('http://localhost:5000/api/notifications/mark-all-read', {}, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setUnreadCount(0);
+          setNotifications(prev => prev.map(notif => ({ ...notif, isRead: true })));
+        } catch (error) {}
+      };
+      markAllRead();
+    }
+  }, [isOpen, unreadCount]);
 
   const markAsRead = async (notificationId, e) => {
     e.stopPropagation(); // Prevent dropdown from closing
@@ -261,7 +268,21 @@ const NotificationIcon = () => {
       </div>
 
       {isOpen && (
-        <div className="notification-dropdown" ref={dropdownRef} onClick={(e) => e.stopPropagation()}>
+        <div
+          className="notification-dropdown"
+          ref={dropdownRef}
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            display: 'block',
+            zIndex: 99999,
+            position: 'fixed',
+            top: '80px',
+            right: '40px',
+            background: '#fff',
+            border: '2px solid #4F46E5',
+            minWidth: '350px'
+          }}
+        >
           <div className="notification-header">
             <h3>Notifications</h3>
             <div className="notification-header-actions">
@@ -302,7 +323,7 @@ const NotificationIcon = () => {
               </div>
             ) : (
               <div className="notifications-list">
-                {notifications.map((notification) => (
+                {notifications.map(notification => (
                   <div 
                     key={notification._id} 
                     className={`notification-item ${!notification.isRead ? 'unread' : ''}`}

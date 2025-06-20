@@ -19,7 +19,16 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        // Only require password for local (manual) signups
+        required: function() { return this.authProvider !== 'google'; }
+    },
+    profilePicture: {
+        type: String
+    },
+    authProvider: {
+        type: String,
+        enum: ['local', 'google'],
+        default: 'local'
     },
     role: {
         type: String,
@@ -138,7 +147,9 @@ const userSchema = new mongoose.Schema({
     currentToken: {
         type: String,
         required: false
-    }
+    },
+    googleId: { type: String },
+    isGoogleUser: { type: Boolean, default: false },
 });
 
 // Add a pre-save hook to check if email is already registered

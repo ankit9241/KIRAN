@@ -26,7 +26,7 @@ const Navbar = () => {
   const baseNavigation = [
     { name: 'Home', href: '/' },
     { name: 'Study Material', href: '/study-material' },
-    { name: 'Contact', href: '/contact' },
+    { name: 'Contact Us', href: '/contact' },
   ];
 
   // Combine base navigation with role-specific navigation
@@ -38,12 +38,20 @@ const Navbar = () => {
   ];
 
   // Get ordered items for rendering
-  const orderedItems = [
-    navigationItems.find(item => item.name === 'Home'),
-    ...(isAuthenticated ? [navigationItems.find(item => item.name === 'Dashboard')] : []),
-    navigationItems.find(item => item.name === 'Study Material'),
-    navigationItems.find(item => item.name === 'Contact')
-  ].filter(item => item); // Remove any undefined items;
+  let orderedItems;
+  if (!isAuthenticated) {
+    orderedItems = [
+      navigationItems.find(item => item.name === 'Home'),
+      navigationItems.find(item => item.name === 'Contact Us')
+    ].filter(item => item);
+  } else {
+    orderedItems = [
+      navigationItems.find(item => item.name === 'Home'),
+      navigationItems.find(item => item.name === 'Dashboard'),
+      navigationItems.find(item => item.name === 'Study Material'),
+      navigationItems.find(item => item.name === 'Contact Us')
+    ].filter(item => item);
+  }
 
   useEffect(() => {
     // Check authentication state

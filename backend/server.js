@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const config = require('config');
 const SchedulerService = require('./services/schedulerService');
+const admin = require('firebase-admin');
+const serviceAccount = require('./serviceAccountKey.json');
 
 const app = express();
 
@@ -30,6 +32,11 @@ mongoose.connect(config.get('mongoURI'), mongooseOptions)
     .catch(err => {
         process.exit(1); // Exit if connection fails
     });
+
+// Initialize Firebase Admin SDK
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
