@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -26,6 +27,7 @@ const mongooseOptions = {
 const mongoURI = process.env.MONGODB_URI || config.get('mongoURI');
 mongoose.connect(mongoURI, mongooseOptions)
     .then(() => {
+        console.log('MongoDB connected!');
         // Initialize admin notification scheduler
         SchedulerService.init();
     })

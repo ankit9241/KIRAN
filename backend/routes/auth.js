@@ -52,7 +52,28 @@ router.post('/login', async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                phone: user.phone || '',
+                address: user.address || '',
+                bio: user.bio || '',
+                profilePicture: user.profilePicture || '',
+                // Student-specific fields
+                class: user.class || '',
+                stream: user.stream || '',
+                targetExam: user.targetExam || '',
+                preferredSubjects: user.preferredSubjects || [],
+                learningGoals: user.learningGoals || '',
+                // Mentor-specific fields
+                specialization: user.specialization || '',
+                experience: user.experience || '',
+                qualifications: user.qualifications || '',
+                teachingStyle: user.teachingStyle || '',
+                telegramId: user.telegramId || '',
+                whatsapp: user.whatsapp || '',
+                linkedin: user.linkedin || '',
+                website: user.website || '',
+                achievements: user.achievements || [],
+                mentorApprovalStatus: user.mentorApprovalStatus || 'pending'
             },
             token
         });
@@ -67,7 +88,7 @@ router.post('/login', async (req, res) => {
 // Register as student
 router.post('/register/student', async (req, res) => {
     try {
-        const { name, email, password, class: studentClass, stream, targetExam, preferredSubjects, learningGoals, googleIdToken, profilePicture } = req.body;
+        const { name, email, password, class: studentClass, stream, targetExam, preferredSubjects, learningGoals, phone, address, bio, googleIdToken, profilePicture } = req.body;
         let userData = {};
         let isGoogleSignup = false;
 
@@ -92,6 +113,9 @@ router.post('/register/student', async (req, res) => {
                 targetExam,
                 preferredSubjects,
                 learningGoals,
+                phone: phone || '',
+                address: address || '',
+                bio: bio || '',
                 profilePicture: decodedToken.picture || profilePicture || '',
                 authProvider: 'google'
             };
@@ -117,6 +141,9 @@ router.post('/register/student', async (req, res) => {
                 targetExam,
                 preferredSubjects,
                 learningGoals,
+                phone: phone || '',
+                address: address || '',
+                bio: bio || '',
                 profilePicture: profilePicture || '',
                 authProvider: 'local'
             };
@@ -133,7 +160,15 @@ router.post('/register/student', async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: 'student',
-                profilePicture: user.profilePicture || ''
+                phone: user.phone || '',
+                address: user.address || '',
+                bio: user.bio || '',
+                profilePicture: user.profilePicture || '',
+                class: user.class || '',
+                stream: user.stream || '',
+                targetExam: user.targetExam || '',
+                preferredSubjects: user.preferredSubjects || [],
+                learningGoals: user.learningGoals || ''
             },
             token
         });
@@ -196,7 +231,7 @@ router.post('/register/mentor', async (req, res) => {
                 linkedin: linkedin || '',
                 website: website || '',
                 bio: bio || '',
-                achievements: achievements ? achievements.split('\n').filter(item => item.trim()) : [],
+                achievements: achievements ? (Array.isArray(achievements) ? achievements : achievements.split(',').map(item => item.trim()).filter(item => item)) : [],
                 profilePicture: decodedToken.picture || profilePicture || '',
                 authProvider: 'google'
             };
@@ -230,7 +265,7 @@ router.post('/register/mentor', async (req, res) => {
                 linkedin: linkedin || '',
                 website: website || '',
                 bio: bio || '',
-                achievements: achievements ? achievements.split('\n').filter(item => item.trim()) : [],
+                achievements: achievements ? (Array.isArray(achievements) ? achievements : achievements.split(',').map(item => item.trim()).filter(item => item)) : [],
                 profilePicture: profilePicture || '',
                 authProvider: 'local'
             };
@@ -247,8 +282,20 @@ router.post('/register/mentor', async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: 'mentor',
-                mentorApprovalStatus: 'pending',
-                profilePicture: user.profilePicture || ''
+                phone: user.phone || '',
+                address: user.address || '',
+                bio: user.bio || '',
+                profilePicture: user.profilePicture || '',
+                specialization: user.specialization || '',
+                experience: user.experience || '',
+                qualifications: user.qualifications || '',
+                teachingStyle: user.teachingStyle || '',
+                telegramId: user.telegramId || '',
+                whatsapp: user.whatsapp || '',
+                linkedin: user.linkedin || '',
+                website: user.website || '',
+                achievements: user.achievements || [],
+                mentorApprovalStatus: 'pending'
             },
             token,
             message: 'Mentor registration submitted successfully. Your account is pending admin approval.'
@@ -328,7 +375,28 @@ router.get('/verify', async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                phone: user.phone || '',
+                address: user.address || '',
+                bio: user.bio || '',
+                profilePicture: user.profilePicture || '',
+                // Student-specific fields
+                class: user.class || '',
+                stream: user.stream || '',
+                targetExam: user.targetExam || '',
+                preferredSubjects: user.preferredSubjects || [],
+                learningGoals: user.learningGoals || '',
+                // Mentor-specific fields
+                specialization: user.specialization || '',
+                experience: user.experience || '',
+                qualifications: user.qualifications || '',
+                teachingStyle: user.teachingStyle || '',
+                telegramId: user.telegramId || '',
+                whatsapp: user.whatsapp || '',
+                linkedin: user.linkedin || '',
+                website: user.website || '',
+                achievements: user.achievements || [],
+                mentorApprovalStatus: user.mentorApprovalStatus || 'pending'
             }
         });
     } catch (error) {
@@ -540,7 +608,27 @@ router.post('/login/google', async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        profilePicture: user.profilePicture || ''
+        phone: user.phone || '',
+        address: user.address || '',
+        bio: user.bio || '',
+        profilePicture: user.profilePicture || '',
+        // Student-specific fields
+        class: user.class || '',
+        stream: user.stream || '',
+        targetExam: user.targetExam || '',
+        preferredSubjects: user.preferredSubjects || [],
+        learningGoals: user.learningGoals || '',
+        // Mentor-specific fields
+        specialization: user.specialization || '',
+        experience: user.experience || '',
+        qualifications: user.qualifications || '',
+        teachingStyle: user.teachingStyle || '',
+        telegramId: user.telegramId || '',
+        whatsapp: user.whatsapp || '',
+        linkedin: user.linkedin || '',
+        website: user.website || '',
+        achievements: user.achievements || [],
+        mentorApprovalStatus: user.mentorApprovalStatus || 'pending'
       },
       token
     });

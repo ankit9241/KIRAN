@@ -54,17 +54,195 @@
 }
 
 .enroll-container {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
-  margin-top: 1.5rem;
-  padding: 2.2rem 2.5rem 2rem 2.5rem;
-  max-width: 480px;
-  width: 98vw;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
 }
 
-.enroll-container::before {
-  display: none;
+.enroll-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.12);
+  padding: 2.5rem 2rem 2rem 2rem;
+  max-width: 480px;
+  width: 100%;
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.enroll-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #4f46e5;
+  margin-bottom: 0.25rem;
+}
+
+.enroll-header p {
+  color: #64748b;
+  margin-bottom: 1.5rem;
+}
+
+.enroll-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form-section {
+  margin-bottom: 1.5rem;
+}
+
+.form-section h3 {
+  color: #6366f1;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.75rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: #374151;
+}
+
+/* Required field indicator styling */
+.form-group label:has(+ input[required]),
+.form-group label:has(+ select[required]),
+.form-group label:has(+ textarea[required]) {
+  color: #374151;
+  font-weight: 500;
+}
+
+.form-group label:has(+ input[required])::after,
+.form-group label:has(+ select[required])::after,
+.form-group label:has(+ textarea[required])::after {
+  content: " *";
+  color: #dc2626;
+  font-weight: bold;
+}
+
+/* Alternative approach for browsers that don't support :has() */
+.form-group label.required {
+  color: #374151;
+  font-weight: 500;
+}
+
+.form-group label.required::after {
+  content: " *";
+  color: #dc2626;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #c7d2fe;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f8fafc;
+  color: #22223b;
+  transition: border 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #6366f1;
+  outline: none;
+}
+
+.form-group small {
+  color: #64748b;
+  margin-top: 0.25rem;
+}
+
+/* Button Styles */
+.google-enroll-btn {
+  width: 100%;
+  margin-top: 1rem;
+  background: linear-gradient(90deg, #6366f1 0%, #7c3aed 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.08rem;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.10);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+.google-enroll-btn img {
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.google-enroll-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #7c3aed 0%, #6366f1 100%);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.18);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.google-enroll-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Error and Success Messages */
+.error-message {
+  color: #dc2626;
+  background: #fee2e2;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.success-message {
+  color: #059669;
+  background: #d1fae5;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.enroll-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #64748b;
+}
+
+.enroll-footer a {
+  color: #6366f1;
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.enroll-footer a:hover {
+  color: #7c3aed;
 }
 
 .enroll-tabs {
@@ -99,65 +277,6 @@
 
 .enroll-tab.active:hover {
   background: var(--primary-dark);
-}
-
-.enroll-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.form-label {
-  font-weight: 500;
-  color: #2d72d9;
-  margin-bottom: 0.1rem;
-}
-
-.form-input, .form-select, .form-textarea {
-  border: 1.5px solid #e0e0e0;
-  border-radius: 7px;
-  padding: 0.6rem 0.9rem;
-  font-size: 1rem;
-  background: #f8fafd;
-  color: #222;
-  outline: none;
-  transition: border 0.2s;
-}
-
-.form-input:focus, .form-select:focus, .form-textarea:focus {
-  border: 1.5px solid #2d72d9;
-}
-
-.form-select {
-  min-height: 2.2rem;
-}
-
-.form-textarea {
-  min-height: 3.2rem;
-  resize: vertical;
-}
-
-.submit-button {
-  background: #2d72d9;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.13rem;
-  font-weight: 600;
-  padding: 0.8rem 1.2rem;
-  margin-top: 0.7rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.submit-button:hover {
-  background: #1a4e96;
 }
 
 .submission-status {
@@ -684,4 +803,29 @@
   .enroll-header h1 {
     font-size: 1.4rem;
   }
+}
+
+.enroll-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.2rem 0 1.2rem 0;
+  width: 100%;
+  color: #a1a1aa;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.enroll-separator span {
+  background: #fff;
+  padding: 0 1rem;
+  z-index: 1;
+}
+.enroll-separator::before,
+.enroll-separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+  margin: 0 0.5rem;
 }

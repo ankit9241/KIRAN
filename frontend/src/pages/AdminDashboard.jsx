@@ -34,6 +34,13 @@ const AdminDashboard = () => {
 
   // Check authentication on component mount
   useEffect(() => {
+    // Check if user has recently logged out
+    const hasRecentlyLoggedOut = sessionStorage.getItem('recentlyLoggedOut');
+    if (hasRecentlyLoggedOut) {
+      navigate('/login');
+      return;
+    }
+    
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
     
@@ -43,22 +50,58 @@ const AdminDashboard = () => {
     }
 
     const userData = JSON.parse(user);
+    console.log('Admin Dashboard - User data:', userData);
+    
     if (userData.role !== 'admin') {
+      console.error('User is not admin, role:', userData.role);
       navigate('/login');
       return;
     }
 
-    fetchAllData();
+    // Test basic authentication first
+    testAdminAuth();
   }, [navigate]);
+
+  // Test admin authentication
+  const testAdminAuth = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      console.log('Testing admin authentication...');
+      console.log('Token:', token ? 'Present' : 'Missing');
+      
+      // Test basic auth verification
+      const authResponse = await axios.get(API_ENDPOINTS.USERS + '/me', { headers });
+      console.log('Auth test response:', authResponse.data);
+      
+      if (authResponse.data.role !== 'admin') {
+        setError('Access denied. Admin role required.');
+        setLoading(false);
+        return;
+      }
+      
+      // If auth test passes, fetch all data
+      fetchAllData();
+    } catch (error) {
+      console.error('Admin auth test failed:', error);
+      setError(`Authentication failed: ${error.response?.data?.message || error.message}`);
+      setLoading(false);
+    }
+  };
 
   // Fetch all data from backend
   const fetchAllData = async () => {
     try {
+      setLoading(true);
+      setError(null);
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No token found');
       }
       const headers = { Authorization: `Bearer ${token}` };
+
+      console.log('Fetching admin dashboard data...');
 
       const [
         studentsResponse,
@@ -76,6 +119,15 @@ const AdminDashboard = () => {
         axios.get(API_ENDPOINTS.ALL_ANNOUNCEMENTS, { headers })
       ]);
 
+      console.log('Data fetched successfully:', {
+        students: studentsResponse.data.length,
+        mentors: mentorsResponse.data.length,
+        doubts: doubtsResponse.data.length,
+        meetings: meetingsResponse.data.length,
+        resources: resourcesResponse.data.length,
+        announcements: announcementsResponse.data.length
+      });
+
       setData(prev => ({
         ...prev,
         students: studentsResponse.data.filter(user => user.role === 'student'),
@@ -83,12 +135,18 @@ const AdminDashboard = () => {
         doubts: doubtsResponse.data,
         meetings: meetingsResponse.data,
         resources: resourcesResponse.data,
-        announcements: announcementsResponse.data,
-        loading: false
+        announcements: announcementsResponse.data
       }));
+      setLoading(false);
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setData(prev => ({ ...prev, loading: false }));
+      console.error('Error fetching admin dashboard data:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      setError(`Failed to load dashboard data: ${error.response?.data?.message || error.message}`);
+      setLoading(false);
     }
   };
 
@@ -226,7 +284,10 @@ const AdminDashboard = () => {
       <div className="admin-dashboard">
         <div className="loading-container">
           <div className="loading-spinner"></div>
-          <p>Loading dashboard data...</p>
+          <p>Loading admin dashboard...</p>
+          <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
+            Checking authentication and fetching data...
+          </p>
         </div>
       </div>
     );

@@ -14,6 +14,7 @@ const MentorDashboard = () => {
   const [students, setStudents] = useState([]);
   const [doubts, setDoubts] = useState([]);
   const [pendingDoubts, setPendingDoubts] = useState([]);
+  const [meetings, setMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedStudentForModal, setSelectedStudentForModal] = useState(null);
@@ -29,11 +30,21 @@ const MentorDashboard = () => {
   const [editProfileData, setEditProfileData] = useState(null);
   const [editProfileLoading, setEditProfileLoading] = useState(false);
   const [editProfileError, setEditProfileError] = useState(null);
+  const [expandedResolvedDoubts, setExpandedResolvedDoubts] = useState(new Set());
+  const [expandedAssigned, setExpandedAssigned] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        
+        // Check if user has recently logged out
+        const hasRecentlyLoggedOut = sessionStorage.getItem('recentlyLoggedOut');
+        if (hasRecentlyLoggedOut) {
+          navigate('/login');
+          return;
+        }
+        
         const token = localStorage.getItem('token');
         
         if (!token) {
@@ -237,15 +248,17 @@ const MentorDashboard = () => {
     try {
       console.log('Attempting to pick up doubt:', doubtId);
       console.log('API URL:', `${API_ENDPOINTS.DOUBTS}/${doubtId}/assign`);
-      
-      const response = await axios.patch(`${API_ENDPOINTS.DOUBTS}/${doubtId}/assign`);
-      
+      const response = await axios.patch(
+        `${API_ENDPOINTS.DOUBTS}/${doubtId}/assign`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        }
+      );
       console.log('Pick up doubt response:', response.data);
-      
       // Update the doubts lists
       setDoubts(prev => [...prev, response.data]);
       setPendingDoubts(prev => prev.filter(d => d._id !== doubtId));
-      
       alert('Doubt picked up successfully!');
     } catch (error) {
       console.error('Error picking up doubt:', error);
@@ -256,11 +269,15 @@ const MentorDashboard = () => {
 
   const handleResolveDoubt = async (doubtId) => {
     try {
-      const response = await axios.patch(`${API_ENDPOINTS.DOUBTS}/${doubtId}/resolve`);
-      
+      const response = await axios.patch(
+        `${API_ENDPOINTS.DOUBTS}/${doubtId}/resolve`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        }
+      );
       // Update the doubts list
       setDoubts(prev => prev.map(d => d._id === doubtId ? response.data : d));
-      
       alert('Doubt resolved successfully!');
     } catch (error) {
       console.error('Error resolving doubt:', error);
@@ -344,6 +361,19 @@ const MentorDashboard = () => {
     } finally {
       setEditProfileLoading(false);
     }
+  };
+
+  // Helper to toggle expansion for resolved doubts
+  const toggleResolvedDoubtExpansion = (doubtId) => {
+    setExpandedResolvedDoubts(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(doubtId)) {
+        newSet.delete(doubtId);
+      } else {
+        newSet.add(doubtId);
+      }
+      return newSet;
+    });
   };
 
   if (loading) return <div className="loading">Loading...</div>;
@@ -641,64 +671,122 @@ const MentorDashboard = () => {
                 {doubts.length === 0 ? (
                   <p className="no-doubts">No assigned doubts</p>
                 ) : (
-                  doubts.map(doubt => (
-                    <div key={doubt._id} className="doubt-item assigned">
-                      <div className="doubt-content">
-                        <h4>{doubt.title}</h4>
-                        <p><strong>Student:</strong> {doubt.student.name}</p>
-                        <p><strong>Subject:</strong> {doubt.subject}</p>
-                        <p><strong>Question:</strong> {doubt.description}</p>
-                        <p><strong>Status:</strong> {doubt.status}</p>
-                        <p><strong>Assigned:</strong> {new Date(doubt.createdAt).toLocaleDateString()}</p>
-                        
-                        {/* Show mentor response if available */}
-                        {doubt.mentorResponse && (
-                          <div className="mentor-response">
-                            <h5>Your Response:</h5>
-                            <p>{doubt.mentorResponse}</p>
-                            <p><small>Responded on: {new Date(doubt.responseDate).toLocaleDateString()}</small></p>
-                            
-                            {/* Show uploaded documents if any */}
-                            {doubt.uploadedDocuments && doubt.uploadedDocuments.length > 0 && (
-                              <div className="uploaded-documents">
-                                <h6>Uploaded Documents:</h6>
-                                <ul>
-                                  {doubt.uploadedDocuments.map((doc, index) => (
-                                    <li key={index}>
-                                      <a href={doc.filePath} target="_blank" rel="noopener noreferrer">
-                                        {doc.originalName}
-                                      </a>
-                                    </li>
-                                  ))}
-                                </ul>
+                  doubts.map(doubt => {
+                    if (doubt.status === 'assigned') {
+                      const isExpanded = !!expandedAssigned[doubt._id];
+                      return (
+                        <div key={doubt._id} className={`doubt-item assigned ${isExpanded ? 'expanded' : 'collapsed'}`}> 
+                          <div className="doubt-summary-row" tabIndex={0} onClick={() => setExpandedAssigned(prev => ({ ...prev, [doubt._id]: !prev[doubt._id] }))} style={{cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 1rem', background: '#f6f6f6', borderRadius: '6px', marginBottom: '6px', border: '1px solid #e0e0e0'}}>
+                            <div style={{display: 'flex', flexDirection: 'column'}}>
+                              <span style={{fontWeight: 600}}>{doubt.title}</span>
+                              <span style={{fontSize: '0.9em', color: '#666'}}>Student: {doubt.student.name} | Subject: {doubt.subject}</span>
+                            </div>
+                            <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                              <span className="assigned-badge" style={{background: '#2196f3', color: 'white', borderRadius: '12px', padding: '2px 10px', fontSize: '0.85em'}}>Assigned</span>
+                              <span style={{fontSize: '0.85em', color: '#888'}}>{new Date(doubt.createdAt).toLocaleDateString()}</span>
+                              <span style={{fontSize: '1.2em', marginLeft: '8px'}}>{isExpanded ? '▲' : '▼'}</span>
+                            </div>
+                          </div>
+                          {isExpanded && (
+                            <div className="doubt-details" style={{padding: '1rem', background: '#fff', borderRadius: '0 0 6px 6px', border: '1px solid #e0e0e0', borderTop: 'none', marginBottom: '10px'}}>
+                              <p><strong>Question:</strong> {doubt.description}</p>
+                              <p><strong>Status:</strong> {doubt.status}</p>
+                              <p><strong>Assigned:</strong> {new Date(doubt.createdAt).toLocaleDateString()}</p>
+                              {/* Show mentor response if available */}
+                              {doubt.mentorResponse && (
+                                <div className="mentor-response">
+                                  <h5>Your Response:</h5>
+                                  <p>{doubt.mentorResponse}</p>
+                                  <p><small>Responded on: {new Date(doubt.responseDate).toLocaleDateString()}</small></p>
+                                  {/* Show uploaded documents if any */}
+                                  {doubt.uploadedDocuments && doubt.uploadedDocuments.length > 0 && (
+                                    <div className="uploaded-documents">
+                                      <h6>Uploaded Documents:</h6>
+                                      <ul>
+                                        {doubt.uploadedDocuments.map((doc, index) => (
+                                          <li key={index}>
+                                            <a href={doc.filePath} target="_blank" rel="noopener noreferrer">
+                                              {doc.originalName}
+                                            </a>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                              <div className="doubt-actions">
+                                <button 
+                                  className="respond-btn"
+                                  onClick={() => openResponseModal(doubt)}
+                                >
+                                  Respond to Doubt
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    } else {
+                      // Non-resolved doubts: keep as before
+                      return (
+                        <div key={doubt._id} className="doubt-item assigned">
+                          <div className="doubt-content">
+                            <h4>{doubt.title}</h4>
+                            <p><strong>Student:</strong> {doubt.student.name}</p>
+                            <p><strong>Subject:</strong> {doubt.subject}</p>
+                            <p><strong>Question:</strong> {doubt.description}</p>
+                            <p><strong>Status:</strong> {doubt.status}</p>
+                            <p><strong>Assigned:</strong> {new Date(doubt.createdAt).toLocaleDateString()}</p>
+                            {/* Show mentor response if available */}
+                            {doubt.mentorResponse && (
+                              <div className="mentor-response">
+                                <h5>Your Response:</h5>
+                                <p>{doubt.mentorResponse}</p>
+                                <p><small>Responded on: {new Date(doubt.responseDate).toLocaleDateString()}</small></p>
+                                {/* Show uploaded documents if any */}
+                                {doubt.uploadedDocuments && doubt.uploadedDocuments.length > 0 && (
+                                  <div className="uploaded-documents">
+                                    <h6>Uploaded Documents:</h6>
+                                    <ul>
+                                      {doubt.uploadedDocuments.map((doc, index) => (
+                                        <li key={index}>
+                                          <a href={doc.filePath} target="_blank" rel="noopener noreferrer">
+                                            {doc.originalName}
+                                          </a>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
                               </div>
                             )}
                           </div>
-                        )}
-                      </div>
-                      <div className="doubt-actions">
-                        {doubt.status === 'assigned' && (
-                          <button 
-                            className="respond-btn"
-                            onClick={() => openResponseModal(doubt)}
-                          >
-                            Respond to Doubt
-                          </button>
-                        )}
-                        {doubt.status === 'responded' && (
-                          <button 
-                            className="resolve-btn"
-                            onClick={() => handleResolveDoubt(doubt._id)}
-                          >
-                            Mark as Resolved
-                          </button>
-                        )}
-                        {doubt.status === 'resolved' && (
-                          <span className="resolved-badge">Resolved</span>
-                        )}
-                      </div>
-                    </div>
-                  ))
+                          <div className="doubt-actions">
+                            {doubt.status === 'assigned' && (
+                              <button 
+                                className="respond-btn"
+                                onClick={() => openResponseModal(doubt)}
+                              >
+                                Respond to Doubt
+                              </button>
+                            )}
+                            {doubt.status === 'responded' && (
+                              <button 
+                                className="resolve-btn"
+                                onClick={() => handleResolveDoubt(doubt._id)}
+                              >
+                                Mark as Resolved
+                              </button>
+                            )}
+                            {doubt.status === 'resolved' && (
+                              <span className="resolved-badge">Resolved</span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    }
+                  })
                 )}
               </div>
             </div>

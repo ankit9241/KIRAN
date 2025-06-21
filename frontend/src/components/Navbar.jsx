@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import '../styles/navbar.css'
 import NotificationIcon from './NotificationIcon'
+import { logout } from '../utils/auth'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -79,7 +80,7 @@ const Navbar = () => {
       }
     };
 
-    // Initial check only
+    // Initial check
     checkAuth();
 
     // Listen for storage events (when localStorage changes in other tabs)
@@ -89,21 +90,23 @@ const Navbar = () => {
       }
     };
 
+    // Listen for custom auth change events (same tab)
+    const handleAuthChange = () => {
+      checkAuth();
+    };
+
     window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('authStateChanged', handleAuthChange);
 
     // Cleanup
     return () => {
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('authStateChanged', handleAuthChange);
     };
   }, [])
 
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user') // Also remove user data
-    setIsAuthenticated(false)
-    setUser(null)
-    setIsOpen(false) // Close mobile menu on logout
-    navigate('/')
+  const handleLogout = async () => {
+    await logout();
   }
 
   const handleMobileLogout = () => {

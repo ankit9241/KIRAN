@@ -27,6 +27,13 @@ const StudentDashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check if user has recently logged out
+    const hasRecentlyLoggedOut = sessionStorage.getItem('recentlyLoggedOut');
+    if (hasRecentlyLoggedOut) {
+      navigate('/login');
+      return;
+    }
+    
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');

@@ -109,6 +109,32 @@ router.get('/all', auth, async (req, res) => {
     }
 });
 
+// Get meetings for the current user (student, mentor, or admin)
+router.get('/', auth, async (req, res) => {
+    try {
+        let meetings = [];
+        if (req.user.role === 'mentor') {
+            meetings = await Meeting.find({ mentor: req.user.id })
+                .populate('student', 'name email phone')
+                .populate('mentor', 'name email')
+                .sort({ date: 1 });
+        } else if (req.user.role === 'student') {
+            meetings = await Meeting.find({ student: req.user.id })
+                .populate('mentor', 'name email phone')
+                .populate('student', 'name email')
+                .sort({ date: 1 });
+        } else if (req.user.role === 'admin') {
+            meetings = await Meeting.find()
+                .populate('student', 'name email')
+                .populate('mentor', 'name email')
+                .sort({ date: 1 });
+        }
+        res.json(meetings);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 // Update meeting (Mentor only)
 router.put('/:id', mentorAuth, async (req, res) => {
     try {
