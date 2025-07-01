@@ -1184,3 +1184,75 @@
   color: #9ca3af;
   font-size: 0.875rem;
 }
+
+/* --- Premium Mobile Redesign: Explicit Mobile Overrides --- */
+@media (max-width: 600px) {
+  .study-material-page {
+    padding: 1.25rem 0.25rem 2.5rem 0.25rem !important;
+    gap: 1.25rem !important;
+    background: var(--background) !important;
+  }
+  .study-material-header h1 {
+    font-size: 1.35rem !important;
+    margin-bottom: 0.18rem !important;
+  }
+  .study-material-header p, .study-material-description {
+    font-size: 1rem !important;
+    margin-bottom: 0.7rem !important;
+  }
+  .study-material-grid, .folders-grid, .materials-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    gap: 1rem !important;
+    padding-bottom: 0.4rem !important;
+    margin-bottom: 1.2rem !important;
+    scroll-snap-type: x mandatory !important;
+  }
+  .material-card, .folder-card {
+    min-width: 80vw !important;
+    max-width: 95vw !important;
+    flex: 0 0 auto !important;
+    scroll-snap-align: start !important;
+    border-radius: 1.25rem !important;
+    box-shadow: 0 4px 16px rgba(31,41,55,0.10) !important;
+    padding: 1.1rem 0.7rem !important;
+    background: #fff !important;
+    transition: box-shadow 0.2s !important;
+  }
+  .resource-container, .subject-list, .folders-section, .materials-section {
+    border-radius: 1.25rem !important;
+    box-shadow: 0 4px 16px rgba(31,41,55,0.10) !important;
+    padding: 1.1rem 0.7rem !important;
+    margin-bottom: 1.2rem !important;
+    background: #fff !important;
+    transition: box-shadow 0.2s !important;
+  }
+  .download-btn, .add-material-btn, .delete-btn {
+    font-size: 1.08rem !important;
+    padding: 0.8rem 1.2rem !important;
+    border-radius: 0.7rem !important;
+    min-width: 110px !important;
+    margin-top: 0.4rem !important;
+  }
+  .section-header, .subject-header, .folders-section h3, .materials-section h3 {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.4rem !important;
+    margin-bottom: 0.8rem !important;
+    font-size: 1.1rem !important;
+  }
+  .form-group input, .form-group textarea, .resource-form input, .resource-form textarea {
+    font-size: 1rem !important;
+    padding: 0.9rem !important;
+    border-radius: 0.7rem !important;
+  }
+  .form-group label, .resource-form label {
+    font-size: 1rem !important;
+  }
+  .form-actions {
+    flex-direction: column !important;
+    gap: 0.6rem !important;
+    margin-top: 1rem !important;
+  }
+}

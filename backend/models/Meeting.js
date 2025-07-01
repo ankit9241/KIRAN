@@ -9,6 +9,11 @@ const meetingSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    meetingType: {
+        type: String,
+        enum: ['individual', 'all_students', 'all_mentors', 'all_users'],
+        default: 'individual'
+    },
     mentor: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -17,8 +22,13 @@ const meetingSchema = new mongoose.Schema({
     student: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        // Not required for group meetings
     },
+    // For group meetings, store all participants
+    participants: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     date: {
         type: Date,
         required: true

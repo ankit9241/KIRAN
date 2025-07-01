@@ -192,8 +192,45 @@ const Navbar = () => {
         onClick={toggleMobileMenu}
         aria-label="Toggle mobile menu"
       >
-        <span className="menu-icon">☰</span>
+        <span className="menu-icon">&#9776;</span>
       </button>
+
+      {/* Mobile Full-Screen Menu Overlay */}
+      <div className={`mobile-menu-overlay${isOpen ? ' open' : ''}`} onClick={toggleMobileMenu}>
+        <div className="mobile-menu" onClick={e => e.stopPropagation()}>
+          <div className="mobile-menu-header">
+            <span className="mobile-menu-title">Menu</span>
+            <button className="mobile-menu-close" onClick={toggleMobileMenu} aria-label="Close menu">&times;</button>
+          </div>
+          <div className="mobile-menu-links">
+            {orderedItems.map((item) => (
+              <Link 
+                key={item.href} 
+                to={item.href} 
+                className={`mobile-nav-link ${isActive(item.href) ? 'active' : ''}`}
+                onClick={toggleMobileMenu}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+          {isAuthenticated && (
+            <div className="mobile-user-info">
+              <span className="user-name">{user?.name || user?.username || 'User'}</span>
+              <span className="user-role">{user?.role ? capitalizeFirstLetter(user.role) : 'Member'}</span>
+              {user?.role === 'admin' && <NotificationIcon />}
+              <button className="action-button" onClick={handleMobileLogout}>
+                Logout
+              </button>
+            </div>
+          )}
+          {!isAuthenticated && (
+            <button className="action-button" onClick={() => {navigate('/login'); setIsOpen(false);}}>
+              Login
+            </button>
+          )}
+        </div>
+      </div>
     </nav>
   )
 }

@@ -85,61 +85,134 @@
   border-color: var(--primary-color);
 }
 
-/* Add Doubt Form Styles */
+/* Enhanced Add Doubt Form Styles */
 .add-doubt {
-  margin-top: 2rem;
-  padding: 2rem;
+  margin-top: 2.5rem;
+  padding: 2.5rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.1);
   position: relative;
   z-index: 1;
+  overflow: hidden;
+}
+
+.add-doubt::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8, #7c3aed);
+  border-radius: 20px 20px 0 0;
 }
 
 .add-doubt .form-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 2rem;
   position: relative;
   z-index: 1;
+  gap: 0.5rem;
 }
 
 .add-doubt .form-header h3 {
-  font-size: 1.25rem;
-  color: var(--text-primary);
-  font-weight: 600;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-size: 1.75rem;
+  color: #1e293b;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.add-doubt .form-header h3::before {
+  content: '❓';
+  font-size: 1.5rem;
 }
 
 .add-doubt .form-header p {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
+  color: #64748b;
+  font-size: 1rem;
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.add-doubt .form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.add-doubt .form-group label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #374151;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.add-doubt input,
+.add-doubt select,
+.add-doubt textarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.add-doubt input::placeholder,
+.add-doubt textarea::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.add-doubt input:focus,
+.add-doubt select:focus,
+.add-doubt textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  transform: translateY(-1px);
+}
+
+.add-doubt input:hover,
+.add-doubt select:hover,
+.add-doubt textarea:hover {
+  border-color: #d1d5db;
 }
 
 .add-doubt textarea {
-  width: 100%;
-  min-height: 120px;
-  padding: 1.25rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  color: var(--text-primary);
-  font-size: 0.95rem;
+  min-height: 140px;
   resize: vertical;
-  transition: var(--transition);
-  margin-bottom: 1.5rem;
+  line-height: 1.6;
 }
 
-.add-doubt textarea::placeholder {
-  color: var(--text-muted);
+.add-doubt select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  appearance: none;
 }
 
-.add-doubt textarea:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+.add-doubt select option {
+  padding: 0.75rem;
+  background: #ffffff;
+  color: #374151;
+  font-size: 1rem;
 }
 
 .add-doubt .form-group {
@@ -180,44 +253,93 @@
 }
 
 .add-doubt button {
-  padding: 0.875rem 1.75rem;
-  border-radius: var(--radius-md);
+  padding: 1rem 2rem;
+  border-radius: 12px;
   border: none;
-  background: var(--primary-color);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   color: white;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.3s ease;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.add-doubt button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.add-doubt button:hover::before {
+  left: 100%;
 }
 
 .add-doubt button:hover {
-  background: var(--primary-dark);
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
 }
 
 .add-doubt button:active {
   transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.1);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .add-doubt button svg {
   width: 1.25rem;
   height: 1.25rem;
+  transition: transform 0.3s ease;
+}
+
+.add-doubt button:hover svg {
+  transform: scale(1.1);
+}
+
+.add-doubt button.loading {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+}
+
+.add-doubt button .spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .add-doubt .form-error {
-  color: var(--danger-color);
+  color: #ef4444;
   font-size: 0.875rem;
   margin-top: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   background: rgba(239, 68, 68, 0.05);
-  border-radius: var(--radius-md);
-  display: inline-block;
+  border-radius: 8px;
+  border-left: 4px solid #ef4444;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.add-doubt .form-error::before {
+  content: '⚠️';
+  font-size: 1rem;
 }
 
 .doubt-list {
@@ -1781,7 +1903,37 @@
 .add-doubt input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  transform: translateY(-1px);
+}
+
+.add-doubt input:hover,
+.add-doubt select:hover,
+.add-doubt textarea:hover {
+  border-color: #d1d5db;
+}
+
+.add-doubt textarea {
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.add-doubt select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  appearance: none;
+}
+
+.add-doubt select option {
+  padding: 0.75rem;
+  background: #ffffff;
+  color: #374151;
+  font-size: 1rem;
 }
 
 .add-doubt button.loading {
@@ -3240,5 +3392,323 @@
   }
   .profile-info-row .profile-item {
     max-width: 100%;
+  }
+}
+
+/* Compact Academic Badges */
+.academic-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.academic-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+}
+
+.academic-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.academic-badge i {
+  font-size: 0.875rem;
+}
+
+.academic-badge:nth-child(2) {
+  background: linear-gradient(135deg, #10b981, #059669);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.academic-badge:nth-child(2):hover {
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.academic-badge:nth-child(3) {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.academic-badge:nth-child(3):hover {
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+/* Responsive Academic Badges */
+@media (max-width: 768px) {
+  .academic-badges {
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .academic-badge {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  
+  .academic-badge i {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .academic-badges {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .academic-badge {
+    width: fit-content;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Center "no data" messages */
+.section-content p:only-child,
+.section-content > p {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 2rem 1rem;
+  margin: 0;
+  background: rgba(107, 114, 128, 0.05);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border);
+}
+
+/* Center no-data messages with specific class */
+.no-data-message {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 2rem 1rem;
+  margin: 0;
+  background: rgba(107, 114, 128, 0.05);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border);
+}
+
+/* Center no-data spans */
+.no-data {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  display: block;
+  padding: 1rem;
+  background: rgba(107, 114, 128, 0.05);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border);
+  margin: 0.5rem 0;
+}
+
+/* Responsive styles for no-data messages */
+@media (max-width: 768px) {
+  .no-data-message {
+    padding: 1.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .no-data {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .no-data-message {
+    padding: 1rem 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .no-data {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* --- Premium Mobile Redesign: Explicit Mobile Overrides --- */
+@media (max-width: 600px) {
+  .student-dashboard {
+    padding: 1.25rem 0.25rem 2.5rem 0.25rem !important;
+    gap: 1.25rem !important;
+    background: var(--background) !important;
+  }
+  .dashboard-row-cards {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    gap: 1rem !important;
+    padding-bottom: 0.4rem !important;
+    margin-bottom: 1.2rem !important;
+    scroll-snap-type: x mandatory !important;
+  }
+  .dashboard-row-cards .section-card {
+    min-width: 90vw !important;
+    max-width: 98vw !important;
+    flex: 0 0 auto !important;
+    scroll-snap-align: start !important;
+    margin-bottom: 0 !important;
+    border-radius: 1.25rem !important;
+    box-shadow: 0 4px 16px rgba(31,41,55,0.10) !important;
+    padding: 1.1rem 0.7rem !important;
+    background: #fff !important;
+    transition: box-shadow 0.2s !important;
+  }
+  .section-card {
+    border-radius: 1.25rem !important;
+    box-shadow: 0 4px 16px rgba(31,41,55,0.10) !important;
+    padding: 1.1rem 0.7rem !important;
+    margin-bottom: 1.2rem !important;
+    background: #fff !important;
+    transition: box-shadow 0.2s !important;
+  }
+  .section-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.4rem !important;
+    margin-bottom: 0.8rem !important;
+  }
+  .edit-btn, .btn-primary, .btn-secondary {
+    font-size: 1.08rem !important;
+    padding: 0.8rem 1.2rem !important;
+    border-radius: 0.7rem !important;
+    min-width: 110px !important;
+    margin-top: 0.4rem !important;
+  }
+  .profile-header h1 {
+    font-size: 1.25rem !important;
+    margin-bottom: 0.18rem !important;
+  }
+  .profile-header p {
+    font-size: 0.98rem !important;
+    margin-bottom: 0.7rem !important;
+  }
+  .profile-info-row, .detail-row {
+    flex-direction: column !important;
+    gap: 0.4rem !important;
+  }
+  .academic-badges {
+    flex-wrap: wrap !important;
+    gap: 0.4rem !important;
+    margin-bottom: 0.3rem !important;
+  }
+  .academic-badge {
+    font-size: 0.9rem !important;
+    padding: 0.4rem 0.8rem !important;
+    border-radius: 0.7rem !important;
+    background: #f3f4f6 !important;
+    margin-bottom: 0.18rem !important;
+  }
+  .subject-tag, .achievement-tag {
+    font-size: 0.9rem !important;
+    padding: 0.35rem 0.8rem !important;
+    border-radius: 0.7rem !important;
+    margin: 0.12rem 0.18rem 0.12rem 0 !important;
+  }
+  .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  .form-group input, .form-group textarea {
+    font-size: 1rem !important;
+    padding: 0.9rem !important;
+    border-radius: 0.7rem !important;
+  }
+  .form-actions {
+    flex-direction: column !important;
+    gap: 0.6rem !important;
+    margin-top: 1rem !important;
+  }
+  .materials-preview {
+    gap: 0.7rem !important;
+  }
+  .material-preview-card {
+    border-radius: 0.9rem !important;
+    box-shadow: 0 2px 8px rgba(31,41,55,0.09) !important;
+    padding: 0.8rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  .download-btn-small {
+    font-size: 0.95rem !important;
+    padding: 0.5rem 0.9rem !important;
+    border-radius: 0.6rem !important;
+  }
+  .view-all-btn {
+    font-size: 0.95rem !important;
+    padding: 0.5rem 0.9rem !important;
+    border-radius: 0.6rem !important;
+    margin-top: 0.4rem !important;
+  }
+  .no-data-message {
+    font-size: 0.98rem !important;
+    padding: 0.8rem 0.3rem !important;
+  }
+  .feedback-card, .mentor-card, .meeting-card, .doubt-card, .resource-card {
+    border-radius: 1rem !important;
+    box-shadow: 0 2px 8px rgba(31,41,55,0.09) !important;
+    margin-bottom: 0.7rem !important;
+    padding: 1rem 0.7rem !important;
+  }
+  .feedback-card .feedback-date, .feedback-card .feedback-text, .feedback-card .feedback-mentor {
+    font-size: 0.98rem !important;
+  }
+  .mentor-name, .meeting-label, .resource-details h3 {
+    font-size: 1.05rem !important;
+  }
+  .download-btn, .contact-btn {
+    font-size: 1.05rem !important;
+    padding: 0.7rem 1.1rem !important;
+    border-radius: 0.7rem !important;
+  }
+}
+
+/* --- Premium Mobile Redesign: Feedback Section Mobile Overrides --- */
+@media (max-width: 600px) {
+  .feedback-section {
+    padding: 0.5rem 0 !important;
+  }
+  .feedback-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+  .feedback-card {
+    border-radius: 1.25rem !important;
+    box-shadow: 0 4px 16px rgba(31,41,55,0.10) !important;
+    padding: 1.1rem 0.7rem !important;
+    background: #fff !important;
+    transition: box-shadow 0.2s !important;
+    font-size: 1rem !important;
+  }
+  .feedback-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.4rem !important;
+    margin-bottom: 0.8rem !important;
+  }
+  .mentor-info h4 {
+    font-size: 1.08rem !important;
+  }
+  .feedback-date, .rating-text {
+    font-size: 0.98rem !important;
+  }
+  .star {
+    font-size: 1.15rem !important;
+    margin-right: 0.1rem !important;
+  }
+  .feedback-content p {
+    font-size: 1.05rem !important;
+    margin-top: 0.5rem !important;
   }
 }

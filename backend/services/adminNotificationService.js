@@ -66,19 +66,45 @@ class AdminNotificationService {
     }
 
     static async notifyMeetingRequest(meeting) {
+        // Handle different meeting types
+        let message = '';
+        let studentName = '';
+        let mentorName = '';
+
+        if (meeting.meetingType === 'individual') {
+            studentName = meeting.student?.name || 'Unknown Student';
+            mentorName = meeting.mentor?.name || 'Unknown Mentor';
+            message = `Meeting request: ${meeting.title} between ${studentName} and ${mentorName}`;
+        } else if (meeting.meetingType === 'all_students') {
+            mentorName = meeting.mentor?.name || 'Unknown Mentor';
+            message = `Group meeting: ${meeting.title} - ${mentorName} with all students`;
+        } else if (meeting.meetingType === 'all_mentors') {
+            studentName = meeting.student?.name || 'Unknown Student';
+            message = `Group meeting: ${meeting.title} - ${studentName} with all mentors`;
+        } else if (meeting.meetingType === 'all_users') {
+            mentorName = meeting.mentor?.name || 'Unknown Mentor';
+            message = `Group meeting: ${meeting.title} - ${mentorName} with all users`;
+        } else {
+            studentName = meeting.student?.name || 'Unknown Student';
+            mentorName = meeting.mentor?.name || 'Unknown Mentor';
+            message = `Meeting request: ${meeting.title} between ${studentName} and ${mentorName}`;
+        }
+
         await this.notifyAdmins({
             type: 'meeting_request',
             title: 'New Meeting Request',
-            message: `Meeting request: ${meeting.title} between ${meeting.student.name} and ${meeting.mentor.name}`,
+            message: message,
             senderName: 'System',
             priority: 'medium',
             category: 'activity',
             metadata: {
                 meetingId: meeting._id,
                 meetingTitle: meeting.title,
-                studentName: meeting.student.name,
-                mentorName: meeting.mentor.name,
-                meetingDate: meeting.date
+                meetingType: meeting.meetingType,
+                studentName: studentName,
+                mentorName: mentorName,
+                meetingDate: meeting.date,
+                participantCount: meeting.participants?.length || 0
             },
             relatedId: meeting._id,
             relatedModel: 'Meeting'

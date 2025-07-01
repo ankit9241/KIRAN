@@ -1059,30 +1059,6 @@
   transform: translateY(-2px);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-header h1 {
-    font-size: 1.5rem;
-  }
-
-  .stat-number {
-    font-size: 1.5rem;
-  }
-
-  .doubt-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .doubt-status {
-    margin-top: 1rem;
-  }
-}
-
 /* Response Modal Styles */
 .modal-overlay {
   position: fixed;
@@ -1635,4 +1611,88 @@
 }
 .doubt-item.resolved.expanded .fa-chevron-up {
   transform: rotate(180deg);
+}
+
+/* --- Premium Mobile Redesign: Explicit Mobile Overrides --- */
+@media (max-width: 600px) {
+  .mentor-dashboard {
+    padding: 1.25rem 0.25rem 2.5rem 0.25rem !important;
+    gap: 1.25rem !important;
+    background: var(--background) !important;
+  }
+  .dashboard-header h1 {
+    font-size: 1.35rem !important;
+    margin-bottom: 0.18rem !important;
+  }
+  .dashboard-header p {
+    font-size: 1rem !important;
+    margin-bottom: 0.7rem !important;
+  }
+  .stats-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    gap: 1rem !important;
+    padding-bottom: 0.4rem !important;
+    margin-bottom: 1.2rem !important;
+    scroll-snap-type: x mandatory !important;
+  }
+  .stat-card {
+    min-width: 80vw !important;
+    max-width: 95vw !important;
+    flex: 0 0 auto !important;
+    scroll-snap-align: start !important;
+    border-radius: 1.25rem !important;
+    box-shadow: 0 4px 16px rgba(31,41,55,0.10) !important;
+    padding: 1.1rem 0.7rem !important;
+    background: #fff !important;
+    transition: box-shadow 0.2s !important;
+  }
+  .students-section, .resources-section, .doubts-section {
+    border-radius: 1.25rem !important;
+    box-shadow: 0 4px 16px rgba(31,41,55,0.10) !important;
+    padding: 1.1rem 0.7rem !important;
+    margin-bottom: 1.2rem !important;
+    background: #fff !important;
+    transition: box-shadow 0.2s !important;
+  }
+  .students-table table, .sessions-table table {
+    font-size: 0.95rem !important;
+  }
+  .students-table th, .students-table td, .sessions-table th, .sessions-table td {
+    padding: 0.5rem 0.3rem !important;
+  }
+  .view-details-btn, .btn-primary, .btn-secondary, .respond-btn, .dismiss-btn {
+    font-size: 1.08rem !important;
+    padding: 0.8rem 1.2rem !important;
+    border-radius: 0.7rem !important;
+    min-width: 110px !important;
+    margin-top: 0.4rem !important;
+  }
+  .modal-content, .modal-header, .modal-body, .modal-actions {
+    padding: 1rem !important;
+    border-radius: 1rem !important;
+  }
+  .form-group input, .form-group textarea, .resource-form input, .resource-form textarea {
+    font-size: 1rem !important;
+    padding: 0.9rem !important;
+    border-radius: 0.7rem !important;
+  }
+  .form-group label, .resource-form label {
+    font-size: 1rem !important;
+  }
+  .form-actions {
+    flex-direction: column !important;
+    gap: 0.6rem !important;
+    margin-top: 1rem !important;
+  }
+  .status-message {
+    border-radius: 1rem !important;
+    padding: 1rem !important;
+    font-size: 1rem !important;
+  }
+  .students-section h2, .resources-section h2, .doubts-section h2 {
+    font-size: 1.15rem !important;
+    margin-bottom: 0.75rem !important;
+  }
 }

@@ -34,17 +34,17 @@ const Footer = () => {
           <h4>Follow Us</h4>
           <div className="social-links">
             <a href="https://www.youtube.com/@AdityaSingh22906" className="social-icon youtube" data-tooltip="YouTube">
-              <FaYoutube />
+              <FaYoutube size={28} />
             </a>
             <a href="#" className="social-icon instagram" data-tooltip="Instagram">
-              <FaInstagram />
+              <FaInstagram size={28} />
             </a>
             
             <a href="https://t.me/Adi_2296" className="social-icon telegram" data-tooltip="Telegram">
-              <FaTelegram />
+              <FaTelegram size={28} />
             </a>
             <a href="https://mail.google.com/mail/u/0/?view=cm&fs=1&to=adityasinghofficial296@gmail.com&tf=1" className="social-icon gmail" data-tooltip="Gmail">
-              <FaEnvelope />
+              <FaEnvelope size={28} />
             </a>
           </div>
         </div>

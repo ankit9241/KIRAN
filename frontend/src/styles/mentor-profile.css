@@ -669,4 +669,39 @@
   .subjects-container {
     justify-content: center;
   }
+}
+
+/* --- Premium Mobile Redesign: Mentor Profile Mobile Overrides --- */
+@media (max-width: 600px) {
+  .mentor-profile-card, .mentor-profile-section {
+    border-radius: 1.25rem !important;
+    box-shadow: 0 4px 16px rgba(31,41,55,0.10) !important;
+    padding: 1.1rem 0.7rem !important;
+    background: #fff !important;
+    transition: box-shadow 0.2s !important;
+    font-size: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  .mentor-profile-header h1 {
+    font-size: 1.35rem !important;
+    margin-bottom: 0.18rem !important;
+  }
+  .mentor-profile-header p {
+    font-size: 1rem !important;
+    margin-bottom: 0.7rem !important;
+  }
+  .mentor-profile-info, .mentor-profile-details {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+  .mentor-profile-label, .mentor-profile-value {
+    font-size: 1.08rem !important;
+  }
+  .mentor-profile-actions button {
+    font-size: 1.08rem !important;
+    padding: 0.8rem 1.2rem !important;
+    border-radius: 0.7rem !important;
+    min-width: 110px !important;
+    margin-top: 0.4rem !important;
+  }
 } 

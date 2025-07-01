@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../styles/mentor-list-premium.css';
 
 const MentorList = ({ mentors }) => {
-  const [selectedMentor, setSelectedMentor] = useState(null);
+  const [selectedMentors, setSelectedMentors] = useState(new Set());
   const [filterSpecialization, setFilterSpecialization] = useState('all');
   const [sortBy, setSortBy] = useState('experience');
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
@@ -11,7 +11,7 @@ const MentorList = ({ mentors }) => {
     return (
       <div className="mentors-premium-section">
         <div className="section-header-premium">
-          <h2>Available Mentors</h2>
+          <h2 className="enhanced-heading">Available Mentors</h2>
           <p>Connect with our expert mentors for guidance and support</p>
         </div>
         <div className="empty-state-premium">
@@ -41,6 +41,57 @@ const MentorList = ({ mentors }) => {
           return 0;
       }
     });
+
+  // Enhanced filter stats - accurate real-time filtering
+  const getFilterStats = () => {
+    const mentorCount = filteredAndSortedMentors.length;
+    let specializationCount;
+    
+    if (filterSpecialization === 'all') {
+      specializationCount = specializations.length;
+    } else {
+      specializationCount = filteredAndSortedMentors.some(m => m.specialization === filterSpecialization) ? 1 : 0;
+    }
+    
+    return { mentorCount, specializationCount };
+  };
+
+  // Multiple selection helper functions
+  const toggleMentorSelection = (mentorId) => {
+    const newSelectedMentors = new Set(selectedMentors);
+    if (newSelectedMentors.has(mentorId)) {
+      newSelectedMentors.delete(mentorId);
+    } else {
+      newSelectedMentors.add(mentorId);
+    }
+    setSelectedMentors(newSelectedMentors);
+  };
+
+  const isMentorSelected = (mentorId) => {
+    return selectedMentors.has(mentorId);
+  };
+
+  const showAllDetails = () => {
+    const allMentorIds = new Set(filteredAndSortedMentors.map(mentor => mentor._id));
+    setSelectedMentors(allMentorIds);
+  };
+
+  const hideAllDetails = () => {
+    setSelectedMentors(new Set());
+  };
+
+  const areAllMentorsSelected = () => {
+    return filteredAndSortedMentors.length > 0 && 
+           filteredAndSortedMentors.every(mentor => selectedMentors.has(mentor._id));
+  };
+
+  const getNoResultsMessage = () => {
+    if (filterSpecialization === 'all') {
+      return "No mentors found. Please check back later.";
+    } else {
+      return `No mentors found for "${filterSpecialization}". Try selecting "All Specializations" or a different specialization.`;
+    }
+  };
 
   const handleContactClick = (contactType, value, mentorName) => {
     if (!value) return;
@@ -91,29 +142,36 @@ const MentorList = ({ mentors }) => {
     };
   };
 
+  const filterStats = getFilterStats();
+
   return (
     <div className="mentors-premium-section">
       <div className="section-header-premium">
         <div className="header-content">
-          <h2>Available Mentors</h2>
+          <h2 className="enhanced-heading">Available Mentors</h2>
           <p>Connect with our expert mentors for personalized guidance and support</p>
         </div>
         <div className="header-stats">
           <div className="stat-item">
-            <span className="stat-number">{filteredAndSortedMentors.length}</span>
+            <span className="stat-number">{filterStats.mentorCount}</span>
             <span className="stat-label">Mentors</span>
           </div>
           <div className="stat-item">
-            <span className="stat-number">{specializations.length}</span>
+            <span className="stat-number">{filterStats.specializationCount}</span>
             <span className="stat-label">Specializations</span>
           </div>
         </div>
       </div>
 
-      {/* Filters and Controls */}
+      {/* Enhanced Filters and Controls */}
       <div className="mentor-controls">
         <div className="filter-group">
-          <label htmlFor="specialization-filter">Specialization:</label>
+          <label htmlFor="specialization-filter">
+            Specialization: 
+            {filterSpecialization !== 'all' && (
+              <span className="current-filter"> ({filterSpecialization})</span>
+            )}
+          </label>
           <select 
             id="specialization-filter"
             value={filterSpecialization} 
@@ -128,7 +186,14 @@ const MentorList = ({ mentors }) => {
         </div>
 
         <div className="filter-group">
-          <label htmlFor="sort-by">Sort by:</label>
+          <label htmlFor="sort-by">
+            Sort by: 
+            <span className="current-sort">
+              {sortBy === 'experience' && ' (Experience)'}
+              {sortBy === 'name' && ' (Name)'}
+              {sortBy === 'specialization' && ' (Specialization)'}
+            </span>
+          </label>
           <select 
             id="sort-by"
             value={sortBy} 
@@ -139,6 +204,28 @@ const MentorList = ({ mentors }) => {
             <option value="name">Name (A-Z)</option>
             <option value="specialization">Specialization</option>
           </select>
+        </div>
+
+        {/* New Bulk Action Buttons */}
+        <div className="bulk-actions">
+          <button 
+            className="bulk-btn view-all-btn"
+            onClick={showAllDetails}
+            disabled={filteredAndSortedMentors.length === 0 || areAllMentorsSelected()}
+            title="View all mentor details"
+          >
+            <i className="fas fa-eye"></i>
+            View All Details
+          </button>
+          <button 
+            className="bulk-btn hide-all-btn"
+            onClick={hideAllDetails}
+            disabled={selectedMentors.size === 0}
+            title="Hide all mentor details"
+          >
+            <i className="fas fa-eye-slash"></i>
+            Hide All Details
+          </button>
         </div>
 
         <div className="view-toggle">
@@ -164,9 +251,10 @@ const MentorList = ({ mentors }) => {
         {filteredAndSortedMentors.map(mentor => {
           const experienceLevel = getExperienceLevel(mentor.experience);
           const availability = getAvailabilityStatus(mentor);
+          const isSelected = isMentorSelected(mentor._id);
           
           return (
-            <div key={mentor._id} className="mentor-card-premium">
+            <div key={mentor._id} className={`mentor-card-premium ${isSelected ? 'selected' : ''}`}>
               {/* Premium Header */}
               <div className="mentor-header-premium">
                 <div className="mentor-avatar-premium">
@@ -197,16 +285,16 @@ const MentorList = ({ mentors }) => {
 
                 <div className="mentor-actions">
                   <button 
-                    className="action-btn primary"
-                    onClick={() => setSelectedMentor(selectedMentor === mentor._id ? null : mentor._id)}
+                    className={`action-btn primary ${isSelected ? 'selected' : ''}`}
+                    onClick={() => toggleMentorSelection(mentor._id)}
                   >
-                    {selectedMentor === mentor._id ? 'Hide Details' : 'View Details'}
+                    {isSelected ? 'Hide Details' : 'View Details'}
                   </button>
                 </div>
               </div>
 
-              {/* Mentor Details */}
-              <div className="mentor-details-premium">
+              {/* Mentor Details - Now with smooth animation */}
+              <div className={`mentor-details-premium ${isSelected ? 'expanded' : ''}`}>
                 {mentor.bio && (
                   <div className="mentor-bio-section">
                     <h4>About</h4>
@@ -325,31 +413,23 @@ const MentorList = ({ mentors }) => {
                   )}
                 </div>
               </div>
-
-              {/* Expandable Details */}
-              {selectedMentor === mentor._id && (
-                <div className="mentor-expanded-details">
-                  <div className="expanded-content">
-                    {/* Additional details can be added here */}
-                  </div>
-                </div>
-              )}
             </div>
           );
         })}
       </div>
 
-      {/* No Results Message */}
+      {/* Enhanced No Results Message */}
       {filteredAndSortedMentors.length === 0 && (
         <div className="no-results-premium">
           <div className="no-results-icon">🔍</div>
           <h3>No mentors found</h3>
-          <p>Try adjusting your filters to see more mentors.</p>
+          <p>{getNoResultsMessage()}</p>
           <button 
             className="reset-filters-btn"
             onClick={() => {
               setFilterSpecialization('all');
               setSortBy('experience');
+              setSelectedMentors(new Set());
             }}
           >
             Reset Filters

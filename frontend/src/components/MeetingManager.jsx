@@ -17,7 +17,8 @@ const MeetingManager = ({ userRole }) => {
         date: '',
         time: '',
         duration: 30,
-        meetingLink: ''
+        meetingLink: '',
+        meetingType: 'individual'
     });
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -70,10 +71,11 @@ const MeetingManager = ({ userRole }) => {
             const meetingData = {
                 title: formData.title,
                 description: formData.description,
-                studentId: formData.studentId,
+                studentId: formData.meetingType === 'individual' ? formData.studentId : undefined,
                 date: dateTime.toISOString(),
                 duration: parseInt(formData.duration),
-                meetingLink: formData.meetingLink
+                meetingLink: formData.meetingLink,
+                meetingType: formData.meetingType
             };
 
             const url = editingMeeting 
@@ -89,7 +91,7 @@ const MeetingManager = ({ userRole }) => {
                 },
             });
 
-            if (response.ok) {
+            if (response.status === 201 || response.status === 200) {
                 const data = response.data;
                 if (editingMeeting) {
                     setMeetings(meetings.map(m => m._id === editingMeeting._id ? data : m));
@@ -135,11 +137,12 @@ const MeetingManager = ({ userRole }) => {
         setFormData({
             title: meeting.title,
             description: meeting.description,
-            studentId: meeting.student._id,
+            studentId: meeting.student ? meeting.student._id : '',
             date: dateStr,
             time: timeStr,
             duration: meeting.duration,
-            meetingLink: meeting.meetingLink || ''
+            meetingLink: meeting.meetingLink || '',
+            meetingType: meeting.meetingType || 'individual'
         });
         setEditingMeeting(meeting);
         setShowForm(true);
@@ -153,7 +156,8 @@ const MeetingManager = ({ userRole }) => {
             date: '',
             time: '',
             duration: 30,
-            meetingLink: ''
+            meetingLink: '',
+            meetingType: 'individual'
         });
         setEditingMeeting(null);
     };
@@ -234,7 +238,21 @@ const MeetingManager = ({ userRole }) => {
                                 />
                             </div>
 
-                            <div className="form-row">
+                            <div className="form-group">
+                                <label>Meeting Type *</label>
+                                <select
+                                    value={formData.meetingType}
+                                    onChange={(e) => setFormData({...formData, meetingType: e.target.value})}
+                                    required
+                                >
+                                    <option value="individual">Individual Meeting</option>
+                                    <option value="all_students">All Students</option>
+                                    <option value="all_mentors">All Mentors</option>
+                                    <option value="all_users">All Users (Students + Mentors)</option>
+                                </select>
+                            </div>
+
+                            {formData.meetingType === 'individual' && (
                                 <div className="form-group">
                                     <label>Student *</label>
                                     <select
@@ -250,7 +268,9 @@ const MeetingManager = ({ userRole }) => {
                                         ))}
                                     </select>
                                 </div>
+                            )}
 
+                            <div className="form-row">
                                 <div className="form-group">
                                     <label>Duration (minutes) *</label>
                                     <select
@@ -344,10 +364,22 @@ const MeetingManager = ({ userRole }) => {
                                     <p className="meeting-description">{meeting.description}</p>
                                     
                                     <div className="meeting-info">
-                                        <div className="info-item">
-                                            <FaUser />
-                                            <span>{meeting.student.name}</span>
-                                        </div>
+                                        {meeting.meetingType === 'individual' && meeting.student && (
+                                            <div className="info-item">
+                                                <FaUser />
+                                                <span>{meeting.student.name}</span>
+                                            </div>
+                                        )}
+                                        {meeting.meetingType !== 'individual' && (
+                                            <div className="info-item">
+                                                <FaUser />
+                                                <span>
+                                                    {meeting.meetingType === 'all_students' && 'All Students'}
+                                                    {meeting.meetingType === 'all_mentors' && 'All Mentors'}
+                                                    {meeting.meetingType === 'all_users' && 'All Users'}
+                                                </span>
+                                            </div>
+                                        )}
                                         <div className="info-item">
                                             <FaCalendar />
                                             <span>{formatDate(meeting.date)}</span>

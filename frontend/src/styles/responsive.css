@@ -1041,4 +1041,7 @@
     background: var(--primary);
     color: white;
   }
-} 
+}
+
+/* --- Premium Mobile Redesign: Responsive Utilities --- */
+/* All mobile styles are now handled in component CSS files for a premium, consistent experience. */ 

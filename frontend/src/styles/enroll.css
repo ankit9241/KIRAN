@@ -829,3 +829,54 @@
   background: #e5e7eb;
   margin: 0 0.5rem;
 }
+
+/* --- Premium Mobile Redesign: Explicit Mobile Overrides --- */
+@media (max-width: 600px) {
+  .enroll-page {
+    padding: 1.5rem 0.5rem !important;
+    min-height: 100vh !important;
+    align-items: flex-start !important;
+  }
+  .enroll-container {
+    max-width: 98vw !important;
+    min-width: unset !important;
+    padding: 0 !important;
+  }
+  .enroll-card {
+    border-radius: 1.25rem !important;
+    padding: 1.2rem 0.7rem !important;
+    margin-top: 2rem !important;
+    box-shadow: 0 4px 16px rgba(31,41,55,0.10) !important;
+  }
+  .enroll-header h1 {
+    font-size: 1.35rem !important;
+    margin-bottom: 0.18rem !important;
+  }
+  .enroll-header p {
+    font-size: 1rem !important;
+    margin-bottom: 0.7rem !important;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    font-size: 1.08rem !important;
+    padding: 1.1rem !important;
+    border-radius: 0.7rem !important;
+  }
+  .form-group label {
+    font-size: 1rem !important;
+  }
+  .google-enroll-btn, .enroll-email-btn, .submit-btn {
+    font-size: 1.08rem !important;
+    padding: 0.9rem 1.2rem !important;
+    border-radius: 0.7rem !important;
+    margin-top: 0.4rem !important;
+  }
+  .form-section h3 {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.7rem !important;
+  }
+  .form-actions {
+    flex-direction: column !important;
+    gap: 0.6rem !important;
+    margin-top: 1rem !important;
+  }
+}

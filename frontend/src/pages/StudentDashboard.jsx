@@ -207,31 +207,6 @@ const StudentDashboard = () => {
           <p>Your personalized learning dashboard</p>
         </div>
         
-        {/* Profile Information Display */}
-        <div className="profile-info-row">
-          <div className="profile-item">
-            <div className="icon">📚</div>
-            <div className="content">
-              <h3>Class</h3>
-              <p className="capitalize">{user.class}</p>
-            </div>
-          </div>
-          <div className="profile-item">
-            <div className="icon">📚</div>
-            <div className="content">
-              <h3>Stream</h3>
-              <p className="capitalize">{user.stream}</p>
-            </div>
-          </div>
-          <div className="profile-item">
-            <div className="icon">🎯</div>
-            <div className="content">
-              <h3>Target Exam</h3>
-              <p className="uppercase">{user.targetExam}</p>
-            </div>
-          </div>
-        </div>
-
         {/* Enhanced Profile Editing Section */}
         <div className="section-card profile-edit-section">
           <div className="section-header">
@@ -361,6 +336,31 @@ const StudentDashboard = () => {
             </div>
           ) : (
             <div className="profile-details">
+              {/* Academic Info Row above Profile Details */}
+              <div className="profile-info-row">
+                {/* Compact Academic Info Badges */}
+                <div className="academic-badges">
+                  {user.class && (
+                    <span className="academic-badge">
+                      <i className="fas fa-graduation-cap"></i>
+                      Class {user.class}
+                    </span>
+                  )}
+                  {user.stream && (
+                    <span className="academic-badge">
+                      <i className="fas fa-book"></i>
+                      {user.stream}
+                    </span>
+                  )}
+                  {user.targetExam && (
+                    <span className="academic-badge">
+                      <i className="fas fa-bullseye"></i>
+                      {user.targetExam}
+                    </span>
+                  )}
+                </div>
+              </div>
+
               <div className="detail-row">
                 <div className="detail-item">
                   <label>Phone:</label>
@@ -475,7 +475,7 @@ const StudentDashboard = () => {
                 )}
               </div>
             ) : (
-              <p>No study materials available yet.</p>
+              <p className="no-data-message">No study materials available yet.</p>
             )}
           </div>
         </div>
@@ -512,7 +512,7 @@ const StudentDashboard = () => {
                 )}
               </div>
             ) : (
-              <p>No personal resources yet.</p>
+              <p className="no-data-message">No personal resources yet.</p>
             )}
           </div>
         </div>

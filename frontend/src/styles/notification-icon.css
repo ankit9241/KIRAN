@@ -435,4 +435,27 @@
   .notification-item {
     padding: 12px 16px;
   }
+}
+
+/* --- Premium Mobile Redesign: Notification Icon Mobile Overrides --- */
+@media (max-width: 600px) {
+  .notification-icon-wrapper, .notification-dropdown {
+    border-radius: 1.25rem !important;
+    box-shadow: 0 4px 16px rgba(31,41,55,0.10) !important;
+    padding: 0.7rem !important;
+    background: #fff !important;
+    transition: box-shadow 0.2s !important;
+    font-size: 1.1rem !important;
+  }
+  .notification-icon {
+    font-size: 1.5rem !important;
+    width: 2.2rem !important;
+    height: 2.2rem !important;
+  }
+  .notification-badge {
+    font-size: 1rem !important;
+    min-width: 1.5rem !important;
+    height: 1.5rem !important;
+    padding: 0.2rem 0.5rem !important;
+  }
 } 
