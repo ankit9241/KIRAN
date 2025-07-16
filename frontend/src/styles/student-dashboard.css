@@ -29,7 +29,7 @@
 }
 
 .student-dashboard {
-  margin-top: 60px;
+  margin-top: 80px;
   padding: 2rem;
   max-width: 1200px;
   margin-left: auto;
@@ -2905,7 +2905,7 @@
 /* Mobile Responsive Styles */
 @media (max-width: 767px) {
   .student-dashboard {
-    margin-top: 60px;
+    margin-top: 0 !important;
     padding: 1rem;
     gap: 1.5rem;
   }
@@ -3540,6 +3540,7 @@
 /* --- Premium Mobile Redesign: Explicit Mobile Overrides --- */
 @media (max-width: 600px) {
   .student-dashboard {
+    margin-top: 0 !important;
     padding: 1.25rem 0.25rem 2.5rem 0.25rem !important;
     gap: 1.25rem !important;
     background: var(--background) !important;
@@ -3711,4 +3712,64 @@
     font-size: 1.05rem !important;
     margin-top: 0.5rem !important;
   }
+}
+
+.dashboard-welcome {
+  margin-bottom: 0;
+  text-align: center;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.dashboard-welcome h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1.2rem;
+  background: linear-gradient(135deg, #4F46E5 0%, #10B981 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #1F2937;
+}
+.dashboard-welcome p {
+  font-size: 1.25rem;
+  color: #6B7280;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+@media (max-width: 700px) {
+  .dashboard-welcome {
+    padding: 0;
+    border-radius: 0;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+  }
+  .dashboard-welcome h1 {
+    font-size: 1.2rem;
+    margin-bottom: 0.7rem;
+  }
+  .dashboard-welcome p {
+    font-size: 0.98rem;
+  }
+}
+
+.dashboard-welcome-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+.dashboard-welcome-inner h1 {
+  margin: 0;
+}
+.dashboard-welcome-inner p {
+  margin: 0;
 }

@@ -40,46 +40,7 @@ const Contact = () => {
         <p>Have questions or need support? Get in touch with us.</p>
       </div>
       <div className="contact-container">
-        {/* Contact Information */}
-        <div className="contact-info">
-          <div className="info-card">
-            <h3>Get in Touch</h3>
-            <p>Our support team is here to help you with any questions or concerns.</p>
-            <p className="mt-2">
-              <strong>Email:</strong> adityasinghofficial296@gmail.com
-            </p>
-            <p>
-              <strong>Telegram:</strong> <a href="https://t.me/Aditya22906" target="_blank" rel="noopener noreferrer">@Aditya22906</a>
-            </p>
-          </div>
-
-          <div className="info-card">
-            <h3>Address</h3>
-            <p>Jamshedpur, Jharkhand, India</p>
-          </div>
-
-          <div className="info-card">
-            <h3>Quick Links</h3>
-            <p>Find answers to common questions in our help center.</p>
-            <p className="mt-2">
-              <a href="/faq" className="text-primary hover:text-primary-dark">
-                FAQ
-              </a>
-            </p>
-            <p>
-              <a href="/support" className="text-primary hover:text-primary-dark">
-                Support Center
-              </a>
-            </p>
-            <p>
-              <a href="/terms" className="text-primary hover:text-primary-dark">
-                Terms of Service
-              </a>
-            </p>
-          </div>
-        </div>
-
-        {/* Contact Form */}
+        {/* Mobile: Form on top, Info below. Desktop: Order by CSS grid. */}
         <div className="contact-form">
           <div className="form-section">
             <h3>Contact Form</h3>
@@ -149,6 +110,47 @@ const Contact = () => {
                 </div>
               )}
             </form>
+          </div>
+        </div>
+        {/* Contact Information */}
+        <div className="contact-info">
+          <div className="info-card">
+            <h3>Get in Touch</h3>
+            <p>Our support team is here to help you with any questions or concerns.</p>
+            <p className="mt-2">
+              <strong>Email:</strong> adityasinghofficial296@gmail.com
+            </p>
+            <p>
+              <strong>Telegram:</strong> <a href="https://t.me/Aditya22906" target="_blank" rel="noopener noreferrer">@Aditya22906</a>
+            </p>
+            <p>
+              <strong>Instagram:</strong> <a href="https://www.instagram.com/kiran_mentorship?igsh=MXR2aHNpenF5cXFpeA==" target="_blank" rel="noopener noreferrer">@kiran_mentorship</a>
+            </p>
+          </div>
+
+          <div className="info-card">
+            <h3>Address</h3>
+            <p>Jamshedpur, Jharkhand, India</p>
+          </div>
+
+          <div className="info-card">
+            <h3>Quick Links</h3>
+            <p>Find answers to common questions in our help center.</p>
+            <p className="mt-2">
+              <a href="/faq" className="text-primary hover:text-primary-dark">
+                FAQ
+              </a>
+            </p>
+            <p>
+              <a href="/support" className="text-primary hover:text-primary-dark">
+                Support Center
+              </a>
+            </p>
+            <p>
+              <a href="/terms" className="text-primary hover:text-primary-dark">
+                Terms of Service
+              </a>
+            </p>
           </div>
         </div>
       </div>

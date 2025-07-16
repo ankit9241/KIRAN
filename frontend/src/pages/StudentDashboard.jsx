@@ -9,6 +9,7 @@ import ResourceGrid from '../components/ResourceGrid';
 import FeedbackList from '../components/FeedbackList';
 import StudentMeetings from '../components/StudentMeetings';
 import Announcements from '../components/Announcements';
+import { useToast } from '../components/Toast.jsx';
 
 const API_URL = 'http://localhost:5000/api/users';
 
@@ -25,6 +26,7 @@ const StudentDashboard = () => {
   const [studyMaterials, setStudyMaterials] = useState([]);
   const [personalResources, setPersonalResources] = useState([]);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   useEffect(() => {
     // Check if user has recently logged out
@@ -187,7 +189,7 @@ const StudentDashboard = () => {
       link.remove();
     } catch (error) {
       console.error('Failed to download file:', error);
-      alert('Failed to download file');
+      showToast('Failed to download file', 'error');
     }
   };
 
@@ -201,227 +203,18 @@ const StudentDashboard = () => {
   return (
     <div className="student-dashboard">
       <Announcements />
-      <div className="profile-section">
-        <div className="profile-header">
+      <div className="dashboard-welcome">
+        <div className="dashboard-welcome-inner">
           <h1>Welcome, {user.name}</h1>
           <p>Your personalized learning dashboard</p>
         </div>
-        
-        {/* Enhanced Profile Editing Section */}
-        <div className="section-card profile-edit-section">
-          <div className="section-header">
-            <h2>Profile Information</h2>
-            {!editing && (
-              <button 
-                className="edit-btn"
-                onClick={() => setEditing(true)}
-              >
-                <i className="fas fa-edit"></i> Edit Profile
-              </button>
-            )}
-          </div>
-          
-          {message && (
-            <div className={`message ${message.includes('successfully') ? 'success' : 'error'}`}>
-              {message}
-            </div>
-          )}
-
-          {editing ? (
-            <div className="edit-form">
-              <div className="form-grid">
-                <div className="form-group">
-                  <label htmlFor="name">Full Name</label>
-                  <input
-                    id="name"
-                    type="text"
-                    name="name"
-                    value={editForm.name}
-                    onChange={handleInputChange}
-                    placeholder="Enter your full name"
-                    autoComplete="name"
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="phone">Phone Number</label>
-                  <input
-                    id="phone"
-                    type="tel"
-                    name="phone"
-                    value={editForm.phone}
-                    onChange={handleInputChange}
-                    placeholder="Enter your phone number"
-                    autoComplete="tel"
-                  />
-                </div>
-
-                <div className="form-group full-width">
-                  <label htmlFor="address">Address</label>
-                  <textarea
-                    id="address"
-                    name="address"
-                    value={editForm.address}
-                    onChange={handleInputChange}
-                    placeholder="Enter your address"
-                    rows="2"
-                    autoComplete="street-address"
-                  />
-                </div>
-
-                <div className="form-group full-width">
-                  <label htmlFor="bio">Bio</label>
-                  <textarea
-                    id="bio"
-                    name="bio"
-                    value={editForm.bio}
-                    onChange={handleInputChange}
-                    placeholder="Tell us about yourself, your interests, and what motivates you to learn..."
-                    rows="3"
-                  />
-                </div>
-
-                <div className="form-group full-width">
-                  <label htmlFor="learningGoals">Learning Goals</label>
-                  <textarea
-                    id="learningGoals"
-                    name="learningGoals"
-                    value={editForm.learningGoals}
-                    onChange={handleInputChange}
-                    placeholder="What are your main learning objectives? What do you want to achieve?"
-                    rows="3"
-                  />
-                </div>
-
-                <div className="form-group full-width">
-                  <label htmlFor="preferredSubjects">Preferred Subjects (comma-separated)</label>
-                  <input
-                    id="preferredSubjects"
-                    type="text"
-                    value={editForm.preferredSubjects}
-                    onChange={(e) => handleArrayInputChange('preferredSubjects', e.target.value)}
-                    placeholder="e.g., Mathematics, Physics, Chemistry"
-                  />
-                </div>
-
-                <div className="form-group full-width">
-                  <label htmlFor="achievements">Achievements (comma-separated)</label>
-                  <input
-                    id="achievements"
-                    type="text"
-                    value={editForm.achievements}
-                    onChange={(e) => handleArrayInputChange('achievements', e.target.value)}
-                    placeholder="e.g., School topper, Math Olympiad winner, Science fair winner"
-                  />
-                </div>
-              </div>
-
-              <div className="form-actions">
-                <button 
-                  className="btn-secondary"
-                  onClick={handleCancel}
-                  disabled={saving}
-                >
-                  Cancel
-                </button>
-                <button 
-                  className="btn-primary"
-                  onClick={handleSave}
-                  disabled={saving}
-                >
-                  {saving ? 'Saving...' : 'Save Changes'}
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="profile-details">
-              {/* Academic Info Row above Profile Details */}
-              <div className="profile-info-row">
-                {/* Compact Academic Info Badges */}
-                <div className="academic-badges">
-                  {user.class && (
-                    <span className="academic-badge">
-                      <i className="fas fa-graduation-cap"></i>
-                      Class {user.class}
-                    </span>
-                  )}
-                  {user.stream && (
-                    <span className="academic-badge">
-                      <i className="fas fa-book"></i>
-                      {user.stream}
-                    </span>
-                  )}
-                  {user.targetExam && (
-                    <span className="academic-badge">
-                      <i className="fas fa-bullseye"></i>
-                      {user.targetExam}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="detail-row">
-                <div className="detail-item">
-                  <label>Phone:</label>
-                  <span>{user.phone || 'Not provided'}</span>
-                </div>
-                <div className="detail-item">
-                  <label>Address:</label>
-                  <span>{user.address || 'Not provided'}</span>
-                </div>
-              </div>
-              
-              {user.bio && (
-                <div className="detail-item full-width">
-                  <label>Bio:</label>
-                  <span>{user.bio}</span>
-                </div>
-              )}
-              
-              {user.learningGoals && (
-                <div className="detail-item full-width">
-                  <label>Learning Goals:</label>
-                  <span>{user.learningGoals}</span>
-                </div>
-              )}
-              
-              <div className="detail-item full-width">
-                <label>Preferred Subjects:</label>
-                <div className="subject-tags">
-                  {user.preferredSubjects && user.preferredSubjects.length > 0 ? (
-                    user.preferredSubjects.map((subject, index) => (
-                      <span key={index} className="subject-tag">{subject}</span>
-                    ))
-                  ) : (
-                    <span className="no-data">No subjects specified</span>
-                  )}
-                </div>
-              </div>
-              
-              <div className="detail-item full-width">
-                <label>Achievements:</label>
-                <div className="achievement-tags">
-                  {user.achievements && user.achievements.length > 0 ? (
-                    user.achievements.map((achievement, index) => (
-                      <span key={index} className="achievement-tag">{achievement}</span>
-                    ))
-                  ) : (
-                    <span className="no-data">No achievements added</span>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
       </div>
-
+      {/* Dashboard content below */}
       <div className="section-card">
         <div className="section-content">
           <MentorList mentors={mentors} />
         </div>
       </div>
-
       <div className="section-card">
         <div className="section-header">
           <h2>Doubts</h2>
@@ -430,7 +223,6 @@ const StudentDashboard = () => {
           <DoubtList doubts={doubts} onDoubtAdded={handleDoubtAdded} />
         </div>
       </div>
-
       <div className="section-card">
         <div className="section-header">
           <h2>Upcoming Meetings</h2>
@@ -439,7 +231,6 @@ const StudentDashboard = () => {
           <StudentMeetings />
         </div>
       </div>
-
       <div className="dashboard-row-cards">
         <div className="section-card">
           <div className="section-header">
@@ -449,7 +240,7 @@ const StudentDashboard = () => {
             </Link>
           </div>
           <div className="section-content">
-            {studyMaterials && studyMaterials.materials && studyMaterials.materials.length > 0 ? (
+            {studyMaterials.materials && studyMaterials.materials.length > 0 ? (
               <div className="materials-preview">
                 {studyMaterials.materials.slice(0, 3).map((material) => (
                   <div key={material._id} className="material-preview-card">
@@ -479,7 +270,6 @@ const StudentDashboard = () => {
             )}
           </div>
         </div>
-
         {/* Personal Resources Section */}
         <div className="section-card">
           <div className="section-header">
@@ -517,7 +307,6 @@ const StudentDashboard = () => {
           </div>
         </div>
       </div>
-
       <div className="section-card">
         <div className="section-header">
           <h2>Feedback</h2>

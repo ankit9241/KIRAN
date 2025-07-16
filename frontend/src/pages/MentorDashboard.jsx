@@ -8,6 +8,8 @@ import StudentDetailsModal from '../components/StudentDetailsModal';
 import MeetingManager from '../components/MeetingManager';
 import Announcements from '../components/Announcements';
 import StudentMeetings from '../components/StudentMeetings';
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { useToast } from '../components/Toast.jsx';
 
 const MentorDashboard = () => {
   const [mentorInfo, setMentorInfo] = useState(null);
@@ -32,6 +34,7 @@ const MentorDashboard = () => {
   const [editProfileError, setEditProfileError] = useState(null);
   const [expandedResolvedDoubts, setExpandedResolvedDoubts] = useState(new Set());
   const [expandedAssigned, setExpandedAssigned] = useState({});
+  const { showToast } = useToast();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -111,6 +114,19 @@ const MentorDashboard = () => {
     fetchData();
   }, [navigate]);
 
+  // Ensure edit modal opens with data when triggered from Navbar, even if mentorInfo loads after mount
+  useEffect(() => {
+    const flag = localStorage.getItem('openMentorEditProfile');
+    if (
+      flag === 'true' &&
+      mentorInfo
+    ) {
+      setEditProfileData({ ...(mentorInfo || {}) });
+      setIsEditProfileOpen(true);
+      localStorage.removeItem('openMentorEditProfile');
+    }
+  }, [mentorInfo, localStorage.getItem('openMentorEditProfile')]);
+
   const [selectedStudent, setSelectedStudent] = useState('');
   const [meetingNotes, setMeetingNotes] = useState('');
   const [selectedDoubtType, setSelectedDoubtType] = useState('All');
@@ -126,7 +142,7 @@ const MentorDashboard = () => {
 
   const handleFeedback = async () => {
     if (!selectedStudent || !feedback.trim()) {
-      alert('Please select a student and provide feedback');
+      showToast('Please select a student and provide feedback', 'info');
       return;
     }
 
@@ -139,19 +155,19 @@ const MentorDashboard = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
 
-      alert('Feedback submitted successfully!');
+      showToast('Feedback submitted successfully!', 'success');
       setFeedback('');
       setSelectedStudent('');
       setFeedbackRating(5);
     } catch (error) {
       console.error('Error submitting feedback:', error);
-      alert('Failed to submit feedback. Please try again.');
+      showToast('Failed to submit feedback. Please try again.', 'error');
     }
   };
 
   const handleResourceUpload = async () => {
     if (!selectedStudent || !resourceFile || !resourceTitle) {
-      alert('Please select a student, provide a title, and choose a file');
+      showToast('Please select a student, provide a title, and choose a file', 'info');
       return;
     }
 
@@ -163,21 +179,21 @@ const MentorDashboard = () => {
 
     try {
       // Use the correct endpoint for personal resource upload
-      const response = await axios.post(`${API_ENDPOINTS.STUDY_MATERIAL}/upload-student`, formData, {
+      const response = await axios.post(API_ENDPOINTS.UPLOAD_STUDENT_RESOURCE, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'multipart/form-data'
         }
       });
 
-      alert('Personal resource uploaded successfully!');
+      showToast('Personal resource uploaded successfully!', 'success');
       setResourceFile(null);
       setResourceTitle('');
       setResourceDescription('');
       setSelectedStudent('');
     } catch (error) {
       console.error('Error uploading resource:', error);
-      alert('Failed to upload resource. Please try again.');
+      showToast('Failed to upload resource. Please try again.', 'error');
     }
   };
 
@@ -209,7 +225,7 @@ const MentorDashboard = () => {
 
   const handleSubmitResponse = async () => {
     if (!responseText.trim()) {
-      alert('Please provide a response to the doubt');
+      showToast('Please provide a response to the doubt', 'info');
       return;
     }
 
@@ -236,11 +252,11 @@ const MentorDashboard = () => {
       // Update the doubts list
       setDoubts(prev => prev.map(d => d._id === selectedDoubtForResponse._id ? response.data : d));
       
-      alert('Response submitted successfully!');
+      showToast('Response submitted successfully!', 'success');
       closeResponseModal();
     } catch (error) {
       console.error('Error submitting response:', error);
-      alert('Failed to submit response. Please try again.');
+      showToast('Failed to submit response. Please try again.', 'error');
     }
   };
 
@@ -259,11 +275,11 @@ const MentorDashboard = () => {
       // Update the doubts lists
       setDoubts(prev => [...prev, response.data]);
       setPendingDoubts(prev => prev.filter(d => d._id !== doubtId));
-      alert('Doubt picked up successfully!');
+      showToast('Doubt picked up successfully!', 'success');
     } catch (error) {
       console.error('Error picking up doubt:', error);
       console.error('Error response:', error.response?.data);
-      alert('Failed to pick up doubt. Please try again.');
+      showToast('Failed to pick up doubt. Please try again.', 'error');
     }
   };
 
@@ -278,10 +294,10 @@ const MentorDashboard = () => {
       );
       // Update the doubts list
       setDoubts(prev => prev.map(d => d._id === doubtId ? response.data : d));
-      alert('Doubt resolved successfully!');
+      showToast('Doubt resolved successfully!', 'success');
     } catch (error) {
       console.error('Error resolving doubt:', error);
-      alert('Failed to resolve doubt. Please try again.');
+      showToast('Failed to resolve doubt. Please try again.', 'error');
     }
   };
 
@@ -295,73 +311,7 @@ const MentorDashboard = () => {
     setIsEditProfileOpen(true);
   };
 
-  const closeEditProfile = () => {
-    setIsEditProfileOpen(false);
-    setEditProfileError(null);
-  };
-
-  const handleEditProfileChange = (e) => {
-    const { name, value } = e.target;
-    setEditProfileData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleEditProfileArrayChange = (e) => {
-    const { name, value } = e.target;
-    setEditProfileData((prev) => ({ ...prev, [name]: value.split(',').map(s => s.trim()) }));
-  };
-
-  // Helper to ensure required mentor fields are always present
-  const getCompleteEditProfileData = (data) => {
-    return {
-      name: data.name || '',
-      email: data.email || '',
-      phone: data.phone || '',
-      address: data.address || '',
-      telegramId: data.telegramId || '',
-      whatsapp: data.whatsapp || '',
-      linkedin: data.linkedin || '',
-      website: data.website || '',
-      specialization: data.specialization || '',
-      experience: data.experience || '',
-      subjectsTaught: Array.isArray(data.subjectsTaught)
-        ? data.subjectsTaught.filter(s => s)
-        : (data.subjectsTaught ? data.subjectsTaught.split(',').map(s => s.trim()).filter(s => s) : []),
-      teachingStyle: data.teachingStyle || '',
-      qualifications: data.qualifications || '',
-      bio: data.bio || '',
-      achievements: Array.isArray(data.achievements)
-        ? data.achievements.filter(a => a)
-        : (data.achievements ? data.achievements.split(',').map(a => a.trim()).filter(a => a) : []),
-      profilePicture: data.profilePicture || '',
-    };
-  };
-
-  const handleEditProfileSave = async (e) => {
-    e.preventDefault();
-    setEditProfileLoading(true);
-    setEditProfileError(null);
-    // Validate required mentor fields
-    const dataToSend = getCompleteEditProfileData(editProfileData);
-    if (!dataToSend.specialization || !dataToSend.experience || !dataToSend.teachingStyle || !dataToSend.qualifications || dataToSend.subjectsTaught.length === 0) {
-      setEditProfileError('All mentor fields (Specialization, Experience, Subjects Taught, Teaching Style, Qualifications) are required.');
-      setEditProfileLoading(false);
-      return;
-    }
-    try {
-      const token = localStorage.getItem('token');
-      const res = await axios.patch(
-        `${API_ENDPOINTS.USERS}/me`,
-        dataToSend,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setMentorInfo(res.data);
-      setIsEditProfileOpen(false);
-    } catch (err) {
-      setEditProfileError('Failed to update profile. Please try again.');
-    } finally {
-      setEditProfileLoading(false);
-    }
-  };
+  // Remove all code related to displaying or editing the mentor's own profile details (edit profile modal, edit/save/cancel handlers, and edit form UI). Only keep dashboard-specific features like students, doubts, meetings, etc.
 
   // Helper to toggle expansion for resolved doubts
   const toggleResolvedDoubtExpansion = (doubtId) => {
@@ -382,42 +332,11 @@ const MentorDashboard = () => {
 
   return (
     <div className="mentor-dashboard">
-      {/* Edit Profile Modal */}
-      {isEditProfileOpen && (
-        <div className="modal-overlay" onClick={closeEditProfile}>
-          <div className="modal-content" onClick={e => e.stopPropagation()} style={{maxWidth: 600}}>
-            <div className="modal-header">
-              <h2>Edit Profile</h2>
-              <button className="close-btn" onClick={closeEditProfile}>×</button>
-            </div>
-            <form className="edit-profile-form" onSubmit={handleEditProfileSave}>
-              <div className="form-group"><label>Name</label><input name="name" value={editProfileData?.name || ''} onChange={handleEditProfileChange} required /></div>
-              <div className="form-group"><label>Email</label><input name="email" value={editProfileData?.email || ''} onChange={handleEditProfileChange} required disabled /></div>
-              <div className="form-group"><label>Phone</label><input name="phone" value={editProfileData?.phone || ''} onChange={handleEditProfileChange} /></div>
-              <div className="form-group"><label>Address</label><input name="address" value={editProfileData?.address || ''} onChange={handleEditProfileChange} /></div>
-              <div className="form-group"><label>Telegram ID</label><input name="telegramId" value={editProfileData?.telegramId || ''} onChange={handleEditProfileChange} /></div>
-              <div className="form-group"><label>WhatsApp</label><input name="whatsapp" value={editProfileData?.whatsapp || ''} onChange={handleEditProfileChange} /></div>
-              <div className="form-group"><label>LinkedIn</label><input name="linkedin" value={editProfileData?.linkedin || ''} onChange={handleEditProfileChange} /></div>
-              <div className="form-group"><label>Website</label><input name="website" value={editProfileData?.website || ''} onChange={handleEditProfileChange} /></div>
-              <div className="form-group"><label>Specialization</label><input name="specialization" value={editProfileData?.specialization || ''} onChange={handleEditProfileChange} required /></div>
-              <div className="form-group"><label>Experience</label><input name="experience" value={editProfileData?.experience || ''} onChange={handleEditProfileChange} required /></div>
-              <div className="form-group"><label>Subjects Taught (comma separated)</label><input name="subjectsTaught" value={editProfileData?.subjectsTaught?.join(', ') || ''} onChange={handleEditProfileArrayChange} required /></div>
-              <div className="form-group"><label>Teaching Style</label><input name="teachingStyle" value={editProfileData?.teachingStyle || ''} onChange={handleEditProfileChange} required /></div>
-              <div className="form-group"><label>Qualifications</label><input name="qualifications" value={editProfileData?.qualifications || ''} onChange={handleEditProfileChange} required /></div>
-              <div className="form-group"><label>Bio</label><textarea name="bio" value={editProfileData?.bio || ''} onChange={handleEditProfileChange} rows={2} /></div>
-              <div className="form-group"><label>Achievements (comma separated)</label><input name="achievements" value={editProfileData?.achievements?.join(', ') || ''} onChange={handleEditProfileArrayChange} /></div>
-              {/* Profile picture upload can be added here if needed */}
-              {editProfileError && <div className="error-message">{editProfileError}</div>}
-              <button className="btn-primary" type="submit" disabled={editProfileLoading}>{editProfileLoading ? 'Saving...' : 'Save Changes'}</button>
-            </form>
-          </div>
-        </div>
-      )}
       <Announcements />
       <div className="dashboard-header">
         <h1>Mentor Dashboard</h1>
         <p>Welcome, {mentorInfo.name}</p>
-        <button className="btn-primary" style={{float:'right',marginTop:-40}} onClick={openEditProfile}>Edit Profile</button>
+        {/* Removed Edit Profile button from dashboard */}
       </div>
 
       {/* Approval Status Display - Only show if not dismissed */}
@@ -647,7 +566,6 @@ const MentorDashboard = () => {
                               position: 'relative'
                             }}
                             onClick={() => {
-                              alert('Pickup button clicked!');
                               handlePickUpDoubt(doubt._id);
                             }}
                           >
@@ -668,6 +586,7 @@ const MentorDashboard = () => {
                 <span className="subsection-badge">{doubts.length} assigned</span>
               </div>
               <div className="doubts-list">
+                {console.log('All doubts:', doubts.map(d => ({id: d._id, status: d.status})))}
                 {doubts.length === 0 ? (
                   <p className="no-doubts">No assigned doubts</p>
                 ) : (
@@ -676,22 +595,20 @@ const MentorDashboard = () => {
                       const isExpanded = !!expandedAssigned[doubt._id];
                       return (
                         <div key={doubt._id} className={`doubt-item assigned ${isExpanded ? 'expanded' : 'collapsed'}`}> 
-                          <div className="doubt-summary-row" tabIndex={0} onClick={() => setExpandedAssigned(prev => ({ ...prev, [doubt._id]: !prev[doubt._id] }))} style={{cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 1rem', background: '#f6f6f6', borderRadius: '6px', marginBottom: '6px', border: '1px solid #e0e0e0'}}>
-                            <div style={{display: 'flex', flexDirection: 'column'}}>
-                              <span style={{fontWeight: 600}}>{doubt.title}</span>
-                              <span style={{fontSize: '0.9em', color: '#666'}}>Student: {doubt.student.name} | Subject: {doubt.subject}</span>
+                          <div className="doubt-summary-row" tabIndex={0} onClick={() => setExpandedAssigned(prev => ({ ...prev, [doubt._id]: !prev[doubt._id] }))}>
+                            <div className="doubt-summary-title-row">
+                              <span className="doubt-title">{doubt.title}</span>
+                              <span className="doubt-meta">Student: {doubt.student.name} | Subject: {doubt.subject}</span>
                             </div>
-                            <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                              <span className="assigned-badge" style={{background: '#2196f3', color: 'white', borderRadius: '12px', padding: '2px 10px', fontSize: '0.85em'}}>Assigned</span>
-                              <span style={{fontSize: '0.85em', color: '#888'}}>{new Date(doubt.createdAt).toLocaleDateString()}</span>
-                              <span style={{fontSize: '1.2em', marginLeft: '8px'}}>{isExpanded ? '▲' : '▼'}</span>
+                            <div className="doubt-summary-meta-row">
+                              <span className="assigned-badge">Assigned</span>
+                              <span className="doubt-date">{new Date(doubt.createdAt).toLocaleDateString()}</span>
+                              <span className="doubt-chevron">{isExpanded ? '▲' : '▼'}</span>
                             </div>
                           </div>
                           {isExpanded && (
-                            <div className="doubt-details" style={{padding: '1rem', background: '#fff', borderRadius: '0 0 6px 6px', border: '1px solid #e0e0e0', borderTop: 'none', marginBottom: '10px'}}>
+                            <div className="doubt-details">
                               <p><strong>Question:</strong> {doubt.description}</p>
-                              <p><strong>Status:</strong> {doubt.status}</p>
-                              <p><strong>Assigned:</strong> {new Date(doubt.createdAt).toLocaleDateString()}</p>
                               {/* Show mentor response if available */}
                               {doubt.mentorResponse && (
                                 <div className="mentor-response">
@@ -716,13 +633,58 @@ const MentorDashboard = () => {
                                 </div>
                               )}
                               <div className="doubt-actions">
-                                <button 
-                                  className="respond-btn"
-                                  onClick={() => openResponseModal(doubt)}
-                                >
+                                <button className="respond-btn" onClick={() => openResponseModal(doubt)}>
                                   Respond to Doubt
                                 </button>
                               </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    } else if (doubt.status === 'resolved') {
+                      const isExpanded = !!expandedResolvedDoubts.has(doubt._id);
+                      return (
+                        <div key={doubt._id} className={`doubt-item resolved ${isExpanded ? 'expanded' : 'collapsed'}`}>
+                          <div className="doubt-summary-row resolved-summary-row" tabIndex={0} onClick={() => toggleResolvedDoubtExpansion(doubt._id)}>
+                            {/* Resolved badge in top right */}
+                            <span style={{ position: 'absolute', top: 8, right: 12, zIndex: 3, fontSize: '0.78em', padding: '2px 10px', borderRadius: '12px', background: '#4caf50', color: 'white', fontWeight: 600, letterSpacing: '0.5px', boxShadow: '0 1px 4px rgba(60,60,60,0.08)' }}>
+                              Resolved
+                            </span>
+                            <div className="doubt-summary-title-row">
+                              <span className="doubt-title">{doubt.title}</span>
+                              <span className="doubt-meta">Student: {doubt.student.name} | Subject: {doubt.subject}</span>
+                            </div>
+                            <div className="doubt-summary-meta-row">
+                              <span className="doubt-date">{new Date(doubt.createdAt).toLocaleDateString()}</span>
+                              <span className="doubt-chevron">{isExpanded ? <FiChevronUp /> : <FiChevronDown />}</span>
+                            </div>
+                          </div>
+                          {isExpanded && (
+                            <div className="doubt-details">
+                              <p><strong>Question:</strong> {doubt.description}</p>
+                              {/* Show mentor response if available */}
+                              {doubt.mentorResponse && (
+                                <div className="mentor-response">
+                                  <h5>Your Response:</h5>
+                                  <p>{doubt.mentorResponse}</p>
+                                  <p><small>Responded on: {new Date(doubt.responseDate).toLocaleDateString()}</small></p>
+                                  {/* Show uploaded documents if any */}
+                                  {doubt.uploadedDocuments && doubt.uploadedDocuments.length > 0 && (
+                                    <div className="uploaded-documents">
+                                      <h6>Uploaded Documents:</h6>
+                                      <ul>
+                                        {doubt.uploadedDocuments.map((doc, index) => (
+                                          <li key={index}>
+                                            <a href={doc.filePath} target="_blank" rel="noopener noreferrer">
+                                              {doc.originalName}
+                                            </a>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>

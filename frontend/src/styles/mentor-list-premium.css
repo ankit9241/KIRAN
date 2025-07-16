@@ -384,21 +384,6 @@
   transform: scale(1.05);
 }
 
-.availability-badge {
-  position: absolute;
-  bottom: -2px;
-  right: -2px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
 .mentor-info-premium {
   flex: 1;
   min-width: 0;
@@ -789,4 +774,344 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+} 
+
+@media (max-width: 700px) {
+  .mentors-premium-section {
+    padding: 0.7rem 0.2rem;
+    margin: 0.7rem 0 1.2rem 0;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+  .section-header-premium {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .header-stats {
+    gap: 0.7rem;
+  }
+  .mentor-controls, .bulk-actions, .view-toggle {
+    display: none !important;
+  }
+  .mentors-container {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    gap: 0.7rem !important;
+    padding-bottom: 0.5rem;
+    scroll-snap-type: x mandatory;
+  }
+  .mentor-card-premium {
+    min-width: 72vw !important;
+    max-width: 88vw !important;
+    padding: 1rem 0.7rem !important;
+    border-radius: 1rem !important;
+  }
+  .mentor-card-premium:before {
+    content: '';
+    position: absolute;
+    left: 0.5rem;
+    top: 1rem;
+    bottom: 1rem;
+    width: 5px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+    opacity: 0.7;
+    z-index: 1;
+  }
+  .mentor-card-premium:active, .mentor-card-premium:focus {
+    box-shadow: 0 10px 32px rgba(59,130,246,0.18), 0 2px 12px rgba(31,41,55,0.13) !important;
+    transform: scale(1.025);
+  }
+  .mentor-header-premium, .mentor-info-premium, .mentor-details-premium, .contact-section-premium {
+    position: relative;
+    z-index: 2;
+  }
+  .mentor-header-premium {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.7rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  .mentor-avatar-premium {
+    width: 38px !important;
+    height: 38px !important;
+    margin-right: 0.4rem !important;
+  }
+  .mentor-info-premium {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+  .mentor-name-premium {
+    font-size: 0.98rem !important;
+    margin-bottom: 0.05rem !important;
+  }
+  .mentor-specialization-premium {
+    font-size: 0.85rem !important;
+    margin-bottom: 0.05rem !important;
+  }
+  .experience-level {
+    font-size: 0.8rem !important;
+    gap: 0.15rem !important;
+  }
+  .mentor-actions {
+    margin-left: 0.2rem !important;
+  }
+  .action-btn {
+    font-size: 0.85rem !important;
+    padding: 0.5rem 0.7rem !important;
+    min-width: 80px !important;
+    margin-top: 0.2rem !important;
+    border-radius: 0.5rem !important;
+  }
+  .mentor-details-premium {
+    font-size: 0.85rem !important;
+    padding: 0.3rem 0 !important;
+  }
+  .mentor-bio-section h4,
+  .qualifications-section h4,
+  .teaching-style-section h4,
+  .subjects-section h4,
+  .achievements-section h4 {
+    margin-bottom: 0.45rem !important;
+  }
+  .mentor-bio-section p,
+  .qualifications-section p,
+  .teaching-style-section p,
+  .subjects-section p,
+  .achievements-section p {
+    margin-top: 0.18rem !important;
+  }
+  .contact-section-premium {
+    margin-top: 0.3rem !important;
+    padding: 0.2rem 0 !important;
+  }
+  .contact-grid-premium {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    justify-content: flex-start !important;
+  }
+  .contact-btn-premium {
+    font-size: 0.95rem !important;
+    padding: 0.5rem 0.7rem !important;
+    min-width: 80px !important;
+    border-radius: 0.5rem !important;
+    margin-top: 0.1rem !important;
+    max-width: 48% !important;
+  }
+  .mentor-details-premium > div {
+    margin-bottom: 0.3rem !important;
+  }
+  .mentor-header-premium {
+    gap: 0.25rem !important;
+    margin-bottom: 0.15rem !important;
+    padding-bottom: 0 !important;
+  }
+  .mentor-avatar-premium {
+    width: 32px !important;
+    height: 32px !important;
+    margin-right: 0.2rem !important;
+  }
+  .mentor-name-premium {
+    font-size: 0.93rem !important;
+    margin-bottom: 0.01rem !important;
+  }
+  .mentor-specialization-premium {
+    font-size: 0.8rem !important;
+    margin-bottom: 0.01rem !important;
+  }
+  .experience-level {
+    font-size: 0.75rem !important;
+    gap: 0.08rem !important;
+  }
+  .mentor-actions {
+    margin-left: 0.1rem !important;
+  }
+  .action-btn {
+    font-size: 0.8rem !important;
+    padding: 0.35rem 0.5rem !important;
+    min-width: 65px !important;
+    margin-top: 0.08rem !important;
+    border-radius: 0.4rem !important;
+  }
+  .mentor-details-premium {
+    font-size: 0.8rem !important;
+    padding: 0.1rem 0 !important;
+    margin-bottom: 0 !important;
+  }
+  .mentor-details-premium > div {
+    margin-bottom: 0.12rem !important;
+  }
+  .mentor-details-premium h4 {
+    font-size: 0.85rem !important;
+    margin-bottom: 0.05rem !important;
+    margin-top: 0.05rem !important;
+  }
+  .mentor-details-premium p {
+    margin: 0.05rem 0 !important;
+  }
+  .contact-section-premium {
+    margin-top: 0.12rem !important;
+    padding: 0.08rem 0 !important;
+  }
+  .contact-btn-premium {
+    font-size: 0.85rem !important;
+    padding: 0.35rem 0.5rem !important;
+    min-width: 65px !important;
+    border-radius: 0.4rem !important;
+    margin-top: 0.05rem !important;
+    max-width: 48% !important;
+  }
+  .mentor-avatar-premium,
+  .avatar-placeholder {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 1rem !important;
+    margin-right: 0.1rem !important;
+    border-width: 2px !important;
+  }
+  .mentor-avatar-premium img {
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border-width: 2px !important;
+  }
+  .action-btn {
+    font-size: 0.6rem !important;
+    padding: 0.13rem 0.25rem !important;
+    min-width: 38px !important;
+    height: 1.2rem !important;
+    line-height: 1 !important;
+    border-radius: 0.2rem !important;
+    margin-top: 0.01rem !important;
+  }
+  .mentor-actions .action-btn {
+    font-size: 0.6rem !important;
+    padding: 0.1rem 0.18rem !important;
+    min-width: 30px !important;
+    height: 1rem !important;
+    line-height: 1 !important;
+    border-radius: 0.15rem !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  .mentor-actions .action-btn {
+    font-size: 0.6rem !important;
+    padding: 0.1rem 0.18rem !important;
+    min-width: 30px !important;
+    height: 1rem !important;
+    line-height: 1 !important;
+    border-radius: 0.5rem !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  .mentor-header-premium {
+    gap: 0.5rem !important;
+    margin-bottom: 0.18rem !important;
+    padding-bottom: 0.08rem !important;
+  }
+  .mentor-avatar-premium,
+  .avatar-placeholder {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 1.2rem !important;
+    margin-right: 0.18rem !important;
+    border-width: 2px !important;
+  }
+  .mentor-avatar-premium img {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border-width: 2px !important;
+  }
+  .mentor-name-premium {
+    font-size: 1.08rem !important;
+    margin-bottom: 0.04rem !important;
+    font-weight: 700 !important;
+  }
+  .mentor-specialization-premium {
+    font-size: 0.98rem !important;
+    margin-bottom: 0.03rem !important;
+    font-weight: 500 !important;
+  }
+  .mentor-details-premium {
+    font-size: 0.8rem !important;
+  }
+  .mentor-actions .action-btn {
+    margin-right: 0.5rem !important;
+    border-radius: 99px !important;
+    width: 100px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  /* --- Force spacing between h4 and p in mentor details sections for mobile --- */
+  .mentor-bio-section h4,
+  .qualifications-section h4,
+  .teaching-style-section h4,
+  .subjects-section h4,
+  .achievements-section h4 {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.6rem !important;
+  }
+  .mentor-bio-section p,
+  .qualifications-section p,
+  .teaching-style-section p,
+  .subjects-section p,
+  .achievements-section p {
+    margin-top: 0.25rem !important;
+  }
+  .mentor-card-premium {
+    padding: 1rem 0.7rem !important;
+  }
+  .mentor-card-premium:hover,
+  .mentor-card-premium:hover .mentor-avatar-premium img,
+  .mentor-card-premium:hover .avatar-placeholder,
+  .action-btn.primary:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    border-color: inherit !important;
+  }
+} 
+
+/* --- Premium Thin Scrollbar Styling --- */
+.mentors-container,
+.academic-badges,
+.subjects-grid,
+.achievements-list,
+.contact-grid-premium {
+  scrollbar-width: thin;
+  scrollbar-color: #3b82f6 #f3f4f6;
+}
+.mentors-container::-webkit-scrollbar,
+.academic-badges::-webkit-scrollbar,
+.subjects-grid::-webkit-scrollbar,
+.achievements-list::-webkit-scrollbar,
+.contact-grid-premium::-webkit-scrollbar {
+  height: 7px;
+  width: 7px;
+  background: transparent;
+  border-radius: 0;
+}
+.mentors-container::-webkit-scrollbar-thumb,
+.academic-badges::-webkit-scrollbar-thumb,
+.subjects-grid::-webkit-scrollbar-thumb,
+.achievements-list::-webkit-scrollbar-thumb,
+.contact-grid-premium::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 8px;
+}
+.mentors-container::-webkit-scrollbar-thumb:hover,
+.academic-badges::-webkit-scrollbar-thumb:hover,
+.subjects-grid::-webkit-scrollbar-thumb:hover,
+.achievements-list::-webkit-scrollbar-thumb:hover,
+.contact-grid-premium::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #6366f1 100%);
 } 

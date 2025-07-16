@@ -132,15 +132,7 @@ const MentorList = ({ mentors }) => {
     return { level: 'Junior', color: '#6B7280', icon: '🌱' };
   };
 
-  const getAvailabilityStatus = (mentor) => {
-    // Mock availability - in real app, this would come from mentor's schedule
-    const isAvailable = Math.random() > 0.3; // 70% chance of being available
-    return {
-      status: isAvailable ? 'Available' : 'Busy',
-      color: isAvailable ? '#10B981' : '#EF4444',
-      icon: isAvailable ? '🟢' : '🔴'
-    };
-  };
+  
 
   const filterStats = getFilterStats();
 
@@ -250,7 +242,7 @@ const MentorList = ({ mentors }) => {
       <div className={`mentors-container ${viewMode}`}>
         {filteredAndSortedMentors.map(mentor => {
           const experienceLevel = getExperienceLevel(mentor.experience);
-          const availability = getAvailabilityStatus(mentor);
+          
           const isSelected = isMentorSelected(mentor._id);
           
           return (
@@ -265,9 +257,6 @@ const MentorList = ({ mentors }) => {
                       {mentor.name.charAt(0).toUpperCase()}
                     </div>
                   )}
-                  <div className="availability-badge" style={{ backgroundColor: availability.color }}>
-                    {availability.icon}
-                  </div>
                 </div>
                 
                 <div className="mentor-info-premium">
@@ -275,7 +264,6 @@ const MentorList = ({ mentors }) => {
                   <p className="mentor-specialization-premium">{mentor.specialization}</p>
                   
                   <div className="experience-level">
-                    <span className="level-icon">{experienceLevel.icon}</span>
                     <span className="level-text" style={{ color: experienceLevel.color }}>
                       {experienceLevel.level}
                     </span>

@@ -19,7 +19,7 @@
 
 /* Dashboard Container */
 .mentor-dashboard {
-  margin-top: 60px; /* Adjust for navbar height */
+  margin-top: 0px !important;
   padding: 2rem;
   max-width: 1200px;
   margin-left: auto;
@@ -30,6 +30,8 @@
 .dashboard-header {
   margin-bottom: 3rem;
   text-align: center;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 .dashboard-header h1 {
@@ -59,6 +61,8 @@
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
   margin-bottom: 3rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 .stat-card {
@@ -106,6 +110,8 @@
   padding: 1.5rem;
   border-radius: 1rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 .students-section h2 {
@@ -726,8 +732,8 @@
   padding: 2rem;
   max-width: 1050px;
   width: 90%;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 @media (max-width: 1200px) {
@@ -899,6 +905,8 @@
   padding: 1.5rem;
   border-radius: 1rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 .sessions-section h2 {
@@ -1045,13 +1053,16 @@
   background: var(--primary-color);
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 0.35rem;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  min-width: 0;
+  height: 2rem;
 }
 
 .view-details-btn:hover {
@@ -1592,15 +1603,108 @@
   background: #e9f5e9;
 }
 .doubt-item.resolved {
-  margin-bottom: 10px;
-  box-shadow: 0 1px 4px rgba(60,60,60,0.04);
+  margin-bottom: 12px;
+  padding: 1rem 1.2rem 1rem 1.1rem;
+  min-height: unset;
+  align-items: flex-start;
+  box-shadow: 0 2px 8px rgba(60,60,60,0.06);
+  border-left: 4px solid #4caf50;
+  background: #f9fef9;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.doubt-item.resolved .doubt-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f3f7f3;
+  border-radius: 6px 6px 0 0;
+  padding: 0.6rem 1rem 0.6rem 0.7rem;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 1.04rem;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.doubt-item.resolved .doubt-summary-row:hover {
+  background: #e0f7e0;
+  box-shadow: 0 2px 8px rgba(76,175,80,0.08);
+}
+.doubt-item.resolved .doubt-summary-row .meta {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.doubt-item.resolved .doubt-details {
+  padding: 1.1rem 1.2rem 1.1rem 1.1rem;
+  background: #fff;
+  border-radius: 0 0 10px 10px;
+  border: 1px solid #e0e0e0;
+  border-top: none;
+  margin-bottom: 0.2rem;
+  margin-top: 0;
+  font-size: 1.08rem;
+  color: #234;
+  line-height: 1.7;
+  box-shadow: 0 2px 8px rgba(60,60,60,0.04);
+  animation: expandFadeIn 0.25s;
+}
+@keyframes expandFadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.doubt-item.resolved.expanded .doubt-summary-row {
+  background: #e8fbe8;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(76,175,80,0.10);
+}
+.doubt-item.resolved .mentor-response {
+  margin: 1.2rem 0 0.7rem 0;
+  background: #f6fff6;
+  border-left: 3px solid #4caf50;
+  padding: 0.8rem 1.2rem;
+  border-radius: 0 10px 10px 0;
+  font-size: 1.01rem;
+  color: #1b3a1b;
+}
+.doubt-item.resolved .mentor-response h5 {
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+  font-size: 1.08rem;
+  color: #388e3c;
+}
+.doubt-item.resolved .mentor-response p {
+  margin: 0.2rem 0 0.2rem 0;
+  color: #234;
+}
+.doubt-item.resolved .mentor-response small {
+  color: #388e3c;
+  font-size: 0.97rem;
+}
+.doubt-item.resolved .uploaded-documents {
+  margin-top: 0.7rem;
+  background: #f3f7f3;
+  border-radius: 6px;
+  padding: 0.5rem 0.8rem;
+}
+.doubt-item.resolved .uploaded-documents h6 {
+  margin: 0 0 0.3rem 0;
+  font-size: 1.01rem;
+  color: #388e3c;
+}
+.doubt-item.resolved .uploaded-documents a {
+  color: #1976d2;
+  text-decoration: underline;
+  font-size: 0.98rem;
 }
 .doubt-item.resolved .resolved-badge {
-  background: #4caf50;
-  color: white;
-  border-radius: 12px;
-  padding: 2px 10px;
-  font-size: 0.85em;
+  margin-left: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.doubt-item.resolved .doubt-content {
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 .doubt-item.resolved .fa-chevron-up,
 .doubt-item.resolved .fa-chevron-down {
@@ -1611,6 +1715,273 @@
 }
 .doubt-item.resolved.expanded .fa-chevron-up {
   transform: rotate(180deg);
+}
+
+.doubt-summary-row {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background: #f6f6f6;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  border: 1px solid #e0e0e0;
+  position: relative;
+}
+.doubt-summary-title-row {
+  display: flex;
+  flex-direction: column;
+}
+.doubt-title {
+  font-weight: 600;
+}
+.doubt-meta {
+  font-size: 0.9em;
+  color: #666;
+}
+.doubt-summary-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.assigned-badge {
+  background: #2196f3;
+  color: white;
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 0.85em;
+}
+.doubt-date {
+  font-size: 0.85em;
+  color: #888;
+}
+.doubt-chevron {
+  font-size: 1.2em;
+  margin-left: 8px;
+}
+.resolved-summary-row .resolved-badge-top {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  z-index: 3;
+  font-size: 0.78em;
+  padding: 2px 10px;
+  border-radius: 12px;
+  background: #4caf50;
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 1px 4px rgba(60,60,60,0.08);
+}
+.doubt-summary-overlay-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 2;
+  padding: 0;
+  margin: 0;
+}
+
+/* --- Premium Desktop Doubts Section Styling --- */
+@media (min-width: 601px) {
+  .doubts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    width: 100%;
+    max-width: 980px;
+    margin: 0 auto;
+  }
+  .doubt-item.assigned, .doubt-item.resolved {
+    width: 100%;
+    background: linear-gradient(120deg, #fafdff 0%, #f3f7fa 100%);
+    border-radius: 22px;
+    box-shadow: 0 8px 32px rgba(33,150,243,0.10), 0 2px 8px rgba(60,60,60,0.06);
+    border: 1.5px solid #e3eaf2;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.22s, transform 0.22s;
+    min-height: 140px;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  }
+  .doubt-item.assigned {
+    border-left: 7px solid #2196f3;
+  }
+  .doubt-item.resolved {
+    border-left: 7px solid #4caf50;
+  }
+  .doubt-item.assigned:hover, .doubt-item.resolved:hover {
+    box-shadow: 0 16px 48px rgba(33,150,243,0.13), 0 4px 16px rgba(60,60,60,0.09);
+    transform: translateY(-4px) scale(1.018);
+  }
+  .doubt-summary-row {
+    background: rgba(245, 250, 255, 0.92);
+    border-radius: 22px 22px 0 0;
+    margin-bottom: 0;
+    border: none;
+    padding: 2.1rem 2.5rem 2.1rem 2.5rem;
+    min-height: 90px;
+    box-shadow: 0 2px 8px rgba(33,150,243,0.04);
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .doubt-summary-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.22em;
+    width: 60%;
+  }
+  .doubt-title {
+    font-size: 1.32rem;
+    font-weight: 800;
+    color: #1a2a3a;
+    letter-spacing: 0.01em;
+    margin-bottom: 0.12em;
+  }
+  .doubt-meta {
+    font-size: 1.09rem;
+    color: #4b5a6a;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  .doubt-summary-meta-row {
+    gap: 22px;
+    align-items: center;
+    width: 40%;
+    justify-content: flex-end;
+    display: flex;
+  }
+  .assigned-badge {
+    background: #2196f3;
+    color: #fff;
+    border-radius: 14px;
+    padding: 5px 18px;
+    font-size: 1.08em;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    box-shadow: 0 1px 6px rgba(33,150,243,0.10);
+  }
+  .doubt-date {
+    font-size: 1.09em;
+    color: #7a8ca0;
+    font-weight: 600;
+  }
+  .doubt-chevron {
+    font-size: 1.55em;
+    margin-left: 16px;
+    color: #2196f3;
+    transition: transform 0.18s;
+  }
+  .doubt-item.resolved .doubt-chevron {
+    color: #4caf50;
+  }
+  .resolved-summary-row .resolved-badge-top {
+    top: 24px;
+    right: 40px;
+    font-size: 1.05em;
+    padding: 5px 20px;
+    border-radius: 16px;
+    background: #4caf50;
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 10px rgba(76,175,80,0.13);
+  }
+  .doubt-details {
+    background: #fff;
+    border-radius: 0 0 22px 22px;
+    border-top: 1.5px solid #e3eaf2;
+    margin: 0;
+    padding: 2.1rem 2.5rem 2.3rem 2.5rem;
+    font-size: 1.15rem;
+    color: #1a2a3a;
+    line-height: 2.05;
+    box-shadow: none;
+    animation: expandFadeIn 0.22s;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  }
+  .doubt-details {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s, padding 0.25s;
+  }
+  .doubt-item.expanded .doubt-details {
+    max-height: 800px;
+    opacity: 1;
+    padding-top: 2.1rem;
+    padding-bottom: 2.3rem;
+    transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.25s, padding 0.25s;
+  }
+  .doubt-item.collapsed .doubt-details {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s, padding 0.25s;
+  }
+  .doubt-summary-row {
+    border-bottom: 1.5px solid #e3eaf2;
+  }
+  .mentor-response {
+    margin: 1.6rem 0 1.1rem 0;
+    background: #f6fff6;
+    border-left: 4px solid #4caf50;
+    padding: 1.1rem 1.5rem;
+    border-radius: 0 14px 14px 0;
+    font-size: 1.09rem;
+    color: #1b3a1b;
+  }
+  .mentor-response h5 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.18rem;
+    color: #388e3c;
+    font-weight: 700;
+  }
+  .mentor-response p {
+    margin: 0.3rem 0 0.3rem 0;
+    color: #234;
+  }
+  .mentor-response small {
+    color: #388e3c;
+    font-size: 1.05rem;
+  }
+  .uploaded-documents {
+    margin-top: 1.1rem;
+    background: #f3f7f3;
+    border-radius: 8px;
+    padding: 0.7rem 1.1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .uploaded-documents h6 {
+    margin: 0 0 0.4rem 0;
+    font-size: 1.09rem;
+    color: #388e3c;
+    font-weight: 700;
+  }
+  .uploaded-documents a {
+    color: #2196f3;
+    text-decoration: underline;
+    font-weight: 600;
+  }
 }
 
 /* --- Premium Mobile Redesign: Explicit Mobile Overrides --- */
@@ -1695,4 +2066,69 @@
     font-size: 1.15rem !important;
     margin-bottom: 0.75rem !important;
   }
+  .view-details-btn {
+    font-size: 0.62rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .stat-card {
+    display: none !important;
+  }
+  .dashboard-edit-profile-btn,
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+@media (min-width: 601px) {
+  .doubt-summary-row,
+  .resolved-summary-row {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    min-height: 140px;
+    height: 140px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .doubt-summary-title-row {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 601px) {
+  .doubt-details {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    border-radius: 0 0 22px 22px;
+    min-height: 140px;
+    margin: 0;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+  .doubt-item.expanded .doubt-details {
+    min-height: 140px;
+  }
+}
+
+/* Add left margin to all h2 and h3 headings in dashboard components */
+.dashboard-header h1,
+.dashboard-header h2,
+.students-section h2,
+.doubts-section h2,
+.feedback-section h2,
+.resources-section h2,
+.sessions-section h2,
+.students-section h3,
+.doubts-section h3,
+.feedback-section h3,
+.resources-section h3 {
+  margin-left: 1rem;
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaFolder, FaPlus, FaBook, FaDownload, FaTrash, FaEdit, FaFile, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import axios from 'axios';
+import { useToast } from '../components/Toast.jsx';
 
 const StudyMaterial = () => {
   const [folders, setFolders] = useState([]);
@@ -40,6 +41,8 @@ const StudyMaterial = () => {
     folderId: '',
     file: null
   });
+
+  const { showToast } = useToast();
 
   useEffect(() => {
     // Check user role from localStorage
@@ -245,16 +248,22 @@ const StudyMaterial = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${API_BASE_URL}/study-material/folders`, folderForm, {
+      // Add subject field (same as title) to satisfy backend
+      const folderData = {
+        title: folderForm.title,
+        description: folderForm.description,
+        subject: folderForm.title
+      };
+      const response = await axios.post(`${API_BASE_URL}/study-material/folders`, folderData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      
       setFolders([...folders, response.data]);
       setShowAddFolderModal(false);
       setFolderForm({ title: '', description: '' });
+      showToast('Series created successfully', 'success');
     } catch (error) {
       console.error('Failed to create folder:', error);
-      alert('Failed to create folder');
+      showToast('Failed to create folder', 'error');
     }
   };
 
@@ -282,10 +291,11 @@ const StudyMaterial = () => {
       // Refresh both folders and subjects to show the new subject
       await fetchAllFolders();
       await fetchAllSubjects();
+      showToast('Subject added successfully', 'success');
     } catch (error) {
       console.error('Failed to add subject:', error);
       console.error('Error response:', error.response?.data);
-      alert(`Failed to add subject: ${error.response?.data?.message || error.message}`);
+      showToast(`Failed to add subject: ${error.response?.data?.message || error.message}`, 'error');
     }
   };
 
@@ -324,9 +334,10 @@ const StudyMaterial = () => {
       setMaterials([...materials, response.data]);
       setShowAddMaterialModal(false);
       setMaterialForm({ title: '', description: '', type: '', subject: '', folderId: '', file: null });
+      showToast('Material added successfully', 'success');
     } catch (error) {
       console.error('Failed to upload material:', error);
-      alert('Failed to upload material');
+      showToast('Failed to upload material', 'error');
     }
   };
 
@@ -347,7 +358,7 @@ const StudyMaterial = () => {
       link.remove();
     } catch (error) {
       console.error('Failed to download file:', error);
-      alert('Failed to download file');
+      showToast('Failed to download file', 'error');
     }
   };
 
@@ -382,7 +393,7 @@ const StudyMaterial = () => {
       console.error('Error response:', error.response?.data);
       console.error('Error status:', error.response?.status);
       console.error('Error message:', error.message);
-      alert(`Failed to delete material: ${error.response?.data?.message || error.message}`);
+      showToast(`Failed to delete material: ${error.response?.data?.message || error.message}`, 'error');
     }
   };
 
@@ -401,9 +412,10 @@ const StudyMaterial = () => {
         setSelectedSubject(null);
         setMaterials([]);
       }
+      showToast('Folder deleted successfully', 'success');
     } catch (error) {
       console.error('Failed to delete folder:', error);
-      alert('Failed to delete folder');
+      showToast('Failed to delete folder', 'error');
     }
   };
 
@@ -613,13 +625,11 @@ const StudyMaterial = () => {
                         console.log('=== ADD MATERIAL BUTTON CLICKED ===');
                         console.log('Selected folder:', selectedFolder);
                         console.log('Selected subject:', selectedSubject);
-                        alert('Add Material button clicked!'); // Test alert
                         setMaterialForm({ 
                           ...materialForm, 
                           folderId: selectedFolder,
                           subject: selectedSubject
                         });
-                        console.log('Setting showAddMaterialModal to true');
                         setShowAddMaterialModal(true);
                       }}
                       onMouseDown={(e) => {
@@ -647,7 +657,7 @@ const StudyMaterial = () => {
                           <div className="material-info">
                             <h4>{material.title}</h4>
                             <p>{material.description}</p>
-                            <small>By: {material.uploadedBy?.name}</small>
+                            <small>By: {material.uploadedBy?.name || material.uploadedBy?.email || 'Unknown'}</small>
                             <small>Type: {material.type}</small>
                           </div>
                           <div className="material-actions">

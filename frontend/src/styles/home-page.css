@@ -532,3 +532,60 @@
     border: 1px solid rgba(148, 163, 184, 0.2);
   }
 }
+
+@media (max-width: 600px) {
+  .hero-enroll-btn {
+    min-width: 90px;
+    font-size: 0.85rem;
+    padding: 0.15rem 0.75rem !important;
+    margin: 0;
+    margin-bottom: 0.5rem;
+    line-height: 1.8 !important;
+    vertical-align: middle;
+    padding-top: 0.25rem !important;
+    font-family: 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  }
+  .hero-enroll-btn:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.hero-enroll-btn {
+  display: inline-block;
+  min-width: 140px;
+  font-size: 1.15rem;
+  padding: 0.85rem 2.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  margin: 0 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  text-align: center;
+  border: none;
+  text-decoration: none !important;
+  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+}
+.hero-enroll-btn.primary {
+  background: #fff;
+  color: #1976d2;
+  border: 2px solid #1976d2;
+}
+.hero-enroll-btn.primary:hover {
+  background: #e3f0fd;
+  color: #1251a3;
+  box-shadow: 0 4px 16px rgba(25,118,210,0.13);
+}
+.hero-enroll-btn.secondary {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  color: #fff;
+  border: none;
+}
+.hero-enroll-btn.secondary:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #3730a3 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(139,92,246,0.13);
+}
+.hero-enroll-btn-container {
+  text-align: center;
+  margin-top: 1.5rem;
+}

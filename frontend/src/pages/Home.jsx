@@ -37,17 +37,16 @@ const Home = () => {
       <div className="hero-section">
         <div className="hero-content">
           <h1 className="hero-heading">
-            <span>Connecting Students</span>
-            <span>with the Right Mentors</span>
+            <span>Connecting</span> <span className="nowrap-mobile">Students with</span> <span>the right mentors</span>
           </h1>
           <p className="hero-text">
             Join our mentorship program and get personalized guidance for your academic journey. Whether you're a student looking for guidance or a mentor ready to make a difference, we have a place for you.
           </p>
-          <div className="flex justify-center gap-4">
+          <div className="hero-enroll-btn-container">
             {!token && (
               <>
-                <Link to="/enroll/student" className="hero-button primary">Enroll as Student</Link>
-                <Link to="/enroll/mentor" className="hero-button secondary">Become a Mentor</Link>
+                <Link to="/enroll/student" className="hero-enroll-btn primary">Enroll as Student</Link>
+                <Link to="/enroll/mentor" className="hero-enroll-btn secondary">Become a Mentor</Link>
               </>
             )}
           </div>

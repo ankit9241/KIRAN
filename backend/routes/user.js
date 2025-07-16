@@ -6,6 +6,37 @@ const bcrypt = require('bcryptjs');
 const auth = require('../middleware/auth');
 const AdminNotificationService = require('../services/adminNotificationService');
 const nodemailer = require('nodemailer');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+// Multer config for profile picture uploads
+const profilePicStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const dir = 'uploads/profile-pictures/';
+    fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, req.user.id + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const profilePicUpload = multer({
+  storage: profilePicStorage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: function (req, file, cb) {
+    const allowedTypes = /jpeg|jpg|png/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Only JPEG, JPG, and PNG images are allowed!'));
+    }
+  }
+});
 
 // Contact form endpoint (no auth required)
 router.post('/contact', async (req, res) => {
@@ -274,6 +305,27 @@ router.patch('/me', async (req, res) => {
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
+});
+
+// Upload or update profile picture
+router.post('/profile-picture', profilePicUpload.single('profilePicture'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    // Update user's profilePicture field
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { profilePicture: req.file.path.replace('\\', '/') },
+      { new: true }
+    ).select('-password');
+    res.json({
+      message: 'Profile picture updated successfully',
+      profilePicture: user.profilePicture
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 // Get user by ID (for mentors to view student profiles) - MUST come after specific routes

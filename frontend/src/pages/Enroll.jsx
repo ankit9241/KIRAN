@@ -50,15 +50,7 @@ const Enroll = () => {
       const token = localStorage.getItem('token');
       if (token) {
         const user = await verifyToken(token);
-        if (user && user.role) {
-          switch (user.role) {
-            case 'student': navigate('/student'); break;
-            case 'mentor': navigate('/mentor'); break;
-            case 'admin': navigate('/admin'); break;
-            default: break;
-          }
-          return;
-        } else {
+        if (!user || !user.role) {
           localStorage.removeItem('token');
           localStorage.removeItem('user');
         }
@@ -66,51 +58,23 @@ const Enroll = () => {
       setAuthChecked(true);
     };
     checkAuth();
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     // Check if user is already logged in (firebase)
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       // Check if user has recently logged out
       const hasRecentlyLoggedOut = sessionStorage.getItem('recentlyLoggedOut');
-      
-      if (user && !hasRecentlyLoggedOut) {
-        try {
-          const token = await user.getIdToken();
-          const response = await axios.post(API_ENDPOINTS.GOOGLE_LOGIN, { 
-            googleIdToken: token 
-          });
-          localStorage.setItem('token', response.data.token);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
-          setTimeout(() => {
-            switch (response.data.user.role) {
-              case 'student':
-                navigate('/student');
-                break;
-              case 'mentor':
-                navigate('/mentor');
-                break;
-              case 'admin':
-                navigate('/admin');
-                break;
-              default:
-                navigate('/');
-                break;
-            }
-          }, 100);
-        } catch (error) {
-          console.error('Error getting user data:', error);
-          setError('Failed to get user information. Please try again.');
-        }
-      } else if (hasRecentlyLoggedOut) {
+      if (!user && hasRecentlyLoggedOut) {
         // Clear the recently logged out flag after a short delay
         setTimeout(() => {
           sessionStorage.removeItem('recentlyLoggedOut');
         }, 1000);
       }
+      // Do NOT auto-login or redirect if user is present
     });
     return () => unsubscribe();
-  }, [navigate]);
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -127,7 +91,7 @@ const Enroll = () => {
     if (type === 'student') {
       requiredFields.push('class', 'stream', 'targetExam', 'preferredSubjects', 'learningGoals');
     } else if (type === 'mentor') {
-      requiredFields.push('specialization', 'experience', 'qualifications', 'teachingStyle', 'achievements');
+      requiredFields.push('specialization', 'experience', 'qualifications', 'teachingStyle', 'achievements', 'bio', 'address', 'telegramId');
     }
     
     // Add email/password validation if in email mode
@@ -153,6 +117,9 @@ const Enroll = () => {
           case 'email': return 'Email';
           case 'password': return 'Password';
           case 'confirmPassword': return 'Confirm Password';
+          case 'bio': return 'Bio';
+          case 'address': return 'Address';
+          case 'telegramId': return 'Telegram ID';
           default: return field.charAt(0).toUpperCase() + field.slice(1);
         }
       });
@@ -769,6 +736,7 @@ const Enroll = () => {
                   value={formData.telegramId}
                   onChange={handleChange}
                   placeholder="Your Telegram username"
+                  required
                 />
               </div>
 

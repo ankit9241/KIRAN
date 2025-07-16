@@ -116,8 +116,8 @@
   color: #374151;
 }
 
-/* Required field indicator styling */
-.form-group label:has(+ input[required]),
+/* Remove automatic required asterisk for labels to avoid double asterisks */
+/* .form-group label:has(+ input[required]),
 .form-group label:has(+ select[required]),
 .form-group label:has(+ textarea[required]) {
   color: #374151;
@@ -131,6 +131,7 @@
   color: #dc2626;
   font-weight: bold;
 }
+*/
 
 /* Alternative approach for browsers that don't support :has() */
 .form-group label.required {

@@ -73,7 +73,7 @@
 }
 
 .social-icon:hover svg {
-  color: white;
+  color: inherit !important;
 }
 
 /* Custom Tooltip Styling */

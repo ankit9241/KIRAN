@@ -36,7 +36,7 @@ const Footer = () => {
             <a href="https://www.youtube.com/@AdityaSingh22906" className="social-icon youtube" data-tooltip="YouTube">
               <FaYoutube size={28} />
             </a>
-            <a href="#" className="social-icon instagram" data-tooltip="Instagram">
+            <a href="https://www.instagram.com/kiran_mentorship?igsh=MXR2aHNpenF5cXFpeA==" className="social-icon instagram" data-tooltip="Instagram" target="_blank" rel="noopener noreferrer">
               <FaInstagram size={28} />
             </a>
             

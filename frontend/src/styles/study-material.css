@@ -475,9 +475,12 @@
 
 .material-actions {
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
   position: relative;
   z-index: 10;
+  margin-top: 0.25rem;
 }
 
 .download-btn,
@@ -485,40 +488,43 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.7rem;
+  height: 2.7rem;
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1rem;
+  transition: box-shadow 0.2s, background 0.2s, transform 0.15s;
+  font-size: 1.25rem;
   position: relative;
   z-index: 20;
   pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.08);
 }
 
 .download-btn {
-  background: #10b981;
+  background: linear-gradient(135deg, #10b981 60%, #22d3ee 100%);
   color: white;
 }
 
 .download-btn:hover {
-  background: #059669;
-  transform: scale(1.1);
+  background: linear-gradient(135deg, #059669 60%, #0ea5e9 100%);
+  transform: scale(1.12) translateY(-2px);
+  box-shadow: 0 4px 16px rgba(16,185,129,0.18);
 }
 
 .delete-btn {
-  background: #ef4444;
+  background: linear-gradient(135deg, #ef4444 60%, #f59e42 100%);
   color: white;
 }
 
 .delete-btn:hover {
-  background: #dc2626;
-  transform: scale(1.1);
+  background: linear-gradient(135deg, #dc2626 60%, #fbbf24 100%);
+  transform: scale(1.12) translateY(-2px);
+  box-shadow: 0 4px 16px rgba(239,68,68,0.18);
 }
 
-.delete-btn:active {
-  transform: scale(0.95);
+.delete-btn:active, .download-btn:active {
+  transform: scale(0.97);
 }
 
 .no-materials {
@@ -1188,52 +1194,79 @@
 /* --- Premium Mobile Redesign: Explicit Mobile Overrides --- */
 @media (max-width: 600px) {
   .study-material-page {
-    padding: 1.25rem 0.25rem 2.5rem 0.25rem !important;
-    gap: 1.25rem !important;
-    background: var(--background) !important;
+    padding: 0.75rem 0.25rem 1.5rem 0.25rem !important;
+    margin-top: 56px !important;
+    min-height: calc(100vh - 56px);
+    background: #f8fafc !important;
   }
   .study-material-header h1 {
-    font-size: 1.35rem !important;
-    margin-bottom: 0.18rem !important;
+    font-size: 1.15rem !important;
+    margin-bottom: 0.2rem !important;
+    letter-spacing: 0.01em;
   }
   .study-material-header p, .study-material-description {
+    font-size: 0.95rem !important;
+    margin-bottom: 0.5rem !important;
+    line-height: 1.4 !important;
+  }
+  .admin-button {
     font-size: 1rem !important;
-    margin-bottom: 0.7rem !important;
+    padding: 0.7rem 1.2rem !important;
+    border-radius: 0.7rem !important;
   }
-  .study-material-grid, .folders-grid, .materials-grid {
-    display: flex !important;
-    flex-direction: row !important;
-    overflow-x: auto !important;
-    gap: 1rem !important;
-    padding-bottom: 0.4rem !important;
-    margin-bottom: 1.2rem !important;
-    scroll-snap-type: x mandatory !important;
+  .subject-header h3 {
+    font-size: 1rem !important;
   }
-  .material-card, .folder-card {
-    min-width: 80vw !important;
-    max-width: 95vw !important;
-    flex: 0 0 auto !important;
-    scroll-snap-align: start !important;
-    border-radius: 1.25rem !important;
-    box-shadow: 0 4px 16px rgba(31,41,55,0.10) !important;
-    padding: 1.1rem 0.7rem !important;
-    background: #fff !important;
-    transition: box-shadow 0.2s !important;
+  .subject-item {
+    font-size: 0.98rem !important;
+    padding: 0.6rem 0.7rem !important;
   }
-  .resource-container, .subject-list, .folders-section, .materials-section {
-    border-radius: 1.25rem !important;
-    box-shadow: 0 4px 16px rgba(31,41,55,0.10) !important;
-    padding: 1.1rem 0.7rem !important;
-    margin-bottom: 1.2rem !important;
-    background: #fff !important;
-    transition: box-shadow 0.2s !important;
+  .folder-name {
+    font-size: 0.98rem !important;
+  }
+  .folder-subject {
+    font-size: 0.8rem !important;
+  }
+  .subject-sub-item, .add-subject-item {
+    font-size: 0.85rem !important;
+    padding: 0.4rem 0.6rem !important;
+  }
+  .resources-header {
+    gap: 0.5rem !important;
+  }
+  .folder-info h2 {
+    font-size: 1rem !important;
+  }
+  .folder-info .folder-subject, .folder-info .folder-description {
+    font-size: 0.9rem !important;
+  }
+  .add-material-btn {
+    font-size: 1rem !important;
+    padding: 0.7rem 1.2rem !important;
+    border-radius: 0.7rem !important;
+  }
+  .material-card {
+    padding: 0.8rem 0.5rem !important;
+    border-radius: 1rem !important;
+  }
+  .material-icon {
+    font-size: 1.1rem !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+  }
+  .material-info h4 {
+    font-size: 0.95rem !important;
+  }
+  .material-info p {
+    font-size: 0.8rem !important;
+  }
+  .material-info small {
+    font-size: 0.7rem !important;
   }
   .download-btn, .add-material-btn, .delete-btn {
-    font-size: 1.08rem !important;
-    padding: 0.8rem 1.2rem !important;
+    font-size: 0.95rem !important;
+    padding: 0.6rem 1rem !important;
     border-radius: 0.7rem !important;
-    min-width: 110px !important;
-    margin-top: 0.4rem !important;
   }
   .section-header, .subject-header, .folders-section h3, .materials-section h3 {
     flex-direction: column !important;
@@ -1255,4 +1288,43 @@
     gap: 0.6rem !important;
     margin-top: 1rem !important;
   }
+}
+
+body, .study-material-page, .study-material-header, .resource-container, .subject-list, .resources-section, .materials-section, .modal-content {
+  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif !important;
+}
+
+.study-material-header h1,
+.subject-header h3,
+.materials-section h3,
+.folder-info h2,
+.modal-content h2,
+.empty-state h3 {
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+}
+
+.folder-name,
+.add-material-btn,
+.admin-button {
+  font-weight: 600 !important;
+}
+
+.material-info h4 {
+  font-weight: 700 !important;
+}
+
+.material-info small,
+.folder-subject,
+.folder-info .folder-subject,
+.folder-info .folder-description {
+  font-weight: 400 !important;
+}
+
+.form-group label {
+  font-weight: 600 !important;
+}
+
+.modal-actions button {
+  font-weight: 600 !important;
 }

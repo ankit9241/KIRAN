@@ -5,6 +5,7 @@ import MentorApprovalManager from '../components/MentorApprovalManager';
 import MeetingManager from '../components/MeetingManager';
 import API_ENDPOINTS from '../config/api';
 import '../styles/admin-dashboard.css';
+import { useToast } from '../components/Toast.jsx';
 
 const AdminDashboard = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -31,6 +32,8 @@ const AdminDashboard = () => {
   const [resourceFile, setResourceFile] = useState(null);
   const [resourceTitle, setResourceTitle] = useState('');
   const [resourceDescription, setResourceDescription] = useState('');
+
+  const { showToast } = useToast();
 
   // Check authentication on component mount
   useEffect(() => {
@@ -198,7 +201,7 @@ const AdminDashboard = () => {
 
   const handleResourceUpload = async (e) => {
     if (!selectedStudent || !resourceFile || !resourceTitle) {
-      alert('Please select a student, provide a title, and choose a file');
+      showToast('Please select a student, provide a title, and choose a file', 'info');
       return;
     }
     const formData = new FormData();
@@ -214,7 +217,7 @@ const AdminDashboard = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      alert('Resource uploaded successfully!');
+      showToast('Resource uploaded successfully!', 'success');
       setResourceFile(null);
       setResourceTitle('');
       setResourceDescription('');
@@ -239,30 +242,30 @@ const AdminDashboard = () => {
 
   const handleCreateAnnouncement = async () => {
     if (!data.announcement) {
-      alert('Please enter an announcement message.');
+      showToast('Please enter an announcement message.', 'info');
       return;
     }
     try {
       await axios.post(API_ENDPOINTS.ANNOUNCEMENTS, {
         message: data.announcement
       });
-      alert('Announcement created successfully!');
+      showToast('Announcement created successfully!', 'success');
       setData(prev => ({ ...prev, announcement: '' }));
       fetchAllData();
     } catch (error) {
       console.error('Error creating announcement:', error);
-      alert('Failed to create announcement.');
+      showToast('Failed to create announcement.', 'error');
     }
   };
 
   const handleToggleAnnouncement = async (announcementId) => {
     try {
       await axios.patch(API_ENDPOINTS.TOGGLE_ANNOUNCEMENT(announcementId));
-      alert('Announcement status updated successfully!');
+      showToast('Announcement status updated successfully!', 'success');
       fetchAllData();
     } catch (error) {
       console.error('Error updating announcement status:', error);
-      alert('Failed to update announcement status.');
+      showToast('Failed to update announcement status.', 'error');
     }
   };
 
@@ -270,11 +273,11 @@ const AdminDashboard = () => {
     if (window.confirm('Are you sure you want to delete this announcement?')) {
       try {
         await axios.delete(API_ENDPOINTS.ANNOUNCEMENTS + `/${announcementId}`);
-        alert('Announcement deleted successfully!');
+        showToast('Announcement deleted successfully!', 'success');
         fetchAllData();
       } catch (error) {
         console.error('Error deleting announcement:', error);
-        alert('Failed to delete announcement.');
+        showToast('Failed to delete announcement.', 'error');
       }
     }
   };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/student-profile.css';
+import { FaCamera } from 'react-icons/fa';
 
 const StudentProfile = () => {
   const { studentId } = useParams();
@@ -11,6 +12,8 @@ const StudentProfile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -43,6 +46,30 @@ const StudentProfile = () => {
       console.error('Error fetching student data:', error);
       setError('Failed to load student profile');
       setLoading(false);
+    }
+  };
+
+  const handleProfilePicChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setPreview(URL.createObjectURL(file));
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('profilePicture', file);
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post('http://localhost:5000/api/users/profile-picture', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      fetchStudentData(); // Refresh profile
+    } catch (err) {
+      alert('Failed to upload profile picture');
+    } finally {
+      setUploading(false);
+      setPreview(null);
     }
   };
 
@@ -174,8 +201,30 @@ const StudentProfile = () => {
         <div className="header-content">
           <div className="student-profile-info">
             <div className="student-avatar">
-              <div className={`avatar-circle ${getStudentStatus()}`}>
-                {student.name.charAt(0).toUpperCase()}
+              <div className={`avatar-circle ${getStudentStatus()}`} style={{position: 'relative', overflow: 'visible'}}>
+                {student.profilePicture ? (
+                  <img
+                    src={`http://localhost:5000/${student.profilePicture.replace(/\\/g, '/')}`}
+                    alt="Profile"
+                    className="profile-img"
+                    style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
+                  />
+                ) : (
+                  student.name.charAt(0).toUpperCase()
+                )}
+                {/* Overlay camera icon for upload */}
+                <label htmlFor="profile-pic-upload" className="profile-pic-upload-label">
+                  <FaCamera className="profile-pic-upload-icon" />
+                  <input
+                    id="profile-pic-upload"
+                    type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={handleProfilePicChange}
+                    disabled={uploading}
+                  />
+                </label>
+                {uploading && <div className="uploading-overlay">Uploading...</div>}
               </div>
             </div>
             

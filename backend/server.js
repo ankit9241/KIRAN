@@ -5,6 +5,7 @@ const cors = require('cors');
 const config = require('config');
 const SchedulerService = require('./services/schedulerService');
 const admin = require('firebase-admin');
+const path = require('path');
 
 const app = express();
 
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve uploaded files
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // MongoDB connection options
 const mongooseOptions = {

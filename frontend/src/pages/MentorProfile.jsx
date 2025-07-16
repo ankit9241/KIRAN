@@ -3,6 +3,58 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import API_ENDPOINTS from '../config/api';
 import '../styles/mentor-profile.css';
+import { FaCamera } from 'react-icons/fa';
+import * as jwt_decode from "jwt-decode";
+
+const SectionHeading = ({ iconClass, children }) => (
+  <div className="section-title">
+    <i className={iconClass}></i>
+    <span>{children}</span>
+  </div>
+);
+
+const renderApprovalBadge = (status) => {
+  if (!status) return null;
+  let icon, color, label;
+  switch (status) {
+    case 'approved':
+      icon = <i className="fas fa-check-circle"></i>;
+      color = '#10B981';
+      label = 'Approved';
+      break;
+    case 'pending':
+      icon = <i className="fas fa-clock"></i>;
+      color = '#f59e0b';
+      label = 'Pending';
+      break;
+    case 'rejected':
+      icon = <i className="fas fa-times-circle"></i>;
+      color = '#ef4444';
+      label = 'Rejected';
+      break;
+    default:
+      icon = null;
+      color = '#64748b';
+      label = status.charAt(0).toUpperCase() + status.slice(1);
+  }
+  return (
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.4em',
+      background: color + '22',
+      color,
+      fontWeight: 700,
+      borderRadius: '1.2em',
+      padding: '0.25em 0.9em',
+      fontSize: '1em',
+      marginLeft: '0.5em',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+    }}>
+      {icon} {label}
+    </span>
+  );
+};
 
 const MentorProfile = () => {
   const { mentorId } = useParams();
@@ -10,22 +62,22 @@ const MentorProfile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
     const fetchMentorProfile = async () => {
       try {
         setLoading(true);
         const token = localStorage.getItem('token');
-        
         if (!token) {
           navigate('/login');
           return;
         }
-
         const response = await axios.get(API_ENDPOINTS.USER_PROFILE(mentorId), {
           headers: { Authorization: `Bearer ${token}` }
         });
-
         setMentor(response.data);
         setLoading(false);
       } catch (error) {
@@ -34,11 +86,51 @@ const MentorProfile = () => {
         setLoading(false);
       }
     };
-
     if (mentorId) {
       fetchMentorProfile();
     }
   }, [mentorId, navigate]);
+
+  useEffect(() => {
+    // Get current user id from token
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwt_decode.default(token);
+        setCurrentUserId(decoded.id);
+      } catch (e) {
+        setCurrentUserId(null);
+      }
+    }
+  }, []);
+
+  const handleProfilePicChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setPreview(URL.createObjectURL(file));
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('profilePicture', file);
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post('http://localhost:5000/api/users/profile-picture', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      // Refresh mentor profile
+      const response = await axios.get(API_ENDPOINTS.USER_PROFILE(mentorId), {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMentor(response.data);
+    } catch (err) {
+      alert('Failed to upload profile picture');
+    } finally {
+      setUploading(false);
+      setPreview(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -95,9 +187,6 @@ const MentorProfile = () => {
                 <h1 className="header-title">Mentor Profile</h1>
                 <p className="header-subtitle">View detailed information about this mentor</p>
               </div>
-              <div className="header-right">
-                <span className="header-badge">Mentor</span>
-              </div>
             </div>
           </div>
 
@@ -106,8 +195,32 @@ const MentorProfile = () => {
             {/* Avatar and Basic Info */}
             <div className="profile-basic-info">
               <div className="profile-avatar">
-                <div className="avatar-icon">
-                  <i className="fas fa-chalkboard-teacher"></i>
+                <div className="avatar-icon" style={{position: 'relative', overflow: 'visible'}}>
+                  {mentor.profilePicture ? (
+                    <img
+                      src={`http://localhost:5000/${mentor.profilePicture.replace(/\\/g, '/')}`}
+                      alt="Profile"
+                      className="profile-img"
+                      style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <i className="fas fa-chalkboard-teacher"></i>
+                  )}
+                  {/* Overlay camera icon for upload */}
+                  {currentUserId === mentorId && (
+                    <label htmlFor="profile-pic-upload" className="profile-pic-upload-label">
+                      <FaCamera className="profile-pic-upload-icon" />
+                      <input
+                        id="profile-pic-upload"
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        onChange={handleProfilePicChange}
+                        disabled={uploading}
+                      />
+                    </label>
+                  )}
+                  {uploading && currentUserId === mentorId && <div className="uploading-overlay">Uploading...</div>}
                 </div>
               </div>
               
@@ -115,15 +228,8 @@ const MentorProfile = () => {
                 <h2 className="user-name">{mentor.name}</h2>
                 <p className="user-email">{mentor.email}</p>
                 <div className="badges-container">
-                  <span className="role-badge mentor">
-                    Mentor
-                  </span>
                   
-                  {mentor.mentorApprovalStatus && (
-                    <span className={`approval-badge ${mentor.mentorApprovalStatus}`}>
-                      {mentor.mentorApprovalStatus.charAt(0).toUpperCase() + mentor.mentorApprovalStatus.slice(1)}
-                    </span>
-                  )}
+                  {renderApprovalBadge(mentor.mentorApprovalStatus)}
                 </div>
               </div>
             </div>
@@ -132,10 +238,7 @@ const MentorProfile = () => {
             <div className="profile-details">
               {/* Professional Information */}
               <div className="detail-section">
-                <h3 className="section-title">
-                  <i className="fas fa-briefcase"></i>
-                  Professional Information
-                </h3>
+                <SectionHeading iconClass="fas fa-briefcase">Professional Information</SectionHeading>
                 <div className="details-grid">
                   <div className="detail-item">
                     <label>Specialization</label>
@@ -159,10 +262,7 @@ const MentorProfile = () => {
               {/* Subjects Taught */}
               {mentor.subjectsTaught && mentor.subjectsTaught.length > 0 && (
                 <div className="detail-section">
-                  <h3 className="section-title">
-                    <i className="fas fa-chalkboard"></i>
-                    Subjects Taught
-                  </h3>
+                  <SectionHeading iconClass="fas fa-chalkboard">Subjects Taught</SectionHeading>
                   <div className="subjects-container">
                     {mentor.subjectsTaught.map((subject, index) => (
                       <span key={index} className="subject-tag">{subject}</span>
@@ -174,10 +274,7 @@ const MentorProfile = () => {
               {/* Rejection Reason */}
               {mentor.mentorApprovalStatus === 'rejected' && mentor.mentorRejectionReason && (
                 <div className="detail-section">
-                  <h3 className="section-title">
-                    <i className="fas fa-times-circle"></i>
-                    Rejection Reason
-                  </h3>
+                  <SectionHeading iconClass="fas fa-times-circle">Rejection Reason</SectionHeading>
                   <div className="rejection-container">
                     <p className="rejection-text">{mentor.mentorRejectionReason}</p>
                     <small className="rejection-date">
@@ -189,10 +286,7 @@ const MentorProfile = () => {
 
               {/* Contact Information */}
               <div className="detail-section">
-                <h3 className="section-title">
-                  <i className="fas fa-address-book"></i>
-                  Contact Information
-                </h3>
+                <SectionHeading iconClass="fas fa-address-book">Contact Information</SectionHeading>
                 <div className="details-grid">
                   <div className="detail-item">
                     <label>Email</label>
@@ -228,10 +322,7 @@ const MentorProfile = () => {
               {/* Bio */}
               {mentor.bio && (
                 <div className="detail-section">
-                  <h3 className="section-title">
-                    <i className="fas fa-user-edit"></i>
-                    Bio
-                  </h3>
+                  <SectionHeading iconClass="fas fa-user-edit">Bio</SectionHeading>
                   <div className="bio-container">
                     <p className="bio-text">{mentor.bio}</p>
                   </div>
@@ -241,10 +332,7 @@ const MentorProfile = () => {
               {/* Achievements */}
               {mentor.achievements && mentor.achievements.length > 0 && (
                 <div className="detail-section">
-                  <h3 className="section-title">
-                    <i className="fas fa-trophy"></i>
-                    Achievements
-                  </h3>
+                  <SectionHeading iconClass="fas fa-trophy">Achievements</SectionHeading>
                   <div className="achievements-container">
                     <ul className="achievements-list">
                       {mentor.achievements.map((achievement, index) => (
@@ -260,10 +348,7 @@ const MentorProfile = () => {
 
               {/* Account Information */}
               <div className="detail-section">
-                <h3 className="section-title">
-                  <i className="fas fa-info-circle"></i>
-                  Account Information
-                </h3>
+                <SectionHeading iconClass="fas fa-info-circle">Account Information</SectionHeading>
                 <div className="details-grid">
                   <div className="detail-item">
                     <label>Member Since</label>

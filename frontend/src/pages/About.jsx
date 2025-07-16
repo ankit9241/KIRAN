@@ -13,15 +13,16 @@ const AboutUs = () => (
     <div className="about-team">
       <h2>Meet the Team</h2>
       <ul>
-        <li><strong>Aditya Singh</strong> – Founder & Lead Developer</li>
-        <li><strong>Ankit Kumar</strong> – Developed the entire frontend, backend, and managed the database</li>
+        <li><strong>Aditya Singh</strong> – Founder & Organiser (manages and leads the KIRAN mentorship program)</li>
+        <li><strong>Ankit Kumar</strong> – Tech Support Lead (developed and maintains the website, handles all technical support)</li>
         <li><strong>KIRAN Team</strong> – Mentors, Admins, and Contributors</li>
       </ul>
     </div>
     <div className="about-contact">
       <h2>Contact</h2>
-      <p>Email: adityasinghofficial296@gmail.com</p>
-      <p>Telegram: <a href="https://t.me/Aditya22906" target="_blank" rel="noopener noreferrer">@Aditya22906</a></p>
+      <p><strong>Email:</strong> <a href="mailto:adityasinghofficial296@gmail.com">adityasinghofficial296@gmail.com</a></p>
+      <p><strong>Telegram:</strong> <a href="https://t.me/Aditya22906" target="_blank" rel="noopener noreferrer">@Aditya22906</a></p>
+      <p><strong>Instagram:</strong> <a href="https://www.instagram.com/kiran_mentorship?igsh=MXR2aHNpenF5cXFpeA==" target="_blank" rel="noopener noreferrer">@kiran_mentorship</a></p>
     </div>
   </div>
 );
