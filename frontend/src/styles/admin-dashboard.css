@@ -255,6 +255,7 @@
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-light);
   transition: var(--transition);
+  overflow: visible;
 }
 
 .admin-card:hover {
@@ -282,9 +283,13 @@
 
 /* Table Styling */
 .table-container {
-  overflow-x: auto;
+  overflow: visible;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-light);
+}
+
+.table-container.dropdown-open {
+  overflow: visible !important;
 }
 
 .table {
@@ -325,6 +330,7 @@
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  position: relative; /* Ensure dropdown is positioned relative to this */
 }
 
 .action-btn {
@@ -368,52 +374,74 @@
   color: var(--text-primary);
 }
 
+/* Dropdown for actions in admin tables */
 .action-dropdown {
+  display: none;
   position: absolute;
-  top: 100%;
   right: 0;
-  background: var(--surface);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--border-light);
-  min-width: 160px;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: var(--transition);
+  top: 100%;
+  min-width: 150px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+  z-index: 10000;
+  padding: 0.5rem 0;
 }
-
 .action-dropdown.active {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
+  display: block;
 }
-
 .action-dropdown-item {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 0.6rem 1.2rem;
+  font-size: 1.05rem;
+  color: #1e293b;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-size: 0.875rem;
-  transition: var(--transition);
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
+  gap: 0.6rem;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
-
+.action-dropdown-item.edit {
+  color: #2563eb;
+}
+.action-dropdown-item.edit i {
+  color: #2563eb;
+}
+.action-dropdown-item.delete {
+  color: #dc2626;
+}
+.action-dropdown-item.delete i {
+  color: #dc2626;
+}
 .action-dropdown-item:hover {
-  background: var(--surface-hover);
-  color: var(--text-primary);
+  background: #f3f4f6;
+  color: #111827;
+  box-shadow: 0 2px 8px rgba(79,70,229,0.08);
+}
+.action-dropdown-item.edit:hover {
+  background: #e0e7ff;
+  color: #1e40af;
+}
+.action-dropdown-item.delete:hover {
+  background: #fee2e2;
+  color: #b91c1c;
 }
 
-.action-dropdown-item i {
-  font-size: 0.875rem;
-  width: 1rem;
+.action-dropdown.dropup {
+  top: auto;
+  bottom: 100%;
+  right: 0;
+  position: absolute;
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.16);
+  z-index: 9999;
+  margin-bottom: 8px;
 }
 
 /* Status Badges */
@@ -424,6 +452,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 .status-badge.pending {
@@ -930,6 +959,38 @@
   visibility: visible;
 }
 
+.profile-avatar-fallback {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #e0e7ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #6366f1;
+  margin-right: 8px;
+}
+.dropdown-user-info {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem 0.25rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 0.25rem;
+}
+.dropdown-user-name {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 1rem;
+}
+@media (max-width: 600px) {
+  .dropdown-user-info {
+    display: flex;
+  }
+}
+
 /* --- Premium Mobile Redesign: Explicit Mobile Overrides --- */
 @media (max-width: 600px) {
   .admin-dashboard {
@@ -955,7 +1016,7 @@
     scroll-snap-type: x mandatory !important;
   }
   .summary-card {
-    min-width: 80vw !important;
+    min-width: 120px !important;
     max-width: 95vw !important;
     flex: 0 0 auto !important;
     scroll-snap-align: start !important;
@@ -963,7 +1024,15 @@
     box-shadow: 0 4px 16px rgba(31,41,55,0.10) !important;
     padding: 1.1rem 0.7rem !important;
     background: #fff !important;
-    transition: box-shadow 0.2s !important;
+    transition: none !important;
+  }
+  .summary-card:hover {
+    transform: none !important;
+    box-shadow: 0 4px 16px rgba(31,41,55,0.10) !important;
+    border-color: var(--border-light) !important;
+  }
+  .summary-card:hover::before {
+    transform: none !important;
   }
   .admin-section, .admin-card, .table-container {
     border-radius: 1.25rem !important;
@@ -1007,5 +1076,26 @@
   .announcements-list-section h4 {
     font-size: 1.1rem !important;
     margin-bottom: 0.7rem !important;
+  }
+  .summary-icon {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 1.1rem !important;
+    margin-bottom: 0.7rem !important;
+  }
+  .summary-number {
+    font-size: 1.3rem !important;
+  }
+  .summary-label {
+    font-size: 0.95rem !important;
+  }
+}
+
+@media (min-width: 900px) {
+  .summary-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1.5rem !important;
+    margin-bottom: 3rem !important;
   }
 }

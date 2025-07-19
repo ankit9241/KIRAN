@@ -175,14 +175,17 @@ const MentorProfile = () => {
         {/* Main Profile Content */}
         <div className="profile-main">
           {/* Header Section */}
-          <div className="profile-header">
+          <div className="profile-header relative">
+            <button
+              onClick={() => navigate(-1)}
+              className="back-btn absolute top-4 left-4 z-10"
+              style={{ position: 'absolute', top: 16, left: 16, zIndex: 10 }}
+            >
+              <i className="fas fa-arrow-left"></i>
+              <span>Back</span>
+            </button>
             <div className="header-content">
-              <div className="header-left">
-                <button onClick={() => navigate(-1)} className="back-btn">
-                  <i className="fas fa-arrow-left"></i>
-                  <span>Back</span>
-                </button>
-              </div>
+              {/* Remove the header-left div containing the back button */}
               <div className="header-center">
                 <h1 className="header-title">Mentor Profile</h1>
                 <p className="header-subtitle">View detailed information about this mentor</p>
@@ -259,31 +262,6 @@ const MentorProfile = () => {
                 </div>
               </div>
 
-              {/* Subjects Taught */}
-              {mentor.subjectsTaught && mentor.subjectsTaught.length > 0 && (
-                <div className="detail-section">
-                  <SectionHeading iconClass="fas fa-chalkboard">Subjects Taught</SectionHeading>
-                  <div className="subjects-container">
-                    {mentor.subjectsTaught.map((subject, index) => (
-                      <span key={index} className="subject-tag">{subject}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Rejection Reason */}
-              {mentor.mentorApprovalStatus === 'rejected' && mentor.mentorRejectionReason && (
-                <div className="detail-section">
-                  <SectionHeading iconClass="fas fa-times-circle">Rejection Reason</SectionHeading>
-                  <div className="rejection-container">
-                    <p className="rejection-text">{mentor.mentorRejectionReason}</p>
-                    <small className="rejection-date">
-                      Rejected on: {mentor.mentorApprovalDate ? formatDate(mentor.mentorApprovalDate) : 'Unknown date'}
-                    </small>
-                  </div>
-                </div>
-              )}
-
               {/* Contact Information */}
               <div className="detail-section">
                 <SectionHeading iconClass="fas fa-address-book">Contact Information</SectionHeading>
@@ -310,6 +288,18 @@ const MentorProfile = () => {
                       <span>{mentor.whatsapp}</span>
                     </div>
                   )}
+                  {mentor.linkedin && (
+                    <div className="detail-item">
+                      <label>LinkedIn</label>
+                      <a href={mentor.linkedin} target="_blank" rel="noopener noreferrer">{mentor.linkedin}</a>
+                    </div>
+                  )}
+                  {mentor.website && (
+                    <div className="detail-item">
+                      <label>Website</label>
+                      <a href={mentor.website} target="_blank" rel="noopener noreferrer">{mentor.website}</a>
+                    </div>
+                  )}
                   {mentor.address && (
                     <div className="detail-item">
                       <label>Address</label>
@@ -318,6 +308,31 @@ const MentorProfile = () => {
                   )}
                 </div>
               </div>
+
+              {/* Subjects Taught */}
+              {mentor.subjectsTaught && mentor.subjectsTaught.length > 0 && (
+                <div className="detail-section">
+                  <SectionHeading iconClass="fas fa-chalkboard">Subjects Taught</SectionHeading>
+                  <div className="subjects-container">
+                    {mentor.subjectsTaught.map((subject, index) => (
+                      <span key={index} className="subject-tag">{subject}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Rejection Reason */}
+              {mentor.mentorApprovalStatus === 'rejected' && mentor.mentorRejectionReason && (
+                <div className="detail-section">
+                  <SectionHeading iconClass="fas fa-times-circle">Rejection Reason</SectionHeading>
+                  <div className="rejection-container">
+                    <p className="rejection-text">{mentor.mentorRejectionReason}</p>
+                    <small className="rejection-date">
+                      Rejected on: {mentor.mentorApprovalDate ? formatDate(mentor.mentorApprovalDate) : 'Unknown date'}
+                    </small>
+                  </div>
+                </div>
+              )}
 
               {/* Bio */}
               {mentor.bio && (
@@ -358,7 +373,6 @@ const MentorProfile = () => {
                     <label>Last Seen</label>
                     <span>{mentor.lastSeen ? formatDate(mentor.lastSeen) : 'Never'}</span>
                   </div>
-                  
                 </div>
               </div>
             </div>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/my-student-profile.css';
 import axios from 'axios';
 import EditProfileModal from '../components/EditProfileModal';
+import { FaCamera } from 'react-icons/fa';
 
 const MyStudentProfile = () => {
   const [user, setUser] = useState(null);
@@ -11,6 +12,9 @@ const MyStudentProfile = () => {
   const navigate = useNavigate();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [showImage, setShowImage] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState(null);
 
   useEffect(() => {
     console.log('isEditOpen changed:', isEditOpen);
@@ -37,13 +41,73 @@ const MyStudentProfile = () => {
     fetchUser();
   }, [navigate]);
 
+  const handleProfilePicChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setPreview(URL.createObjectURL(file));
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('profilePicture', file);
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post('http://localhost:5000/api/users/profile-picture', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      // Refresh user profile
+      const response = await axios.get('http://localhost:5000/api/users/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUser(response.data);
+      setShowImage(true);
+      localStorage.setItem('user', JSON.stringify(response.data));
+      window.dispatchEvent(new Event('authStateChanged'));
+    } catch (err) {
+      alert('Failed to upload profile picture');
+    } finally {
+      setUploading(false);
+      setPreview(null);
+    }
+  };
+
   if (loading) return <div className="my-student-profile-loading">Loading...</div>;
   if (error || !user) return <div className="my-student-profile-error">{error || 'Profile not found'}</div>;
 
   return (
     <div className={`my-student-profile-container${user.isPremium ? ' premium' : ''}`}>
       <div className="profile-header">
-        <div className="avatar">{user.name?.charAt(0).toUpperCase()}</div>
+        <div className="avatar" style={{position: 'relative', overflow: 'visible'}}>
+          {(user && user.profilePicture && typeof user.profilePicture === 'string' && user.profilePicture.trim() !== '' && showImage) ? (
+            <img
+              src={`http://localhost:5000/${user.profilePicture.replace(/\\/g, '/')}`}
+              alt=""
+              className="profile-img"
+              style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
+              onError={() => setShowImage(false)}
+            />
+          ) : (
+            ((user && typeof user.name === 'string' && user.name.trim() && user.name.trim().toLowerCase() !== 'profile')
+              ? user.name.trim().charAt(0).toUpperCase()
+              : (user && typeof user.username === 'string' && user.username.trim() && user.username.trim().toLowerCase() !== 'profile')
+                ? user.username.trim().charAt(0).toUpperCase()
+                : 'U')
+          )}
+          {/* Overlay camera icon for upload */}
+          <label htmlFor="profile-pic-upload" className="profile-pic-upload-label">
+            <FaCamera className="profile-pic-upload-icon" />
+            <input
+              id="profile-pic-upload"
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={handleProfilePicChange}
+              disabled={uploading}
+            />
+          </label>
+          {uploading && <div className="uploading-overlay">Uploading...</div>}
+        </div>
         <div className="profile-info">
           <h1>{user.name}</h1>
           <span className="email">{user.email}</span>

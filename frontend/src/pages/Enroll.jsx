@@ -33,7 +33,8 @@ const Enroll = () => {
     whatsapp: '',
     linkedin: '',
     website: '',
-    achievements: ''
+    achievements: '',
+    currentStatus: '' // NEW FIELD
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -91,7 +92,7 @@ const Enroll = () => {
     if (type === 'student') {
       requiredFields.push('class', 'stream', 'targetExam', 'preferredSubjects', 'learningGoals');
     } else if (type === 'mentor') {
-      requiredFields.push('specialization', 'experience', 'qualifications', 'teachingStyle', 'achievements', 'bio', 'address', 'telegramId');
+      requiredFields.push('specialization', 'experience', 'qualifications', 'teachingStyle', 'achievements', 'bio', 'address', 'telegramId', 'currentStatus');
     }
     
     // Add email/password validation if in email mode
@@ -120,6 +121,7 @@ const Enroll = () => {
           case 'bio': return 'Bio';
           case 'address': return 'Address';
           case 'telegramId': return 'Telegram ID';
+          case 'currentStatus': return 'Current Status';
           default: return field.charAt(0).toUpperCase() + field.slice(1);
         }
       });
@@ -214,7 +216,8 @@ const Enroll = () => {
           whatsapp: formData.whatsapp,
           linkedin: formData.linkedin,
           website: formData.website,
-          achievements: formData.achievements ? formData.achievements.split(',').map(a => a.trim()).filter(a => a) : []
+          achievements: formData.achievements ? formData.achievements.split(',').map(a => a.trim()).filter(a => a) : [],
+          currentStatus: formData.currentStatus
         };
       }
       
@@ -299,19 +302,42 @@ const Enroll = () => {
           whatsapp: formData.whatsapp,
           linkedin: formData.linkedin,
           website: formData.website,
-          achievements: formData.achievements ? formData.achievements.split(',').map(a => a.trim()).filter(a => a) : []
+          achievements: formData.achievements ? formData.achievements.split(',').map(a => a.trim()).filter(a => a) : [],
+          currentStatus: formData.currentStatus
         };
       }
       
       // Call backend to register user with role
       const registerUrl = `${API_ENDPOINTS.REGISTER}/${type}`;
       await axios.post(registerUrl, registrationData);
-      setSuccess('Account created successfully! Redirecting to login...');
-      
-      // Redirect to login after 2 seconds
+      setSuccess('Account created successfully! Logging you in...');
+
+      // Automatically log in the user
+      const loginResponse = await axios.post(API_ENDPOINTS.LOGIN, {
+        email: formData.email,
+        password: formData.password
+      });
+      localStorage.setItem('token', loginResponse.data.token);
+      localStorage.setItem('user', JSON.stringify(loginResponse.data.user));
+      window.dispatchEvent(new Event('authStateChanged'));
+
+      // Redirect to dashboard based on role
       setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+        switch (loginResponse.data.user.role) {
+          case 'student':
+            navigate('/student');
+            break;
+          case 'mentor':
+            navigate('/mentor');
+            break;
+          case 'admin':
+            navigate('/admin');
+            break;
+          default:
+            navigate('/');
+            break;
+        }
+      }, 1500);
     } catch (err) {
       console.error('Email registration failed:', err);
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
@@ -722,6 +748,19 @@ const Enroll = () => {
                   onChange={handleChange}
                   placeholder="List your achievements, awards, and recognitions"
                   rows="3"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="currentStatus">What are you currently doing? <span style={{color: 'red'}}>*</span></label>
+                <input
+                  type="text"
+                  id="currentStatus"
+                  name="currentStatus"
+                  value={formData.currentStatus}
+                  onChange={handleChange}
+                  placeholder="e.g. BTech at IIT BHU, Software Engineer at Google, etc."
                   required
                 />
               </div>

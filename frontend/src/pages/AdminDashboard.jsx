@@ -6,6 +6,9 @@ import MeetingManager from '../components/MeetingManager';
 import API_ENDPOINTS from '../config/api';
 import '../styles/admin-dashboard.css';
 import { useToast } from '../components/Toast.jsx';
+import EditProfileModal from '../components/EditProfileModal';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { useModal } from '../components/ModalProvider';
 
 const AdminDashboard = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -33,7 +36,12 @@ const AdminDashboard = () => {
   const [resourceTitle, setResourceTitle] = useState('');
   const [resourceDescription, setResourceDescription] = useState('');
 
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editUserData, setEditUserData] = useState(null);
+  const [editUserType, setEditUserType] = useState('');
+
   const { showToast } = useToast();
+  const { showModal } = useModal();
 
   // Check authentication on component mount
   useEffect(() => {
@@ -167,11 +175,20 @@ const AdminDashboard = () => {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };
     try {
-      if (action === 'view') {
-        // Implement view logic, e.g., navigate to a student profile page
-        console.log('Viewing student:', studentId);
+      if (action === 'edit') {
+        const student = data.students.find(s => s._id === studentId);
+        setEditUserData(student);
+        setEditUserType('student');
+        setEditModalOpen(true);
       } else if (action === 'delete') {
-        if (window.confirm('Are you sure you want to delete this student?')) {
+        const confirmed = await showModal({
+          title: 'Delete Confirmation',
+          message: 'Are you sure you want to delete this student?',
+          showCancel: true,
+          confirmText: 'Delete',
+          cancelText: 'Cancel',
+        });
+        if (confirmed) {
           await axios.delete(API_ENDPOINTS.USER_PROFILE(studentId), { headers });
           await fetchAllData(); // Refresh data
         }
@@ -185,17 +202,33 @@ const AdminDashboard = () => {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };
     try {
-      if (action === 'view') {
-        // Implement view logic
-        console.log('Viewing mentor:', mentorId);
+      if (action === 'edit') {
+        const mentor = data.mentors.find(m => m._id === mentorId);
+        setEditUserData(mentor);
+        setEditUserType('mentor');
+        setEditModalOpen(true);
       } else if (action === 'delete') {
-        if (window.confirm('Are you sure you want to delete this mentor?')) {
+        const confirmed = await showModal({
+          title: 'Delete Confirmation',
+          message: 'Are you sure you want to delete this mentor?',
+          showCancel: true,
+          confirmText: 'Delete',
+          cancelText: 'Cancel',
+        });
+        console.log('Modal confirmed value:', confirmed);
+        if (confirmed) {
+          try {
           await axios.delete(API_ENDPOINTS.USER_PROFILE(mentorId), { headers });
           await fetchAllData(); // Refresh data
+            showToast('Mentor deleted successfully!', 'success');
+          } catch (error) {
+            showToast('Failed to delete mentor. Please try again.', 'error');
+          }
         }
       }
     } catch (error) {
       console.error(`Error performing action ${action} on mentor:`, error);
+      showToast('An error occurred. Please try again.', 'error');
     }
   };
 
@@ -270,7 +303,14 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteAnnouncement = async (announcementId) => {
-    if (window.confirm('Are you sure you want to delete this announcement?')) {
+    const confirmed = await showModal({
+      title: 'Delete Confirmation',
+      message: 'Are you sure you want to delete this announcement?',
+      showCancel: true,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+    });
+    if (confirmed) {
       try {
         await axios.delete(API_ENDPOINTS.ANNOUNCEMENTS + `/${announcementId}`);
         showToast('Announcement deleted successfully!', 'success');
@@ -282,19 +322,7 @@ const AdminDashboard = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="admin-dashboard">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading admin dashboard...</p>
-          <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
-            Checking authentication and fetching data...
-          </p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingSpinner />;
 
   if (error) {
     return (
@@ -321,10 +349,14 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-dashboard">
-      {/* Premium Header */}
-      <div className="admin-header">
-        <h1>Admin Dashboard</h1>
-        <p>Welcome back! Manage your educational platform with powerful insights and controls.</p>
+      {/* Updated Header to match profile-header style */}
+      <div className="profile-header">
+        <div className="header-content">
+          <div className="header-center">
+            <h1 className="header-title">Admin Dashboard</h1>
+            <p className="header-subtitle">Welcome back! Manage your educational platform with powerful insights and controls.</p>
+          </div>
+        </div>
       </div>
 
       {/* Main Content */}
@@ -391,7 +423,9 @@ const AdminDashboard = () => {
                       </td>
                     </tr>
                   ) : (
-                    data.students.map(student => (
+                    data.students.map((student, idx) => {
+                      const isLast = idx === data.students.length - 1;
+                      return (
                       <tr key={student._id}>
                         <td style={{ fontWeight: '600', color: 'var(--text-primary)' }}>{student.name}</td>
                         <td>{student.email}</td>
@@ -401,7 +435,6 @@ const AdminDashboard = () => {
                         <td>
                           <div className="action-group">
                             <Link to={`/student-profile/${student._id}`} className="action-btn view-profile-btn">
-                              <i className="fas fa-user"></i>
                               View Profile
                             </Link>
                             <button 
@@ -414,19 +447,42 @@ const AdminDashboard = () => {
                               <i className="fas fa-ellipsis-v"></i>
                             </button>
                             <div 
-                              className={`action-dropdown ${activeDropdown === student._id ? 'active' : ''}`}
-                              onClick={(e) => e.stopPropagation()}
+                                className={`action-dropdown ${activeDropdown === student._id ? 'active' : ''} ${isLast ? 'dropup' : ''}`}
+                              onClick={e => e.stopPropagation()}
                             >
+                                <div className="dropdown-user-info">
+                                  {student.profilePicture ? (
+                                    <img
+                                      src={`http://localhost:5000/${student.profilePicture.replace(/\\/g, '/')}`}
+                                      alt="Profile"
+                                      className="profile-img"
+                                      style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', marginRight: 8 }}
+                                    />
+                                  ) : (
+                                    <span className="profile-avatar-fallback" style={{ width: 36, height: 36, borderRadius: '50%', background: '#e0e7ff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: 18, marginRight: 8 }}>{student.name.charAt(0).toUpperCase()}</span>
+                                  )}
+                                  <span className="dropdown-user-name">{student.name}</span>
+                                </div>
                               <button 
-                                className="action-dropdown-item" 
-                                onClick={() => handleStudentAction(student._id, 'edit')}
+                                  className="action-dropdown-item edit" 
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  console.log('Edit clicked', student._id);
+                                  handleStudentAction(student._id, 'edit');
+                                  setActiveDropdown(null);
+                                }}
                               >
                                 <i className="fas fa-edit"></i>
                                 Edit Student
                               </button>
                               <button 
-                                className="action-dropdown-item" 
-                                onClick={() => handleStudentAction(student._id, 'delete')}
+                                  className="action-dropdown-item delete" 
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  console.log('Delete clicked', student._id);
+                                  handleStudentAction(student._id, 'delete');
+                                  setActiveDropdown(null);
+                                }}
                               >
                                 <i className="fas fa-trash"></i>
                                 Delete Student
@@ -435,7 +491,8 @@ const AdminDashboard = () => {
                           </div>
                         </td>
                       </tr>
-                    ))
+                      );
+                    })
                   )}
                 </tbody>
               </table>
@@ -474,7 +531,9 @@ const AdminDashboard = () => {
                       </td>
                     </tr>
                   ) : (
-                    data.mentors.map(mentor => (
+                    data.mentors.map((mentor, idx) => {
+                      const isLast = idx === data.mentors.length - 1;
+                      return (
                       <tr key={mentor._id}>
                         <td style={{ fontWeight: '600', color: 'var(--text-primary)' }}>{mentor.name}</td>
                         <td>{mentor.email}</td>
@@ -511,7 +570,6 @@ const AdminDashboard = () => {
                         <td>
                           <div className="action-group">
                             <Link to={`/mentor-profile/${mentor._id}`} className="action-btn view-profile-btn">
-                              <i className="fas fa-user"></i>
                               View Profile
                             </Link>
                             <button className="action-btn three-dots-btn" onClick={(e) => {
@@ -521,19 +579,42 @@ const AdminDashboard = () => {
                               <i className="fas fa-ellipsis-v"></i>
                             </button>
                             <div 
-                              className={`action-dropdown ${activeDropdown === mentor._id ? 'active' : ''}`}
-                              onClick={(e) => e.stopPropagation()}
+                                className={`action-dropdown ${activeDropdown === mentor._id ? 'active' : ''} ${isLast ? 'dropup' : ''}`}
+                              onClick={e => e.stopPropagation()}
                             >
+                                <div className="dropdown-user-info">
+                                  {mentor.profilePicture ? (
+                                    <img
+                                      src={`http://localhost:5000/${mentor.profilePicture.replace(/\\/g, '/')}`}
+                                      alt="Profile"
+                                      className="profile-img"
+                                      style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', marginRight: 8 }}
+                                    />
+                                  ) : (
+                                    <span className="profile-avatar-fallback" style={{ width: 36, height: 36, borderRadius: '50%', background: '#e0e7ff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: 18, marginRight: 8 }}>{mentor.name.charAt(0).toUpperCase()}</span>
+                                  )}
+                                  <span className="dropdown-user-name">{mentor.name}</span>
+                                </div>
                               <button 
-                                className="action-dropdown-item" 
-                                onClick={() => handleMentorAction(mentor._id, 'edit')}
+                                  className="action-dropdown-item edit" 
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  console.log('Edit clicked', mentor._id);
+                                  handleMentorAction(mentor._id, 'edit');
+                                  setActiveDropdown(null);
+                                }}
                               >
                                 <i className="fas fa-edit"></i>
                                 Edit Mentor
                               </button>
                               <button 
-                                className="action-dropdown-item" 
-                                onClick={() => handleMentorAction(mentor._id, 'delete')}
+                                  className="action-dropdown-item delete" 
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  console.log('Delete clicked', mentor._id);
+                                  handleMentorAction(mentor._id, 'delete');
+                                  setActiveDropdown(null);
+                                }}
                               >
                                 <i className="fas fa-trash"></i>
                                 Delete Mentor
@@ -542,7 +623,8 @@ const AdminDashboard = () => {
                           </div>
                         </td>
                       </tr>
-                    ))
+                      );
+                    })
                   )}
                 </tbody>
               </table>
@@ -678,7 +760,10 @@ const AdminDashboard = () => {
                   ) : (
                     data.doubts
                       .filter(doubt => data.selectedDoubtType === 'All' || doubt.status === data.selectedDoubtType)
-                      .map(doubt => (
+                      .map((doubt, idx, arr) => {
+                        const isLast = idx === arr.length - 1;
+                        const isDropup = isLast && activeDropdown === doubt._id;
+                        return (
                         <tr key={doubt._id}>
                           <td style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
                             {doubt.student?.name || 'Unknown Student'}
@@ -714,8 +799,8 @@ const AdminDashboard = () => {
                                 <i className="fas fa-ellipsis-v"></i>
                               </button>
                               <div 
-                                className={`action-dropdown ${activeDropdown === doubt._id ? 'active' : ''}`}
-                                onClick={(e) => e.stopPropagation()}
+                                  className={`action-dropdown ${activeDropdown === doubt._id ? 'active' : ''} ${isDropup ? 'dropup' : ''}`}
+                                  onClick={e => e.stopPropagation()}
                               >
                                 <Link to={`/student-profile/${doubt.student?._id}`} className="action-dropdown-item">
                                   <i className="fas fa-user"></i>
@@ -725,7 +810,8 @@ const AdminDashboard = () => {
                             </div>
                           </td>
                         </tr>
-                      ))
+                        );
+                      })
                   )}
                 </tbody>
               </table>
@@ -890,6 +976,17 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+      {/* Edit Profile Modal for Student/Mentor */}
+      <EditProfileModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        userData={editUserData}
+        userType={editUserType}
+        onSaveSuccess={() => {
+          setEditModalOpen(false);
+          fetchAllData();
+        }}
+      />
     </div>
   );
 };

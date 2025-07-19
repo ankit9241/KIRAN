@@ -146,33 +146,6 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-/* Avatar Status Indicator */
-.avatar-circle::after {
-  content: '';
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  width: 24px;
-  height: 24px;
-  background: #10b981;
-  border-radius: 50%;
-  border: 3px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* Different status colors based on activity */
-.avatar-circle.inactive::after {
-  background: #6b7280;
-}
-
-.avatar-circle.busy::after {
-  background: #f59e0b;
-}
-
-.avatar-circle.away::after {
-  background: #ef4444;
-}
-
 /* Enhanced Student Profile Info Layout */
 .student-profile-info {
   display: flex;
@@ -1008,116 +981,74 @@
 }
 
 @media (min-width: 769px) {
-  .doubts-section {
-    padding: 3rem 0 2rem 0;
-    max-width: 800px;
-    margin: 0 auto;
+  .doubts-table-wrapper {
+    display: block;
+    width: 100%;
+    margin-bottom: 2rem;
   }
-  .doubts-header {
-    margin-bottom: 2.5rem;
-    text-align: left;
-    padding-left: 0.5rem;
-  }
-  .doubts-header h3 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 1.25rem;
-  }
-  .doubts-stats {
-    display: flex;
-    justify-content: flex-start;
-    gap: 2.5rem;
-    margin-bottom: 2.5rem;
-  }
-  .stat-item {
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 1rem 2rem;
-    border-radius: 12px;
-    background: #f1f5f9;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.06);
-    border: 1px solid #e5e7eb;
-    color: #1e293b;
-    transition: box-shadow 0.2s;
-  }
-  .stat-item i {
-    font-size: 1.1rem;
-    color: #2563eb;
-  }
-  .doubts-list {
-    gap: 1.5rem;
-  }
-  .doubt-card {
-    border-radius: 14px;
-    padding: 2rem 2.5rem;
-    box-shadow: 0 4px 24px rgba(59, 130, 246, 0.08), 0 1.5px 6px rgba(0,0,0,0.04);
-    border: 1.5px solid #e0e7ef;
+  .doubts-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
     background: #fff;
-    transition: box-shadow 0.2s, border-color 0.2s;
+    border-radius: 14px;
+    box-shadow: 0 4px 24px rgba(59, 130, 246, 0.08), 0 1.5px 6px rgba(0,0,0,0.04);
+    overflow: hidden;
+    font-size: 1.01rem;
   }
-  .doubt-card:hover {
-    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.13), 0 2px 8px rgba(0,0,0,0.08);
-    border-color: #3b82f6;
-  }
-  .doubt-header {
-    gap: 1.5rem;
-    margin-bottom: 1.25rem;
-  }
-  .doubt-subject {
-    font-size: 0.95rem;
-    font-weight: 600;
-    padding: 0.4rem 1.2rem;
-    border-radius: 8px;
-    background: #3b82f6;
-    color: #fff;
-    letter-spacing: 0.5px;
-  }
-  .doubt-status {
-    font-size: 0.95rem;
-    font-weight: 600;
-    padding: 0.4rem 1.2rem;
-    border-radius: 8px;
-    letter-spacing: 0.5px;
-  }
-  .doubt-title {
-    font-size: 1.25rem;
-    font-weight: 700;
+  .doubts-table th {
+    background: #f6faff;
     color: #1e293b;
-    margin-bottom: 0.5rem;
+    font-weight: 700;
+    padding: 1.1rem 1rem;
+    text-align: left;
+    border-bottom: 2px solid #e0e7ef;
+    font-size: 1.08rem;
+    letter-spacing: 0.01em;
   }
-  .doubt-description {
-    font-size: 1rem;
-    color: #475569;
-    margin-bottom: 1rem;
+  .doubts-table td {
+    padding: 1rem 1rem;
+    border-bottom: 1.5px solid #e5e7eb;
+    vertical-align: top;
+    background: #fff;
+    font-size: 1.01rem;
+  }
+  .doubts-table tr:last-child td {
+    border-bottom: none;
+  }
+  .doubts-table tr:hover td {
+    background: #f0f8ff;
+    transition: background 0.18s;
+  }
+  .doubts-cards-mobile {
+    display: none;
   }
   .doubt-meta {
-    font-size: 0.9rem;
-    color: #64748b;
+    font-size: 0.92rem;
+    color: #94a3b8;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
     gap: 0.5rem;
-    margin-top: 0.5rem;
   }
-  .no-doubts {
-    padding: 4rem 2rem;
-    border-radius: 14px;
-    background: #f8fafc;
-    border: 1.5px dashed #cbd5e1;
-    color: #64748b;
-    margin-top: 2rem;
+  .doubt-subject {
+    background: none;
+    color: #000;
+    font-weight: 700 !important;
+    letter-spacing: 0.03em;
+    font-size: 1.01rem;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
   }
-  .no-doubts i {
-    font-size: 3.5rem;
-    color: #cbd5e1;
-    margin-bottom: 1.5rem;
+}
+@media (max-width: 768px) {
+  .doubts-table-wrapper {
+    display: none;
   }
-  .no-doubts h4 {
-    font-size: 1.25rem;
-    color: #334155;
-    margin-bottom: 0.5rem;
-  }
-  .no-doubts p {
-    font-size: 1rem;
-    color: #64748b;
+  .doubts-cards-mobile {
+    display: block;
   }
 }
 

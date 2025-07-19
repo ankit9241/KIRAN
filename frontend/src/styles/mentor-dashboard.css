@@ -2132,3 +2132,9 @@
 .resources-section h3 {
   margin-left: 1rem;
 }
+
+@media (min-width: 900px) {
+  .mentor-dashboard {
+    margin-top: 2.5rem !important;
+  }
+}

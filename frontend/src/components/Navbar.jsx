@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.jpg';
 import '../styles/navbar.css';
+import NotificationIcon from './NotificationIcon';
 
 // Add icons for hamburger and close (X)
 const HamburgerIcon = (props) => (
@@ -137,6 +138,17 @@ const Navbar = () => {
     navigate('/mentor');
   };
 
+  useEffect(() => {
+    const handleAuthChange = () => {
+      const updatedUser = JSON.parse(localStorage.getItem('user'));
+      setUser(updatedUser);
+    };
+    window.addEventListener('authStateChanged', handleAuthChange);
+    return () => {
+      window.removeEventListener('authStateChanged', handleAuthChange);
+    };
+  }, []);
+
   return (
     <>
       <nav className="navbar">
@@ -158,56 +170,86 @@ const Navbar = () => {
             {!isAuthenticated ? (
               <button className="login-btn" onClick={() => navigate('/login')}>Login</button>
             ) : (
-              <div className="profile-dropdown-container" ref={profileIconRef}>
-                <button className="profile-toggle" onClick={toggleProfileDropdown} aria-label="Toggle profile menu">
-                  <svg className="profile-icon-svg" viewBox="0 0 24 24" fill="currentColor">
-                    <circle cx="12" cy="8" r="4" />
-                    <path d="M12 14c-4 0-6 2-6 4v2h12v-2c0-2-2-4-6-4z" />
-                  </svg>
-                </button>
-                {isProfileDropdownOpen && (
-                  <div className="profile-dropdown">
-                    <div className="profile-dropdown-header">
-                      <span className="profile-dropdown-name">{user?.name || user?.username || 'User'}</span><br />
-                      <span className="profile-dropdown-role">{user?.role ? capitalizeFirstLetter(user.role) : 'Member'}</span>
+              <>
+                <NotificationIcon />
+                <div className="profile-dropdown-container" ref={profileIconRef}>
+                  <button className="profile-toggle" onClick={toggleProfileDropdown} aria-label="Toggle profile menu">
+                    {user?.profilePicture ? (
+                      <img
+                        src={`http://localhost:5000/${user.profilePicture.replace(/\\/g, '/')}`}
+                        alt="Profile"
+                        className="navbar-profile-avatar"
+                        style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', display: 'block', imageRendering: 'auto' }}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span className="navbar-profile-avatar-fallback" style={{ width: 36, height: 36, borderRadius: '50%', background: '#e0e7ff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 18, color: '#4F46E5', textTransform: 'uppercase' }}>
+                        {(user?.name || user?.username || 'U').charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                  </button>
+                  {isProfileDropdownOpen && (
+                    <div className="profile-dropdown">
+                      <div className="profile-dropdown-header">
+                        <div className="profile-dropdown-avatar">
+                          {user?.profilePicture ? (
+                            <img
+                              src={`http://localhost:5000/${user.profilePicture.replace(/\\/g, '/')}`}
+                              alt="Profile"
+                              style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', display: 'block' }}
+                            />
+                          ) : (
+                            <span style={{ width: '100%', textAlign: 'center', display: 'block', fontSize: '2rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                              {(user?.name || user?.username || 'U').charAt(0).toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+                        <span className="profile-dropdown-name">{user?.name || user?.username || 'User'}</span><br />
+                        <span className="profile-dropdown-role">{user?.role ? capitalizeFirstLetter(user.role) : 'Member'}</span>
+                      </div>
+                      <div className="profile-dropdown-email">{user?.email || 'N/A'}</div>
+                      <button
+                        className="profile-dropdown-view-profile"
+                        onClick={() => {
+                          setIsProfileDropdownOpen(false);
+                          if (user?.role === 'student') navigate('/my-student-profile');
+                          else if (user?.role === 'mentor') navigate('/my-mentor-profile');
+                          else if (user?.role === 'admin') navigate('/admin-profile');
+                          else navigate('/');
+                        }}
+                      >
+                        View Profile
+                      </button>
+                      <button className="profile-dropdown-logout" onClick={handleLogout}>Logout</button>
                     </div>
-                    <div className="profile-dropdown-email">Email: {user?.email || 'N/A'}</div>
-                    <button
-                      className="profile-dropdown-view-profile"
-                      onClick={() => {
-                        setIsProfileDropdownOpen(false);
-                        if (user?.role === 'student') navigate('/my-student-profile');
-                        else if (user?.role === 'mentor') navigate('/my-mentor-profile');
-                        else if (user?.role === 'admin') navigate('/admin-profile');
-                        else navigate('/');
-                      }}
-                    >
-                      View Profile
-                    </button>
-                    <button className="profile-dropdown-logout" onClick={handleLogout}>Logout</button>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              </>
             )}
           </div>
           {/* Mobile Hamburger or Login (mobile-only) */}
-          <div className="mobile-only">
-            {!isAuthenticated ? (
+          <div className="mobile-only navbar-mobile-row" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%', justifyContent: 'flex-end' }}>
+            {isAuthenticated && (
+              <>
+                <NotificationIcon small />
+                <button
+                  aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+                  aria-expanded={isMenuOpen}
+                  onClick={() => setIsMenuOpen((open) => !open)}
+                  className="hamburger-btn"
+                  style={{ marginLeft: 8 }}
+                >
+                  <AnimatedHamburger open={isMenuOpen} />
+                </button>
+              </>
+            )}
+            {!isAuthenticated && (
               <button
                 className="login-btn"
                 style={{ padding: '0.5rem 1.25rem', fontSize: '1rem', borderRadius: '6px', fontWeight: 600 }}
                 onClick={() => navigate('/login')}
               >
                 Login
-              </button>
-            ) : (
-              <button
-                aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-                aria-expanded={isMenuOpen}
-                onClick={() => setIsMenuOpen((open) => !open)}
-                className="hamburger-btn"
-              >
-                <AnimatedHamburger open={isMenuOpen} />
               </button>
             )}
           </div>
@@ -218,26 +260,26 @@ const Navbar = () => {
         <div className="sidebar-drawer mobile-only">
           <div className="sidebar-profile">
             {isAuthenticated ? (
-              <>
-                <span className="sidebar-profile-name">{user?.name || user?.username || 'User'}</span>
-                <span className="sidebar-profile-role">{user?.role ? capitalizeFirstLetter(user.role) : 'Member'}</span>
-                <span className="sidebar-profile-email">{user?.email || 'N/A'}</span>
-                <button
-                  className="sidebar-view-profile-btn"
-                  style={{ marginTop: '10px', width: '100%', textAlign: 'left', padding: '4px 0', background: 'none', border: 'none', color: '#666', fontWeight: 500, borderRadius: '8px', cursor: 'pointer', fontSize: '0.98rem', display: 'flex', alignItems: 'center', gap: '6px' }}
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    if (user?.role === 'student') navigate('/my-student-profile');
-                    else if (user?.role === 'mentor') navigate('/my-mentor-profile');
-                    else if (user?.role === 'admin') navigate('/admin-profile');
-                    else navigate('/');
-                  }}
-                >
-                  <span style={{ fontSize: '1.1em', color: '#4F46E5', fontWeight: 600 }}><i className="fas fa-user-circle"></i></span>
-                  <span style={{ fontSize: '0.97em', color: '#4F46E5', fontWeight: 500 }}><b>View Profile</b></span>
-                </button>
-                {/* Mentor: Edit Profile button in sidebar (mobile only) */}
-              </>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', width: '100%' }}>
+                <div className="sidebar-profile-avatar" style={{ width: 48, height: 48, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, background: '#e0e7ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {user?.profilePicture ? (
+                    <img
+                      src={`http://localhost:5000/${user.profilePicture.replace(/\\/g, '/')}`}
+                      alt="Profile"
+                      style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', display: 'block' }}
+                    />
+                  ) : (
+                    <span style={{ width: '100%', textAlign: 'center', display: 'block', fontSize: '2rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.02em', color: '#4F46E5' }}>
+                      {(user?.name || user?.username || 'U').charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', flex: 1 }}>
+                  <span className="sidebar-profile-name">{user?.name || user?.username || 'User'}</span>
+                  <span className="sidebar-profile-role">{user?.role ? capitalizeFirstLetter(user.role) : 'Member'}</span>
+                  <span className="sidebar-profile-email">{user?.email || 'N/A'}</span>
+                </div>
+              </div>
             ) : (
               <span className="sidebar-profile-name">Welcome!</span>
             )}

@@ -286,10 +286,11 @@ router.get('/mentor/approval-status', auth, async (req, res) => {
 // Update user profile
 router.patch('/me', async (req, res) => {
     const updates = Object.keys(req.body);
+    // Add currentStatus to allowed updates for mentors
     const allowedUpdates = ['name', 'email', 'phone', 'address', 'bio', 'achievements',
         'class', 'stream', 'targetExam', 'preferredSubjects', 'learningGoals',
         'specialization', 'experience', 'subjectsTaught', 'telegramId', 'whatsapp', 'linkedin', 'website',
-        'teachingStyle', 'qualifications', 'profilePicture'];
+        'teachingStyle', 'qualifications', 'profilePicture', 'currentStatus'];
     const isValidOperation = updates.every(update => allowedUpdates.includes(update));
 
     if (!isValidOperation) {
@@ -297,10 +298,19 @@ router.patch('/me', async (req, res) => {
     }
 
     try {
-        const user = await User.findByIdAndUpdate(req.user.id, req.body, { new: true, runValidators: true }).select('-password');
+        // Log for debugging
+        console.log('PATCH /users/me user:', req.user.id, 'payload:', req.body);
+        const user = await User.findById(req.user.id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
+        // Update allowed fields
+        updates.forEach(update => {
+            user[update] = req.body[update];
+        });
+        await user.save();
+        // Log updated user for debugging
+        console.log('Updated user:', user);
         res.json(user);
     } catch (error) {
         res.status(400).json({ message: error.message });

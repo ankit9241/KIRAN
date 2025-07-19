@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/admin-profile.css';
 import axios from 'axios';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const AdminProfile = () => {
   const [admin, setAdmin] = useState(null);
@@ -30,7 +31,7 @@ const AdminProfile = () => {
     fetchAdmin();
   }, [navigate]);
 
-  if (loading) return <div className="admin-profile-loading">Loading...</div>;
+  if (loading) return <LoadingSpinner />;
   if (error || !admin) return <div className="admin-profile-error">{error || 'Profile not found'}</div>;
 
   return (

@@ -90,6 +90,20 @@ router.post('/', allowMentorOrAdmin, async (req, res) => {
                     meetingId: meeting._id,
                     isActive: true
                 });
+                // Meeting scheduled notification
+                const Notification = require('../models/Notification');
+                await Notification.create({
+                    userId: participantId,
+                    type: 'meeting_scheduled',
+                    title: 'Meeting Scheduled',
+                    message: meetingMsg,
+                    senderId: creatorId,
+                    senderName: req.user.name,
+                    relatedId: meeting._id,
+                    relatedModel: 'Meeting',
+                    category: 'activity',
+                    priority: 'medium',
+                });
             }
         }
 

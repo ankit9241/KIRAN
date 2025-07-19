@@ -1,7 +1,6 @@
 /* Mentor Profile Page Styles */
 .mentor-profile-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 20px;
   margin-top: 100px;
 }
@@ -68,22 +67,23 @@
 .back-btn {
   background: none;
   color: #10B981;
-  border: 2px solid #10B981;
+  border: none;
   padding: 12px 20px;
   border-radius: 12px;
   cursor: pointer;
   font-size: 16px;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: transform 0.2s cubic-bezier(0.4,0,0.2,1), color 0.2s;
   display: flex;
   align-items: center;
   gap: 8px;
+  box-shadow: none;
 }
 
 .back-btn:hover {
-  background: #10B981;
-  color: white;
-  transform: translateY(-2px);
+  background: none;
+  color: #059669;
+  transform: scale(1.08);
 }
 
 .back-btn i {

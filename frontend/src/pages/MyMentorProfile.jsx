@@ -4,6 +4,7 @@ import '../styles/my-mentor-profile.css';
 import axios from 'axios';
 import EditProfileModal from '../components/EditProfileModal';
 import { FaCamera } from 'react-icons/fa';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const MyMentorProfile = () => {
   const [mentor, setMentor] = useState(null);
@@ -35,6 +36,8 @@ const MyMentorProfile = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMentor(response.data);
+      localStorage.setItem('user', JSON.stringify(response.data));
+      window.dispatchEvent(new Event('authStateChanged'));
     } catch (err) {
       alert('Failed to upload profile picture');
     } finally {
@@ -64,7 +67,7 @@ const MyMentorProfile = () => {
     fetchMentor();
   }, [navigate]);
 
-  if (loading) return <div className="my-mentor-profile-loading">Loading...</div>;
+  if (loading) return <LoadingSpinner />;
   if (error || !mentor) return <div className="my-mentor-profile-error">{error || 'Profile not found'}</div>;
 
   return (
@@ -99,12 +102,18 @@ const MyMentorProfile = () => {
           <div className="profile-info-row">
             <div className="profile-info">
               <h1>{mentor.name}</h1>
+              {mentor.currentStatus && (
+                <div style={{ fontWeight: 500, color: '#2563eb', fontSize: '1.1em', margin: '0.2em 0 0.5em 0' }}>
+                  <i className="fas fa-briefcase" style={{ marginRight: 6 }}></i>
+                  {mentor.currentStatus}
+                </div>
+              )}
               <div className="profile-info-credentials">
                 <span className="role-badge">Mentor{mentor.isPremium && <span className="premium-badge">Premium</span>}</span>
                 {mentor.mentorApprovalStatus === 'approved' && (
                   <span className="approved-badge"><i className="fas fa-check-circle"></i> Approved</span>
                 )}
-                <span className="email">{mentor.email}</span>
+                <span className="email" style={{ marginLeft: 0 }}>{mentor.email}</span>
               </div>
             </div>
             <button className="edit-profile-btn" onClick={() => setIsEditOpen(true)}>

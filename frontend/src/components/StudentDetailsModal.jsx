@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/student-details-modal.css';
+import LoadingSpinner from './LoadingSpinner';
 
 const StudentDetailsModal = ({ student, isOpen, onClose }) => {
   const [studentDetails, setStudentDetails] = useState(null);
@@ -37,6 +38,8 @@ const StudentDetailsModal = ({ student, isOpen, onClose }) => {
   };
 
   if (!isOpen) return null;
+
+  if (loading) return <div className="modal-loading"><LoadingSpinner /></div>;
 
   return (
     <div className="modal-overlay" onClick={onClose}>

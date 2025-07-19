@@ -144,7 +144,9 @@ router.get('/student/:studentId', auth, async (req, res) => {
         if (req.user.role === 'mentor') {
             query.mentor = req.user.id;
         }
-        const doubts = await Doubt.find(query).populate('student', 'name email');
+        const doubts = await Doubt.find(query)
+            .populate('student', 'name email')
+            .populate('mentor', 'name email');
         res.json(doubts);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
@@ -184,6 +186,21 @@ router.patch('/:doubtId/assign', auth, async (req, res) => {
 
         const populatedDoubt = await Doubt.findById(doubt._id).populate('student', 'name email');
         console.log('Populated doubt:', populatedDoubt);
+
+        // Notify mentor about new doubt assignment
+        const Notification = require('../models/Notification');
+        await Notification.create({
+            userId: req.user.id,
+            type: 'doubt_assigned',
+            title: 'New Doubt Assigned',
+            message: `You have been assigned a new doubt: "${doubt.title}"`,
+            senderId: populatedDoubt.student._id,
+            senderName: populatedDoubt.student.name,
+            relatedId: doubt._id,
+            relatedModel: 'Doubt',
+            category: 'activity',
+            priority: 'medium',
+        });
         
         res.json(populatedDoubt);
     } catch (error) {
@@ -251,6 +268,21 @@ router.patch('/:doubtId/respond', auth, upload.array('documents', 5), async (req
             .populate('mentor', 'name email');
         
         console.log('Populated doubt:', populatedDoubt);
+
+        // Notify student about doubt response
+        const Notification = require('../models/Notification');
+        await Notification.create({
+            userId: populatedDoubt.student._id,
+            type: 'doubt_response',
+            title: 'Doubt Response',
+            message: `Your doubt "${doubt.title}" has been answered by ${populatedDoubt.mentor.name}.`,
+            senderId: populatedDoubt.mentor._id,
+            senderName: populatedDoubt.mentor.name,
+            relatedId: doubt._id,
+            relatedModel: 'Doubt',
+            category: 'activity',
+            priority: 'medium',
+        });
         
         res.json(populatedDoubt);
     } catch (error) {

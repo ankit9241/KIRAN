@@ -10,6 +10,7 @@ import FeedbackList from '../components/FeedbackList';
 import StudentMeetings from '../components/StudentMeetings';
 import Announcements from '../components/Announcements';
 import { useToast } from '../components/Toast.jsx';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const API_URL = 'http://localhost:5000/api/users';
 
@@ -193,7 +194,7 @@ const StudentDashboard = () => {
     }
   };
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) return <LoadingSpinner />;
   if (!user) return <div className="error">Failed to load profile</div>;
 
   // Ensure all values are defined
@@ -211,7 +212,11 @@ const StudentDashboard = () => {
       </div>
       {/* Dashboard content below */}
       <div className="section-card">
-        <div className="section-content">
+      <div className="section-header">
+          <h2>Available Mentors</h2>
+          <p>Connect with our expert mentors for personalized guidance and support</p>
+        </div>
+        <div className="section-content mentor-list-horizontal-scroll">
           <MentorList mentors={mentors} />
         </div>
       </div>
@@ -248,6 +253,9 @@ const StudentDashboard = () => {
                       <h4>{material.title}</h4>
                       <p>{material.description}</p>
                       <small>Subject: {material.subject}</small>
+                      <small>
+                        Uploaded: {material.createdAt ? new Date(material.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}
+                      </small>
                     </div>
                     {material.filePath && (
                       <button
@@ -284,6 +292,9 @@ const StudentDashboard = () => {
                       <h4>{material.title}</h4>
                       <p>{material.description}</p>
                       <small>From: {material.uploadedBy?.name || 'Mentor/Admin'}</small>
+                      <small>
+                        Uploaded: {material.createdAt ? new Date(material.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}
+                      </small>
                     </div>
                     {material.filePath && (
                       <button

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const UserProfile = () => {
   const { userId } = useParams();
@@ -47,20 +48,7 @@ const UserProfile = () => {
     }
   }, [userId, navigate]);
 
-  if (loading) {
-    return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        fontSize: '18px',
-        color: '#666'
-      }}>
-        Loading profile...
-      </div>
-    );
-  }
+  if (loading) return <LoadingSpinner />;
 
   return null;
 };

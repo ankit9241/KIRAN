@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/student-profile.css';
 import { FaCamera } from 'react-icons/fa';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const StudentProfile = () => {
   const { studentId } = useParams();
@@ -130,47 +131,14 @@ const StudentProfile = () => {
     return flags;
   };
 
-  // Helper function to get student status for avatar
-  const getStudentStatus = () => {
-    if (!student) return 'inactive';
-    
-    // Check if student has recent activity (doubts in last 7 days)
-    const recentDoubts = doubts.filter(d => {
-      const doubtDate = new Date(d.createdAt);
-      const now = new Date();
-      const diffDays = Math.ceil((now - doubtDate) / (1000 * 60 * 60 * 24));
-      return diffDays <= 7;
-    });
-    
-    if (recentDoubts.length > 0) return 'active';
-    
-    // Check if student has pending doubts (might be busy)
-    const pendingDoubts = doubts.filter(d => d.status === 'pending');
-    if (pendingDoubts.length > 0) return 'busy';
-    
-    // Check if student has old unresolved doubts (might be away)
-    const oldDoubts = doubts.filter(d => {
-      const doubtDate = new Date(d.createdAt);
-      const now = new Date();
-      const diffDays = Math.ceil((now - doubtDate) / (1000 * 60 * 60 * 24));
-      return diffDays > 7 && d.status !== 'resolved';
-    });
-    
-    if (oldDoubts.length > 0) return 'away';
-    
-    return 'inactive';
+  const user = JSON.parse(localStorage.getItem('user'));
+  const getDashboardRoute = () => {
+    if (user?.role === 'admin') return '/admin';
+    if (user?.role === 'mentor') return '/mentor';
+    return '/';
   };
 
-  if (loading) {
-    return (
-      <div className="student-profile-container">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading student profile...</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingSpinner />;
 
   if (error || !student) {
     return (
@@ -178,7 +146,7 @@ const StudentProfile = () => {
         <div className="error-container">
           <h2>Error</h2>
           <p>{error || 'Student not found'}</p>
-          <Link to="/mentor" className="btn-primary">Back to Dashboard</Link>
+          <Link to={getDashboardRoute()} className="btn-primary">Back to Dashboard</Link>
         </div>
       </div>
     );
@@ -190,7 +158,7 @@ const StudentProfile = () => {
     <div className="student-profile-container">
       {/* Back Button - Moved to top */}
       <div className="top-back-button">
-        <Link to="/mentor" className="back-link">
+        <Link to={getDashboardRoute()} className="back-link">
           <i className="fas fa-arrow-left"></i>
           Back to Dashboard
         </Link>
@@ -201,7 +169,7 @@ const StudentProfile = () => {
         <div className="header-content">
           <div className="student-profile-info">
             <div className="student-avatar">
-              <div className={`avatar-circle ${getStudentStatus()}`} style={{position: 'relative', overflow: 'visible'}}>
+              <div className="avatar-circle" style={{position: 'relative', overflow: 'visible'}}>
                 {student.profilePicture ? (
                   <img
                     src={`http://localhost:5000/${student.profilePicture.replace(/\\/g, '/')}`}
@@ -529,32 +497,87 @@ const StudentProfile = () => {
               </div>
             </div>
 
+            {/* Responsive: Table for desktop, cards for mobile */}
             <div className="doubts-list">
-              {doubts.length > 0 ? (
-                doubts.map(doubt => (
-                  <div key={doubt._id} className="doubt-card">
-                    <div className="doubt-header">
-                      <span className="doubt-subject">{doubt.subject}</span>
-                      <span className={`doubt-status ${doubt.status}`}>
-                        {doubt.status === 'pending' ? 'Open' : 
-                         doubt.status === 'assigned' ? 'In Progress' : 'Solved'}
-                      </span>
+              {/* Desktop Table */}
+              <div className="doubts-table-wrapper">
+                <table className="doubts-table">
+                  <thead>
+                    <tr>
+                      <th>Subject</th>
+                      <th>Title</th>
+                      <th>Description</th>
+                      <th>Status</th>
+                      <th>Mentor</th>
+                      <th>Answer</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {doubts.length > 0 ? (
+                      doubts.map(doubt => (
+                        <tr key={doubt._id}>
+                          <td><span className="doubt-subject">{doubt.subject}</span></td>
+                          <td className="doubt-title">{doubt.title}</td>
+                          <td className="doubt-description">{doubt.description}</td>
+                          <td><span className={`doubt-status ${doubt.status}`}>
+                            {doubt.status === 'pending' ? 'Open' : doubt.status === 'assigned' ? 'In Progress' : 'Solved'}
+                          </span></td>
+                          <td>{doubt.mentor && doubt.mentor.name ? doubt.mentor.name : '-'}</td>
+                          <td>{doubt.status === 'resolved' && doubt.mentorResponse ? doubt.mentorResponse : (doubt.status === 'resolved' ? <span style={{color:'#94a3b8'}}>No answer</span> : '-')}</td>
+                          <td className="doubt-meta">
+                            <span>{new Date(doubt.createdAt).toLocaleDateString()}</span>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>
+                          <i className="fas fa-question-circle" style={{ fontSize: '2rem', marginBottom: '1rem', display: 'block' }}></i>
+                          No doubts asked yet
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              {/* Mobile Cards (hidden on desktop via CSS) */}
+              <div className="doubts-cards-mobile">
+                {doubts.length > 0 ? (
+                  doubts.map(doubt => (
+                    <div key={doubt._id} className="doubt-card">
+                      <div className="doubt-header">
+                        <span className="doubt-subject">{doubt.subject}</span>
+                        <span className={`doubt-status ${doubt.status}`}>
+                          {doubt.status === 'pending' ? 'Open' : doubt.status === 'assigned' ? 'In Progress' : 'Solved'}
+                        </span>
+                      </div>
+                      <h4 className="doubt-title">{doubt.title}</h4>
+                      <p className="doubt-description">{doubt.description}</p>
+                      {doubt.mentor && doubt.mentor.name && (
+                        <div className="doubt-mentor" style={{marginTop:'0.5rem', color:'#2563eb', fontWeight:600}}>
+                          Mentor: {doubt.mentor.name}
+                        </div>
+                      )}
+                      {doubt.status === 'resolved' && (
+                        <div className="doubt-answer" style={{marginTop:'0.5rem', color:'#059669', fontWeight:500}}>
+                          Answer: {doubt.mentorResponse ? doubt.mentorResponse : <span style={{color:'#94a3b8'}}>No answer</span>}
+                        </div>
+                      )}
+                      <div className="doubt-meta">
+                        <i className="fas fa-calendar"></i>
+                        <span>{new Date(doubt.createdAt).toLocaleDateString()}</span>
+                      </div>
                     </div>
-                    <h4 className="doubt-title">{doubt.title}</h4>
-                    <p className="doubt-description">{doubt.description}</p>
-                    <div className="doubt-meta">
-                      <i className="fas fa-calendar"></i>
-                      <span>{new Date(doubt.createdAt).toLocaleDateString()}</span>
-                    </div>
+                  ))
+                ) : (
+                  <div className="no-doubts">
+                    <i className="fas fa-question-circle"></i>
+                    <h4>No doubts asked yet</h4>
+                    <p>This student hasn't asked any doubts yet. Consider encouraging them to engage more actively.</p>
                   </div>
-                ))
-              ) : (
-                <div className="no-doubts">
-                  <i className="fas fa-question-circle"></i>
-                  <h4>No doubts asked yet</h4>
-                  <p>This student hasn't asked any doubts yet. Consider encouraging them to engage more actively.</p>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         )}

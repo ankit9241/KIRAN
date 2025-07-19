@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaCalendar, FaClock, FaUser, FaVideo, FaCheckCircle, FaTimesCircle, FaBell, FaMapMarkerAlt } from 'react-icons/fa';
 import '../styles/StudentMeetings.css';
+import LoadingSpinner from './LoadingSpinner';
 
 const StudentMeetings = ({ role }) => {
     const [meetings, setMeetings] = useState([]);
@@ -113,16 +114,7 @@ const StudentMeetings = ({ role }) => {
         !(meeting.status === 'scheduled' && isMeetingUpcoming(meeting.date))
     );
 
-    if (loading) {
-        return (
-            <div className="student-meetings">
-                <div className="loading-container">
-                    <div className="loading-spinner"></div>
-                    <p>Loading your meetings...</p>
-                </div>
-            </div>
-        );
-    }
+    if (loading) return <div className="student-meetings"><LoadingSpinner /></div>;
 
     if (error) {
         return (

@@ -233,7 +233,8 @@ router.post('/register/mentor', async (req, res) => {
                 bio: bio || '',
                 achievements: achievements ? (Array.isArray(achievements) ? achievements : achievements.split(',').map(item => item.trim()).filter(item => item)) : [],
                 profilePicture: decodedToken.picture || profilePicture || '',
-                authProvider: 'google'
+                authProvider: 'google',
+                currentStatus: req.body.currentStatus || ''
             };
             isGoogleSignup = true;
         } else {
@@ -267,7 +268,8 @@ router.post('/register/mentor', async (req, res) => {
                 bio: bio || '',
                 achievements: achievements ? (Array.isArray(achievements) ? achievements : achievements.split(',').map(item => item.trim()).filter(item => item)) : [],
                 profilePicture: profilePicture || '',
-                authProvider: 'local'
+                authProvider: 'local',
+                currentStatus: req.body.currentStatus || ''
             };
         }
 
@@ -295,7 +297,8 @@ router.post('/register/mentor', async (req, res) => {
                 linkedin: user.linkedin || '',
                 website: user.website || '',
                 achievements: user.achievements || [],
-                mentorApprovalStatus: 'pending'
+                mentorApprovalStatus: 'pending',
+                currentStatus: user.currentStatus || ''
             },
             token,
             message: 'Mentor registration submitted successfully. Your account is pending admin approval.'

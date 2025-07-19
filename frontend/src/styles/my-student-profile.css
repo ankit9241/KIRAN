@@ -260,6 +260,23 @@
   font-weight: 600;
   cursor: pointer;
 }
+.uploading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255,255,255,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #4F46E5;
+  border-radius: 50%;
+  z-index: 3;
+  padding: 0;
+}
 @media (max-width: 900px) {
   .profile-details {
     grid-template-columns: 1fr;
@@ -446,15 +463,83 @@
   }
 }
 @media (max-width: 600px) {
-  .edit-profile-btn {
-    width: 100%;
-    margin: 0.5rem 0 0 0;
-    justify-content: center;
+  .profile-header {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 0.7rem !important;
+    padding: 0.7rem 0.2rem 0.7rem 0.2rem;
+    margin-bottom: 0.7rem !important;
+    border-radius: 12px;
+    text-align: left;
   }
-  .modal-content {
-    width: 98vw !important;
+  .avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 1.2rem;
+    margin: 0 0.5rem 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start !important;
+    padding: 0;
+    min-width: 0;
+  }
+  .profile-info h1 {
+    font-size: 1rem;
+    margin-bottom: 0.1rem !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    word-break: break-word !important;
+    max-width: 100vw;
+  }
+  .email {
+    font-size: 0.82rem;
+    margin-bottom: 0.1rem !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    word-break: break-word !important;
+    max-width: 100vw;
+  }
+  .edit-profile-btn {
+    display: block;
+    margin: 0.5rem 0 0 0 !important;
+    width: auto;
+    max-width: 100px !important;
+    font-size: 0.52rem !important;
+    text-align: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .edit-profile-btn {
+    font-size: 0.52rem !important;
+    padding: 0.22rem 0.5rem !important;
+    max-width: 70px !important;
     min-width: unset !important;
-    max-width: 99vw !important;
-    padding: 1rem !important;
+    margin-left: 0.5rem !important;
+  }
+  .profile-info h1, .email {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    word-break: break-word !important;
+    max-width: 100vw;
+  }
+  .edit-profile-btn {
+    width: 10% !important;
+    margin: 0.7rem auto 0 auto !important;
+    display: block !important;
+    min-width: 120px !important;
+    max-width: 220px !important;
+    font-size: 1rem !important;
+    border-radius: 10px !important;
+    text-align: center !important;
   }
 } 

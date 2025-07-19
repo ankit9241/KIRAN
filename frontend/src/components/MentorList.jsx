@@ -138,23 +138,6 @@ const MentorList = ({ mentors }) => {
 
   return (
     <div className="mentors-premium-section">
-      <div className="section-header-premium">
-        <div className="header-content">
-          <h2 className="enhanced-heading">Available Mentors</h2>
-          <p>Connect with our expert mentors for personalized guidance and support</p>
-        </div>
-        <div className="header-stats">
-          <div className="stat-item">
-            <span className="stat-number">{filterStats.mentorCount}</span>
-            <span className="stat-label">Mentors</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-number">{filterStats.specializationCount}</span>
-            <span className="stat-label">Specializations</span>
-          </div>
-        </div>
-      </div>
-
       {/* Enhanced Filters and Controls */}
       <div className="mentor-controls">
         <div className="filter-group">
@@ -239,7 +222,7 @@ const MentorList = ({ mentors }) => {
       </div>
 
       {/* Mentors Grid/List */}
-      <div className={`mentors-container ${viewMode}`}>
+      <div className={`mentors-container ${viewMode} horizontal-scroll`}>
         {filteredAndSortedMentors.map(mentor => {
           const experienceLevel = getExperienceLevel(mentor.experience);
           
@@ -251,7 +234,7 @@ const MentorList = ({ mentors }) => {
               <div className="mentor-header-premium">
                 <div className="mentor-avatar-premium">
                   {mentor.profilePicture ? (
-                    <img src={mentor.profilePicture} alt={mentor.name} />
+                    <img src={`http://localhost:5000/${mentor.profilePicture.replace(/\\/g, '/')}`} alt={mentor.name} />
                   ) : (
                     <div className="avatar-placeholder">
                       {mentor.name.charAt(0).toUpperCase()}
@@ -262,7 +245,9 @@ const MentorList = ({ mentors }) => {
                 <div className="mentor-info-premium">
                   <h3 className="mentor-name-premium">{mentor.name}</h3>
                   <p className="mentor-specialization-premium">{mentor.specialization}</p>
-                  
+                  <p className="mentor-current-status" style={{ color: '#6B7280', fontStyle: 'italic', fontSize: '0.95em', margin: '2px 0 4px 0' }}>
+                    {mentor.currentStatus ? mentor.currentStatus : 'N/A'}
+                  </p>
                   <div className="experience-level">
                     <span className="level-text" style={{ color: experienceLevel.color }}>
                       {experienceLevel.level}
@@ -333,70 +318,59 @@ const MentorList = ({ mentors }) => {
               {/* Contact Information */}
               <div className="contact-section-premium">
                 <h4>Get in Touch</h4>
-                <div className="contact-grid-premium">
+                <div className="contact-grid-premium" style={{ gap: '0.2rem', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
                   {mentor.email && (
                     <button 
-                      className="contact-btn-premium email"
                       onClick={() => handleContactClick('email', mentor.email, mentor.name)}
                       title="Send Email"
+                      style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, margin: 0, cursor: 'pointer' }}
                     >
-                      <i className="fas fa-envelope"></i>
-                      <span>Email</span>
+                      <i className="fas fa-envelope" style={{ fontSize: '1.5rem', color: '#3b82f6' }}></i>
                     </button>
                   )}
-                  
                   {mentor.phone && (
                     <button 
-                      className="contact-btn-premium phone"
                       onClick={() => handleContactClick('phone', mentor.phone, mentor.name)}
                       title="Call Phone"
+                      style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, margin: 0, cursor: 'pointer' }}
                     >
-                      <i className="fas fa-phone"></i>
-                      <span>Call</span>
+                      <i className="fas fa-phone" style={{ fontSize: '1.5rem', color: '#10b981' }}></i>
                     </button>
                   )}
-                  
                   {mentor.whatsapp && (
                     <button 
-                      className="contact-btn-premium whatsapp"
                       onClick={() => handleContactClick('whatsapp', mentor.whatsapp, mentor.name)}
                       title="Send WhatsApp Message"
+                      style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, margin: 0, cursor: 'pointer' }}
                     >
-                      <i className="fab fa-whatsapp"></i>
-                      <span>WhatsApp</span>
+                      <i className="fab fa-whatsapp" style={{ fontSize: '1.5rem', color: '#25d366' }}></i>
                     </button>
                   )}
-                  
                   {mentor.telegramId && (
                     <button 
-                      className="contact-btn-premium telegram"
                       onClick={() => handleContactClick('telegram', mentor.telegramId, mentor.name)}
                       title="Send Telegram Message"
+                      style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, margin: 0, cursor: 'pointer' }}
                     >
-                      <i className="fab fa-telegram"></i>
-                      <span>Telegram</span>
+                      <i className="fab fa-telegram" style={{ fontSize: '1.5rem', color: '#0088cc' }}></i>
                     </button>
                   )}
-                  
                   {mentor.linkedin && (
                     <button 
-                      className="contact-btn-premium linkedin"
                       onClick={() => handleContactClick('linkedin', mentor.linkedin, mentor.name)}
                       title="View LinkedIn Profile"
+                      style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, margin: 0, cursor: 'pointer' }}
                     >
-                      <i className="fab fa-linkedin"></i>
-                      <span>LinkedIn</span>
+                      <i className="fab fa-linkedin" style={{ fontSize: '1.5rem', color: '#0077b5' }}></i>
                     </button>
                   )}
-                  
                   {mentor.website && (
                     <button 
-                      className="contact-btn-premium website"
                       onClick={() => handleContactClick('website', mentor.website, mentor.name)}
                       title="Visit Website"
+                      style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, margin: 0, cursor: 'pointer' }}
                     >
-                      <i className="fas fa-globe"></i>
-                      <span>Website</span>
+                      <i className="fas fa-globe" style={{ fontSize: '1.5rem', color: '#f59e0b' }}></i>
                     </button>
                   )}
                 </div>

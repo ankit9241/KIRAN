@@ -14,6 +14,7 @@ const DoubtList = ({ doubts = [], onDoubtAdded }) => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [editingDoubt, setEditingDoubt] = useState(null);
   const [editForm, setEditForm] = useState({ title: '', description: '', subject: '' });
+  const [expandedDoubtId, setExpandedDoubtId] = useState(null);
 
   const toggleDoubtExpansion = (doubtId) => {
     setExpandedDoubts(prev => {
@@ -149,6 +150,7 @@ const DoubtList = ({ doubts = [], onDoubtAdded }) => {
         </div>
       )}
 
+      <div className="doubt-list premium-timeline">
       {filteredDoubts.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-icon">❓</div>
@@ -156,128 +158,59 @@ const DoubtList = ({ doubts = [], onDoubtAdded }) => {
           <p>You haven't asked any questions yet. Use the form below to ask your first doubt!</p>
         </div>
       ) : (
-        <div className="doubt-history-section">
-          <div className="section-header">
-            <h3>📚 Doubt History ({filteredDoubts.length})</h3>
-            <p>Click on any doubt to view details and mentor responses</p>
-          </div>
-          <div className="doubt-list">
-            {filteredDoubts.map(doubt => {
-              const isExpanded = expandedDoubts.has(doubt._id);
-              const hasResponse = doubt.mentorResponse;
-              
+          filteredDoubts.map(doubt => {
+            const isExpanded = expandedDoubtId === doubt._id;
+            const hasResponse = !!doubt.mentorResponse;
               return (
-                <div key={doubt._id} className={`doubt-card ${hasResponse ? 'has-response' : ''} ${isExpanded ? 'expanded' : 'collapsed'}`}>
-                  <div className="doubt-header" onClick={() => toggleDoubtExpansion(doubt._id)}>
-                    <div className="doubt-type-badge" style={{ 
-                      backgroundColor: doubt.subject === 'Mathematics' ? 'var(--primary-color)' : 
-                                     doubt.subject === 'Physics' ? 'var(--warning-color)' :
-                                     doubt.subject === 'Chemistry' ? 'var(--success-color)' : 'var(--primary-color)',
-                      color: 'white'
-                    }}>
-                      {doubt.subject}
+              <div
+                key={doubt._id}
+                className={`premium-doubt-card${isExpanded ? ' expanded' : ''}${hasResponse ? ' has-response' : ''}`}
+                onClick={() => setExpandedDoubtId(isExpanded ? null : doubt._id)}
+              >
+                <div className="premium-doubt-header">
+                  <div className="premium-doubt-dot" style={{ background: hasResponse ? '#10b981' : '#3b82f6' }} />
+                  <div className="premium-doubt-main">
+                    <div className="premium-doubt-title-row">
+                      <span className="premium-doubt-title">{doubt.title}</span>
+                      <span className={`premium-status-badge ${doubt.status.toLowerCase()}`}>{doubt.status.charAt(0).toUpperCase() + doubt.status.slice(1)}</span>
                     </div>
-                    
-                    <div className="doubt-summary">
-                      <h4 className="doubt-title">{doubt.title}</h4>
-                      <div className="doubt-meta">
-                        <span className="doubt-date">{new Date(doubt.createdAt).toLocaleDateString()}</span>
-                        <span className="doubt-status">Status: {doubt.status}</span>
-                        {doubt.mentor && <span className="doubt-mentor">Mentor: {doubt.mentor.name}</span>}
-                        {hasResponse && <span className="response-indicator">📝 Has Response</span>}
-                      </div>
+                    <div className="premium-doubt-meta">
+                      <span><i className="fas fa-calendar"></i> {new Date(doubt.createdAt).toLocaleDateString()}</span>
+                      <span><i className="fas fa-book"></i> {doubt.subject}</span>
+                      {doubt.mentor && <span><i className="fas fa-user-tie"></i> {doubt.mentor.name}</span>}
+                      {hasResponse && <span className="premium-has-response"><i className="fas fa-check-circle"></i> Mentor Responded</span>}
                     </div>
-                    
-                    <div className="doubt-actions">
-                      <div className={`doubt-status-badge ${doubt.status.toLowerCase()}`}>
-                        {doubt.status}
                       </div>
-                      
-                      {/* 3-dot menu for doubt actions */}
-                      <div className="doubt-menu">
-                        <button 
-                          className="menu-btn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleMenu(doubt._id, e);
-                          }}
-                        >
-                          <i className="fas fa-ellipsis-v"></i>
-                        </button>
-                        
-                        {activeMenu === doubt._id && (
-                          <div 
-                            className="menu-dropdown"
-                            onClick={e => e.stopPropagation()}
-                          >
-                            {doubt.status === 'pending' && (
-                              <button 
-                                className="menu-item edit"
-                                onMouseDown={e => { e.stopPropagation(); handleEditDoubt(doubt); }}
-                              >
-                                <i className="fas fa-edit"></i>
-                                Edit Doubt
-                              </button>
-                            )}
-                            {doubt.status === 'pending' && (
-                              <button 
-                                className="menu-item delete"
-                                onMouseDown={e => { e.stopPropagation(); handleDeleteDoubt(doubt._id); }}
-                              >
-                                <i className="fas fa-trash"></i>
-                                Delete Doubt
-                              </button>
-                            )}
-                            {doubt.status !== 'pending' && (
-                              <span className="menu-item disabled">
-                                <i className="fas fa-lock"></i>
-                                Cannot edit assigned doubts
-                              </span>
-                            )}
+                  <div className="premium-expand-icon">
+                    <i className={`fas fa-chevron-${isExpanded ? 'up' : 'down'}`}></i>
                           </div>
-                        )}
                       </div>
-                      
-                      <button className="expand-btn">
-                        <i className={`fas fa-chevron-${isExpanded ? 'up' : 'down'}`}></i>
-                      </button>
+                {isExpanded && (
+                  <div className="premium-doubt-details">
+                    <div className="premium-question-bubble">
+                      <div className="bubble-label">Your Question</div>
+                      <div className="bubble-content">{doubt.description}</div>
                     </div>
-                  </div>
-                  
-                  {isExpanded && (
-                    <div className="doubt-details">
-                      <div className="doubt-content">
-                        <h5>Your Question:</h5>
-                        <p className="doubt-text">{doubt.description}</p>
-                        
-                        {/* Mentor Response Section */}
                         {hasResponse && (
-                          <div className="mentor-response-section">
-                            <div className="response-header">
-                              <h5>📝 Mentor's Response</h5>
-                              <span className="response-date">
-                                {new Date(doubt.responseDate).toLocaleDateString()}
-                              </span>
-                            </div>
-                            <div className="response-content">
-                              <p>{doubt.mentorResponse}</p>
-                            </div>
-                            
-                            {/* Uploaded Documents */}
+                      <div className="premium-response-bubble">
+                        <div className="bubble-label"><i className="fas fa-user-tie"></i> Mentor's Response</div>
+                        <div className="bubble-content">{doubt.mentorResponse}</div>
+                        {doubt.responseDate && (
+                          <div className="bubble-date">Responded: {new Date(doubt.responseDate).toLocaleDateString()}</div>
+                        )}
                             {doubt.uploadedDocuments && doubt.uploadedDocuments.length > 0 && (
-                              <div className="response-documents">
-                                <h6>📎 Attached Documents:</h6>
-                                <div className="document-list">
-                                  {doubt.uploadedDocuments.map((doc, index) => (
+                          <div className="bubble-docs">
+                            <div className="bubble-label"><i className="fas fa-paperclip"></i> Attachments</div>
+                            <div className="bubble-doc-list">
+                              {doubt.uploadedDocuments.map((doc, idx) => (
                                     <a 
-                                      key={index}
+                                  key={idx}
                                       href={API_ENDPOINTS.FILE_PATH(doc.filePath)}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="document-link"
+                                  className="bubble-doc-link"
                                     >
-                                      <i className="fas fa-file"></i>
-                                      {doc.originalName}
+                                  <i className="fas fa-file"></i> {doc.originalName}
                                     </a>
                                   ))}
                                 </div>
@@ -285,15 +218,13 @@ const DoubtList = ({ doubts = [], onDoubtAdded }) => {
                             )}
                           </div>
                         )}
-                      </div>
                     </div>
                   )}
                 </div>
               );
-            })}
-          </div>
+          })
+        )}
         </div>
-      )}
 
       <div className="add-doubt">
         <div className="form-header">

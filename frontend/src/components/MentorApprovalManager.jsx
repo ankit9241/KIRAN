@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import API_ENDPOINTS from '../config/api';
 import '../styles/mentor-approval-manager.css';
+import { useModal } from './ModalProvider';
 
 const MentorApprovalManager = () => {
   const [pendingMentors, setPendingMentors] = useState([]);
@@ -12,6 +13,7 @@ const MentorApprovalManager = () => {
   const [rejectionReason, setRejectionReason] = useState('');
   const [selectedMentor, setSelectedMentor] = useState(null);
   const [showRejectModal, setShowRejectModal] = useState(false);
+  const { showModal } = useModal();
 
   useEffect(() => {
     fetchMentors();
@@ -53,16 +55,16 @@ const MentorApprovalManager = () => {
 
       // Refresh the mentors list
       await fetchMentors();
-      alert('Mentor approved successfully!');
+      await showModal({ title: 'Success', message: 'Mentor approved successfully!' });
     } catch (error) {
       console.error('Error approving mentor:', error);
-      alert('Error approving mentor: ' + (error.response?.data?.message || error.message));
+      await showModal({ title: 'Error', message: 'Error approving mentor: ' + (error.response?.data?.message || error.message) });
     }
   };
 
   const handleReject = async (mentorId) => {
     if (!rejectionReason.trim()) {
-      alert('Please provide a rejection reason');
+      await showModal({ title: 'Missing Reason', message: 'Please provide a rejection reason.' });
       return;
     }
 
@@ -82,10 +84,10 @@ const MentorApprovalManager = () => {
       setShowRejectModal(false);
       setRejectionReason('');
       setSelectedMentor(null);
-      alert('Mentor rejected successfully!');
+      await showModal({ title: 'Success', message: 'Mentor rejected successfully!' });
     } catch (error) {
       console.error('Error rejecting mentor:', error);
-      alert('Error rejecting mentor: ' + (error.response?.data?.message || error.message));
+      await showModal({ title: 'Error', message: 'Error rejecting mentor: ' + (error.response?.data?.message || error.message) });
     }
   };
 

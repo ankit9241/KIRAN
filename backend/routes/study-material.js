@@ -186,6 +186,26 @@ router.post('/upload', [auth, mentorAuth, upload.single('file')], async (req, re
 
     const newMaterial = await material.save();
     console.log('Material saved successfully:', newMaterial);
+
+    // Notify all students about the new public study material
+    const User = require('../models/User');
+    const Notification = require('../models/Notification');
+    const students = await User.find({ role: 'student' }).select('_id');
+    if (students.length > 0) {
+      const notifications = students.map(student => ({
+        userId: student._id,
+        type: 'update',
+        title: 'New Study Material',
+        message: `New study material "${material.title}" has been uploaded by ${req.user.name}.`,
+        senderId: req.user.id,
+        senderName: req.user.name,
+        relatedId: newMaterial._id,
+        relatedModel: 'StudyMaterial',
+        category: 'activity',
+        priority: 'medium',
+      }));
+      await Notification.insertMany(notifications);
+    }
     res.status(201).json(newMaterial);
   } catch (error) {
     console.error('Error uploading material:', error);
@@ -330,6 +350,31 @@ router.post('/upload-student', [auth, mentorAuth, upload.single('file')], async 
     });
 
     const newMaterial = await material.save();
+    // Notify the specific student about the new personal resource
+    if (req.body.studentId) {
+      const Notification = require('../models/Notification');
+      let folderMsg = '';
+      if (material.folder) {
+        const folderDoc = await StudyMaterial.findById(material.folder);
+        if (folderDoc && folderDoc.title) {
+          folderMsg = ` in the folder "${folderDoc.title}"`;
+        }
+      } else {
+        folderMsg = ' personally';
+      }
+      await Notification.create({
+        userId: req.body.studentId,
+        type: 'update',
+        title: 'New Resource from Mentor',
+        message: `Your mentor ${req.user.name} has uploaded a new resource: ${material.title}${folderMsg}.`,
+        senderId: req.user.id,
+        senderName: req.user.name,
+        relatedId: newMaterial._id,
+        relatedModel: 'StudyMaterial',
+        category: 'activity',
+        priority: 'medium',
+      });
+    }
     res.status(201).json(newMaterial);
   } catch (error) {
     res.status(400).json({ message: error.message });

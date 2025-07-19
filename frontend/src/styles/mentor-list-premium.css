@@ -1071,15 +1071,53 @@
   .mentor-card-premium {
     padding: 1rem 0.7rem !important;
   }
-  .mentor-card-premium:hover,
-  .mentor-card-premium:hover .mentor-avatar-premium img,
-  .mentor-card-premium:hover .avatar-placeholder,
-  .action-btn.primary:hover {
+  .mentor-card-premium {
     transform: none !important;
     box-shadow: none !important;
     border-color: inherit !important;
   }
+  .mentor-avatar-premium img,
+  .avatar-placeholder {
+    border: none !important;
+  }
 } 
+
+@media (max-width: 600px) {
+  .mentor-avatar-premium,
+  .mentor-avatar-premium img,
+  .avatar-placeholder {
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 1.5rem !important;
+    margin-right: 0.2rem !important;
+  }
+  .mentor-card-premium {
+    margin-left: 10px !important;
+  }
+  .action-btn {
+    font-size: 0.55rem !important;
+    padding: 0.08rem 0.18rem !important;
+    min-width: 28px !important;
+    height: 1rem !important;
+    line-height: 1 !important;
+    border-radius: 0.15rem !important;
+    margin-top: 0.01rem !important;
+  }
+  .contact-btn-premium,
+  .contact-btn-premium.email {
+    min-width: 90px !important;
+    max-width: 100% !important;
+    width: auto !important;
+    padding: 0.35rem 0.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.1rem !important;
+  }
+  .hide-on-mobile {
+    display: none !important;
+  }
+}
 
 /* --- Premium Thin Scrollbar Styling --- */
 .mentors-container,
@@ -1114,4 +1152,52 @@
 .achievements-list::-webkit-scrollbar-thumb:hover,
 .contact-grid-premium::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #2563eb 0%, #6366f1 100%);
+} 
+
+.horizontal-scroll {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
+}
+.horizontal-scroll::-webkit-scrollbar {
+  height: 8px;
+  background: #f8fafc;
+}
+.horizontal-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.horizontal-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@media (max-width: 900px) {
+  .horizontal-scroll {
+    flex-direction: column;
+    overflow-x: unset;
+    gap: 1rem;
+  }
+} 
+
+.mentor-avatar-premium,
+.mentor-avatar-premium img,
+.avatar-placeholder {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background-clip: border-box !important;
+}
+
+@media (max-width: 700px) {
+  .mentor-avatar-premium,
+  .mentor-avatar-premium img,
+  .avatar-placeholder {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
 } 

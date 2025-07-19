@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { FaFolder, FaPlus, FaBook, FaDownload, FaTrash, FaEdit, FaFile, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import axios from 'axios';
 import { useToast } from '../components/Toast.jsx';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { useModal } from '../components/ModalProvider';
 
 const StudyMaterial = () => {
   const [folders, setFolders] = useState([]);
@@ -43,6 +45,7 @@ const StudyMaterial = () => {
   });
 
   const { showToast } = useToast();
+  const { showModal } = useModal();
 
   useEffect(() => {
     // Check user role from localStorage
@@ -365,10 +368,14 @@ const StudyMaterial = () => {
   const handleDeleteMaterial = async (materialId) => {
     console.log('Attempting to delete material with ID:', materialId);
     
-    if (!window.confirm('Are you sure you want to delete this material?')) {
-      console.log('Delete cancelled by user');
-      return;
-    }
+    const confirmed = await showModal({
+      title: 'Delete Confirmation',
+      message: 'Are you sure you want to delete this material?',
+      showCancel: true,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+    });
+    if (!confirmed) return;
     
     try {
       const token = localStorage.getItem('token');
@@ -443,9 +450,7 @@ const StudyMaterial = () => {
     }
   };
 
-  if (loading) {
-    return <div className="loading">Loading...</div>;
-  }
+  if (loading) return <LoadingSpinner />;
 
   if (error) {
     return (
@@ -659,6 +664,9 @@ const StudyMaterial = () => {
                             <p>{material.description}</p>
                             <small>By: {material.uploadedBy?.name || material.uploadedBy?.email || 'Unknown'}</small>
                             <small>Type: {material.type}</small>
+                            <small>
+                              Uploaded: {material.createdAt ? new Date(material.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}
+                            </small>
                           </div>
                           <div className="material-actions">
                             {material.filePath && (

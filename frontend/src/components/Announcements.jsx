@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import API_ENDPOINTS from '../config/api';
 import '../styles/announcements.css';
+import LoadingSpinner from './LoadingSpinner';
 
 const Announcements = ({ userRole }) => {
   const [announcements, setAnnouncements] = useState([]);
@@ -85,21 +86,7 @@ const Announcements = ({ userRole }) => {
     );
   }
 
-  if (loading) {
-    return (
-      <div className="announcements-container">
-        <div className="announcements-header">
-          <h3>📢 Announcements</h3>
-          <button className="close-announcements" onClick={handleClose} title="Close announcements">
-            <i className="fas fa-times"></i>
-          </button>
-        </div>
-        <div className="announcements-content">
-          <div className="loading-announcements">Loading...</div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <div className="announcements-container"><LoadingSpinner /></div>;
 
   if (error) {
     return (

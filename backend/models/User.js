@@ -92,6 +92,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: function() { return this.role === 'mentor'; }
     },
+    currentStatus: {
+        type: String,
+        required: false,
+        default: ''
+    },
     // Mentor approval system
     mentorApprovalStatus: {
         type: String,

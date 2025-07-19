@@ -10,6 +10,7 @@ import Announcements from '../components/Announcements';
 import StudentMeetings from '../components/StudentMeetings';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { useToast } from '../components/Toast.jsx';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const MentorDashboard = () => {
   const [mentorInfo, setMentorInfo] = useState(null);
@@ -326,7 +327,7 @@ const MentorDashboard = () => {
     });
   };
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) return <LoadingSpinner />;
   if (error) return <div className="error">{error}</div>;
   if (!mentorInfo) return <div className="error">Failed to load profile</div>;
 

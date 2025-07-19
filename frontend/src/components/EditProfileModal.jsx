@@ -52,7 +52,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, userType, onSaveSuccess }
         'name', 'email', 'phone', 'address', 'bio', 'achievements',
         'class', 'stream', 'targetExam', 'preferredSubjects', 'learningGoals',
         'specialization', 'experience', 'subjectsTaught', 'telegramId', 'whatsapp', 'linkedin', 'website',
-        'teachingStyle', 'qualifications', 'profilePicture'
+        'teachingStyle', 'qualifications', 'profilePicture', 'currentStatus'
       ];
       Object.keys(payload).forEach(key => {
         if (!allowedUpdates.includes(key)) {
@@ -120,6 +120,16 @@ const EditProfileModal = ({ isOpen, onClose, userData, userType, onSaveSuccess }
                 <input name="specialization" value={form.specialization || ''} onChange={handleChange} />
               </div>
               <div className="form-group">
+                <label htmlFor="currentStatus">What are you currently doing?</label>
+                <input
+                  id="currentStatus"
+                  name="currentStatus"
+                  value={form.currentStatus || ''}
+                  onChange={handleChange}
+                  placeholder="e.g., Studying at XYZ University, Working at ABC Corp, etc."
+                />
+              </div>
+              <div className="form-group">
                 <label>Experience</label>
                 <input name="experience" value={form.experience || ''} onChange={handleChange} />
               </div>
@@ -134,6 +144,51 @@ const EditProfileModal = ({ isOpen, onClose, userData, userType, onSaveSuccess }
               <div className="form-group">
                 <label>Subjects Taught (comma separated)</label>
                 <input name="subjectsTaught" value={form.subjectsTaught || ''} onChange={handleChange} />
+              </div>
+              <h3 style={{marginTop: '1.5em', fontSize: '1.1em'}}>Contact Information</h3>
+              <div className="form-group">
+                <label htmlFor="telegramId">Telegram ID</label>
+                <input
+                  type="text"
+                  id="telegramId"
+                  name="telegramId"
+                  value={form.telegramId || ''}
+                  onChange={handleChange}
+                  placeholder="Your Telegram username"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="whatsapp">WhatsApp Number</label>
+                <input
+                  type="tel"
+                  id="whatsapp"
+                  name="whatsapp"
+                  value={form.whatsapp || ''}
+                  onChange={handleChange}
+                  placeholder="Your WhatsApp number"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="linkedin">LinkedIn Profile</label>
+                <input
+                  type="url"
+                  id="linkedin"
+                  name="linkedin"
+                  value={form.linkedin || ''}
+                  onChange={handleChange}
+                  placeholder="Your LinkedIn profile URL"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="website">Website</label>
+                <input
+                  type="url"
+                  id="website"
+                  name="website"
+                  value={form.website || ''}
+                  onChange={handleChange}
+                  placeholder="Your personal website URL"
+                />
               </div>
             </>
           )}
