@@ -161,8 +161,16 @@ const Navbar = () => {
           {/* Desktop Nav */}
           <div className="navbar-links desktop-only">
             <Link to="/" className={`nav-link${isActive('/') ? ' active' : ''}`}>Home</Link>
-            <Link to={user?.role === 'student' ? '/student' : user?.role === 'mentor' ? '/mentor' : user?.role === 'admin' ? '/admin' : '/dashboard'} className={`nav-link${isActive(user?.role === 'student' ? '/student' : user?.role === 'mentor' ? '/mentor' : user?.role === 'admin' ? '/admin' : '/dashboard') ? ' active' : ''}`}>Dashboard</Link>
-            <Link to="/study-material" className={`nav-link${isActive('/study-material') ? ' active' : ''}`}>Study Material</Link>
+            {isAuthenticated ? (
+              <>
+                <Link to={user?.role === 'student' ? '/student' : user?.role === 'mentor' ? '/mentor' : user?.role === 'admin' ? '/admin' : '/dashboard'} className={`nav-link${isActive(user?.role === 'student' ? '/student' : user?.role === 'mentor' ? '/mentor' : user?.role === 'admin' ? '/admin' : '/dashboard') ? ' active' : ''}`}>
+                  Dashboard
+                </Link>
+                <Link to="/study-material" className={`nav-link${isActive('/study-material') ? ' active' : ''}`}>Study Material</Link>
+              </>
+            ) : (
+              <Link to="/about" className={`nav-link${isActive('/about') ? ' active' : ''}`}>About</Link>
+            )}
             <Link to="/contact" className={`nav-link${isActive('/contact') ? ' active' : ''}`}>Contact Us</Link>
           </div>
           {/* Desktop Actions */}
@@ -286,11 +294,15 @@ const Navbar = () => {
           </div>
           <div className="sidebar-links">
             <Link to="/" className="sidebar-link" onClick={() => setIsMenuOpen(false)}>Home</Link>
-            {isAuthenticated && (
+            {isAuthenticated ? (
               <>
-                <Link to={user?.role === 'student' ? '/student' : user?.role === 'mentor' ? '/mentor' : user?.role === 'admin' ? '/admin' : '/dashboard'} className="sidebar-link" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
+                <Link to={user?.role === 'student' ? '/student' : user?.role === 'mentor' ? '/mentor' : user?.role === 'admin' ? '/admin' : '/dashboard'} className="sidebar-link" onClick={() => setIsMenuOpen(false)}>
+                  Dashboard
+                </Link>
                 <Link to="/study-material" className="sidebar-link" onClick={() => setIsMenuOpen(false)}>Study Material</Link>
               </>
+            ) : (
+              <Link to="/about" className="sidebar-link" onClick={() => setIsMenuOpen(false)}>About</Link>
             )}
             <Link to="/contact" className="sidebar-link" onClick={() => setIsMenuOpen(false)}>Contact Us</Link>
           </div>
